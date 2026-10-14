@@ -1,0 +1,2510 @@
+/*
+  Still — a quiet, monochrome theme for Obsidian
+  Version 0.6.0 · MIT License · https://github.com/letschips
+
+  Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
+  hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
+  MIT) for its floating page, floating tabs and sidebar peek. No code is
+  bundled from either.
+
+  Principles
+  - Obsidian variables first; selectors stay short and low in specificity.
+  - Light to render: no filters or backdrop blur, no 3D transforms or
+    will-change, no body-level :has(). Motion animates transform and
+    opacity on a few panels only.
+  - Works without Style Settings. Every option below is additive.
+  - Opaque by design. Window translucency is left to an optional snippet:
+    the theme never sets backdrop-filter, uses translucent hairlines rather
+    than solid border tones, and never forces workspace backgrounds with
+    !important. The only !important rules override inline styles Obsidian
+    writes on collapsed sidebars (sidebar peek), switch motion off for
+    reduced motion, and keep plugins from blurring or promoting layers
+    inside a translucent window.
+  - Accent and fonts follow Settings → Appearance.
+*/
+
+/* @settings
+
+name: Still
+id: still
+settings:
+  -
+    id: still-heading-reading
+    title: Reading
+    title.zh: 阅读
+    type: heading
+    level: 1
+    collapsed: false
+  -
+    id: still-line-width
+    title: Line width
+    title.zh: 行宽
+    description: Readable line length when "Readable line length" is on.
+    description.zh: 开启「可读行宽」时的正文宽度。
+    type: variable-number-slider
+    default: 700
+    min: 480
+    max: 1400
+    step: 20
+    format: px
+  -
+    id: still-line-height
+    title: Line height
+    title.zh: 行高
+    type: variable-number-slider
+    default: 1.625
+    min: 1.3
+    max: 2.2
+    step: 0.025
+  -
+    id: still-paragraph-spacing
+    title: Paragraph spacing
+    title.zh: 段落间距
+    type: variable-number-slider
+    default: 1.25
+    min: 0.4
+    max: 2
+    step: 0.05
+    format: rem
+  -
+    id: still-list-spacing
+    title: List item spacing
+    title.zh: 列表项间距
+    type: variable-number-slider
+    default: 0.175
+    min: 0
+    max: 0.6
+    step: 0.025
+    format: rem
+  -
+    id: still-centered-title
+    title: Centered note title
+    title.zh: 笔记标题居中
+    type: class-toggle
+    default: false
+  -
+    id: still-cjk
+    title: CJK typography
+    title.zh: 中文排版
+    description: For Chinese and Japanese writing. A small gap where Han characters meet Latin letters or digits with no space typed, no lone character at the end of a paragraph in reading view, and a roomier default line height (1.75). Code is left exactly as typed.
+    description.zh: 适合中文和日文写作。中文与英文、数字相邻且没打空格时自动留出小间隙；阅读视图段尾不留单字；默认行高放宽到 1.75。代码保持原样。
+    type: class-toggle
+    default: false
+  -
+    id: still-justify
+    title: Justified paragraphs
+    title.zh: 两端对齐
+    description: Body text lines up on both edges in reading and editing views, as Chinese typesetting expects. Headings, code and tables keep their own alignment. Paragraphs with long English runs may get wider word gaps.
+    description.zh: 正文在阅读和编辑视图中两端对齐，符合中文排版习惯。标题、代码和表格不受影响。英文较多的段落词距可能被拉大。
+    type: class-toggle
+    default: false
+  -
+    id: still-heading-colors
+    title: Colors
+    title.zh: 颜色
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: still-page-color
+    title: Page background
+    title.zh: 页面背景
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-sidebar-color
+    title: Sidebar background
+    title.zh: 侧栏背景
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-text-color
+    title: Text
+    title.zh: 正文文字
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-muted-color
+    title: Secondary text
+    title.zh: 次要文字
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-link-color
+    title: Links
+    title.zh: 链接
+    description: Defaults to the accent color.
+    description.zh: 默认使用强调色。
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-list-marker-color
+    title: List markers
+    title.zh: 列表符号
+    description: Defaults to faint text.
+    description.zh: 默认使用浅色文字。
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-checkbox-color
+    title: Checkboxes
+    title.zh: 复选框
+    description: Defaults to the accent color.
+    description.zh: 默认使用强调色。
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-graphite
+    title: Graphite ink
+    title.zh: 石墨墨色
+    description: Buttons, toggles and links use the text color instead of the accent. Links are underlined.
+    description.zh: 按钮、开关和链接改用文字颜色而不是强调色，链接加下划线。
+    type: class-toggle
+    default: false
+  -
+    id: still-heading-interface
+    title: Interface
+    title.zh: 界面
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: still-roundness
+    title: Roundness
+    title.zh: 圆角
+    description: Scales every corner radius. 0 is square.
+    description.zh: 按比例缩放所有圆角，0 为直角。
+    type: variable-number-slider
+    default: 1.25
+    min: 0
+    max: 2
+    step: 0.05
+  -
+    id: still-flat-page
+    title: Flat page
+    title.zh: 平铺页面
+    description: By default the page floats as a card beside an open sidebar.
+    description.zh: 默认在侧栏展开时，页面像卡片一样浮起。
+    type: class-toggle
+    default: false
+  -
+    id: still-tabs-left
+    title: Left-aligned tabs
+    title.zh: 标签靠左
+    description: Tabs are centered by default.
+    description.zh: 默认标签居中。
+    type: class-toggle
+    default: false
+  -
+    id: still-tabs-fit
+    title: Tabs fit their titles
+    title.zh: 标签宽度随标题
+    description: By default every tab has the same width.
+    description.zh: 默认所有标签等宽。
+    type: class-toggle
+    default: false
+  -
+    id: still-header-title
+    title: Always show the note title in the header
+    title.zh: 标题栏始终显示笔记标题
+    description: By default the header title appears on hover.
+    description.zh: 默认鼠标移到标题栏时才显示。
+    type: class-toggle
+    default: false
+  -
+    id: still-peek-off
+    title: Disable sidebar peek
+    title.zh: 关闭侧栏悬停展开
+    description: By default a collapsed sidebar slides in when the pointer rests on the window edge.
+    description.zh: 默认鼠标停在窗口边缘时，收起的侧栏会滑出。
+    type: class-toggle
+    default: false
+  -
+    id: still-peek-soft
+    title: Soft sidebar peek
+    title.zh: 柔和侧栏展开
+    description: The peeking sidebar sits on the page color and fades into the page, with no shadowed edge.
+    description.zh: 滑出的侧栏使用页面底色并渐隐到页面里，没有阴影边。
+    type: class-toggle
+    default: false
+  -
+    id: still-peek-ribbon
+    title: Auto-hide ribbon
+    title.zh: 自动隐藏功能区
+    description: Hide the left ribbon until the pointer reaches the window edge.
+    description.zh: 鼠标移到窗口左缘时才显示左侧功能区。
+    type: class-toggle
+    default: false
+  -
+    id: still-hide-vault
+    title: Quiet vault switcher
+    title.zh: 安静的库切换器
+    description: The vault foot floats over the sidebar with only the Settings button; the vault name appears when the pointer reaches it. Help stays on F1.
+    description.zh: 库信息浮在侧栏底部，只留设置按钮；鼠标移上去才显示库名。帮助可按 F1 打开。
+    type: class-toggle
+    default: false
+  -
+    id: still-quiet-nav
+    title: Quiet sidebar toolbar
+    title.zh: 安静的侧栏工具栏
+    description: Sidebar toolbar buttons rest as dots until hovered.
+    description.zh: 侧栏工具栏按钮平时显示为小圆点，悬停时展开。
+    type: class-toggle
+    default: false
+  -
+    id: still-quiet-status
+    title: Quiet status bar
+    title.zh: 安静的状态栏
+    description: The status bar rests as a short line at the bottom center until hovered.
+    description.zh: 状态栏平时是底部中间的一条短线，悬停时展开。
+    type: class-toggle
+    default: false
+  -
+    id: still-outline-guides
+    title: Outline guides
+    title.zh: 大纲层级线
+    description: A hairline per heading level in the outline view. The branch under the heading the pointer is on darkens.
+    description.zh: 大纲面板每一级标题显示一条细线，鼠标所在标题下的分支线条加深。
+    type: class-toggle
+    default: false
+  -
+    id: still-motion-off
+    title: Disable entrance motion
+    title.zh: 关闭入场动画
+    description: Menus, popovers and dialogs appear without the fade-and-rise.
+    description.zh: 菜单、浮窗和对话框直接出现，不再淡入上浮。
+    type: class-toggle
+    default: false
+  -
+    id: still-black-mobile
+    title: Pure black on phones and tablets
+    title.zh: 手机和平板纯黑
+    description: Dark mode uses black page and sidebar surfaces on mobile, for OLED screens.
+    description.zh: 移动端深色模式下页面和侧栏使用纯黑，适合 OLED 屏幕。
+    type: class-toggle
+    default: false
+  -
+    id: still-heading-content
+    title: Content
+    title.zh: 内容
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: still-card-callouts
+    title: Card callouts
+    title.zh: 卡片式提示块
+    description: The title sits on a tinted frame and the content on an inner card.
+    description.zh: 标题放在着色的外框上，内容放在内层卡片里。
+    type: class-toggle
+    default: false
+  -
+    id: still-plain-tags
+    title: Plain tags
+    title.zh: 纯文字标签
+    description: Tags render as colored text without a pill.
+    description.zh: 标签显示为彩色文字，不带底色。
+    type: class-toggle
+    default: false
+  -
+    id: still-keep-done-tasks
+    title: Don't strike completed tasks
+    title.zh: 已完成任务不加删除线
+    type: class-toggle
+    default: false
+  -
+    id: still-colored-headings
+    title: Colored headings
+    title.zh: 彩色标题
+    description: Each heading level gets its own hue, from red at H1 to purple at H6.
+    description.zh: 每级标题一种颜色，从 H1 的红色到 H6 的紫色。
+    type: class-toggle
+    default: false
+  -
+    id: still-media-fill
+    title: Images fill the line width
+    title.zh: 图片铺满行宽
+    description: Images, videos and embeds without a set width stretch to the line width. Tall ones stay within the window.
+    description.zh: 没有设定宽度的图片、视频和嵌入内容拉伸到行宽，过高的会限制在窗口内。
+    type: class-toggle
+    default: false
+  -
+    id: still-bases-stripes
+    title: Striped Bases tables
+    title.zh: Bases 表格隔行条纹
+    description: Every other row in a Bases table gets a faint wash.
+    description.zh: Bases 表格每隔一行加一层浅色底。
+    type: class-toggle
+    default: false
+  -
+    id: still-pdf-dark
+    title: Dark PDFs
+    title.zh: 深色 PDF
+    description: Invert PDF pages in dark mode.
+    description.zh: 深色模式下反色显示 PDF 页面。
+    type: class-toggle
+    default: false
+  -
+    id: still-pdf-dim
+    title: Dim PDFs in dark mode
+    title.zh: 深色模式 PDF 降亮
+    description: PDF pages rest dimmed in dark mode and brighten under the pointer.
+    description.zh: 深色模式下 PDF 页面平时调暗，鼠标移上去恢复。
+    type: class-toggle
+    default: false
+  -
+    id: still-img-dim
+    title: Dim images in dark mode
+    title.zh: 深色模式图片降亮
+    description: Note images rest dimmed in dark mode and brighten under the pointer. Link favicons are left alone.
+    description.zh: 深色模式下笔记里的图片平时调暗，鼠标移上去恢复。链接图标不受影响。
+    type: class-toggle
+    default: false
+*/
+
+/* ========================================================================== */
+/* 1. Tokens                                                                  */
+/* ========================================================================== */
+
+body {
+  --font-interface-theme: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-text-theme: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Motion: whirl's ease-out for entrances, a glide for panels. */
+  --still-ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --still-glide: cubic-bezier(0.32, 0.72, 0, 1);
+  --still-fast: 140ms;
+  --still-moderate: 240ms;
+  --still-peek-delay: 150ms;
+  --still-peek-width: 300px;
+  --still-peek-trigger: 6px;
+  --still-gutter: 8px;
+
+  /* Radius: one scale. Rows and controls use s, surfaces m, dialogs l.
+     Reading content (code, callouts, quotes, embeds, images) has its own
+     token, so touch layouts can round their chrome without the page. */
+  --still-r: var(--still-roundness, 1.25);
+  --still-content-radius: calc(8px * var(--still-r));
+  --radius-s: calc(8px * var(--still-r));
+  --radius-m: calc(16px * var(--still-r));
+  --radius-l: calc(24px * var(--still-r));
+  --radius-xl: calc(32px * var(--still-r));
+  /* Pill buttons once corners are rounder than 1; plain radius below. */
+  --button-radius: max(calc(8px * var(--still-r)), calc((var(--still-r) - 1) * 9999px));
+  --checkbox-radius: calc(3.2px * var(--still-r));
+  --callout-radius: var(--still-content-radius);
+  --code-radius: var(--still-content-radius);
+  --menu-radius: var(--radius-m);
+  --tab-curve: 0px;
+  --tag-radius: calc(5px * var(--still-r));
+
+  --header-height: 45px;
+  --input-height: 32px;
+  --tab-width: 200px;
+
+  /* Reading */
+  --file-line-width: var(--still-line-width, 700px);
+  --line-height-normal: var(--still-line-height, 1.625);
+  --line-height-tight: 1.3;
+  --p-spacing: var(--still-paragraph-spacing, 1.25rem);
+  --p-spacing-empty: var(--p-spacing);
+  --heading-spacing: 2.5rem;
+  --list-spacing: var(--still-list-spacing, 0.175rem);
+  --file-margins: 32px;
+  --inline-title-margin-bottom: 1rem;
+  --metadata-gap: 8px;
+  --image-radius: var(--still-content-radius);
+  --embed-padding: 16px;
+  --embed-radius: var(--still-content-radius);
+  --embed-background: var(--background-primary-alt);
+  --bold-weight: 600;
+
+  --inline-title-size: 1.5rem;
+  --inline-title-weight: 600;
+  --inline-title-line-height: 1.3;
+  --h1-size: 1.5rem;
+  --h2-size: 1.25rem;
+  --h3-size: 1rem;
+  --h4-size: 1rem;
+  --h5-size: 0.9375rem;
+  --h6-size: 0.9375rem;
+  --h1-weight: 500;
+  --h2-weight: 500;
+  --h3-weight: 500;
+  --h4-weight: 600;
+  --h5-weight: 500;
+  --h6-weight: 600;
+  --h1-letter-spacing: normal;
+  --h2-letter-spacing: normal;
+  --h3-letter-spacing: normal;
+  --h1-line-height: var(--line-height-normal);
+  --h2-line-height: var(--line-height-normal);
+  --h3-line-height: var(--line-height-normal);
+  --h4-line-height: var(--line-height-normal);
+
+  --link-decoration: none;
+  --link-external-decoration: none;
+  --link-decoration-hover: underline;
+  --link-unresolved-opacity: 0.6;
+  --link-unresolved-decoration-style: dotted;
+
+  --blockquote-border-thickness: 2px;
+  --blockquote-font-style: normal;
+  --hr-thickness: 1px;
+
+  --callout-padding: 16px;
+  --callout-border-width: 0px;
+  --callout-title-weight: 600;
+
+  --table-header-weight: 600;
+  --table-cell-padding-x: 12px;
+  --table-cell-padding-y: 7px;
+  /* Hairline rows only: core draws the outer columns' edges through these. */
+  --table-column-first-border-width: 0px;
+  --table-column-last-border-width: 0px;
+
+  --tag-padding-x: 8px;
+  --tag-padding-y: 4px;
+  --tag-size: 0.85em;
+  --tag-weight: 500;
+  --tag-border-width: 0px;
+  --tag-decoration-hover: none;
+
+  --code-size: var(--font-smallest);
+
+  --nav-item-size: 13px;
+  --nav-item-weight: 400;
+  --nav-item-padding: 8px 16px 8px 24px;
+  --nav-item-radius: var(--radius-s);
+  --nav-item-children-margin-start: 20px;
+  --nav-indentation-guide-width: 0px;
+
+  --pdf-shadow: none;
+  --scrollbar-radius: 99px;
+  --divider-width: 1px;
+}
+
+/* Core redefines these on `.mod-macos` (and on `.is-mobile` for touch), which
+   outranks `body`. Desktop gets the theme's scale here; mobile keeps core's
+   touch sizes. */
+body:not(.is-mobile) {
+  --input-radius: var(--radius-s);
+  --clickable-icon-radius: var(--radius-s);
+  --modal-radius: var(--radius-l);
+  --tab-radius: var(--radius-s);
+  --tab-radius-active: var(--radius-s);
+  --vault-profile-radius: var(--radius-s);
+  --input-shadow: inset 0 0 0 1px var(--still-hairline-strong);
+  --input-shadow-hover: inset 0 0 0 1px var(--background-modifier-border-hover);
+  --input-font-weight: 500;
+  --search-input-radius: var(--radius-s);
+  --dropdown-padding-start: var(--font-ui-small);
+  --input-corner-shape: superellipse(1.1);
+  --button-corner-shape: superellipse(1.1);
+  --search-input-corner-shape: superellipse(1.1);
+  --modal-border-width: 0px;
+  --prompt-input-height: 64px;
+
+  /* Compact controls. */
+  --toggle-width: 32px;
+  --toggle-thumb-width: 16px;
+  --toggle-s-width: 32px;
+  --toggle-s-thumb-width: 16px;
+  --toggle-s-thumb-height: 16px;
+  --slider-track-height: 2px;
+  --slider-thumb-width: 16px;
+  --slider-thumb-height: 16px;
+  --slider-thumb-radius: 16px;
+  --slider-thumb-y: -5px;
+
+  /* Settings: quiet group headings, roomy cards. */
+  --setting-group-heading-color: var(--text-muted);
+  --setting-group-heading-size: var(--font-ui-small);
+  --setting-group-heading-weight: 500;
+  --setting-items-padding-y: 16px;
+  --setting-items-radius: var(--radius-m);
+  --setting-items-border-color: var(--background-modifier-hover);
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Light — descends from the page                                          */
+/* -------------------------------------------------------------------------- */
+
+.theme-light {
+  --color-base-00: #ffffff;
+  --color-base-05: #fafafa;
+  --color-base-10: #f3f3f4;
+  --color-base-20: #eaeaeb;
+  --color-base-25: #e3e3e4;
+  --color-base-30: #dbdbdc;
+  --color-base-35: #d0d0d2;
+  --color-base-40: #bdbdc0;
+  --color-base-50: #a0a1a8;
+  --color-base-60: #8e8e90;
+  --color-base-70: #5f5f64;
+  --color-base-100: #232324;
+
+  --background-primary: var(--still-page-color, #fafafa);
+  --background-primary-alt: #eaeaeb;
+  --background-secondary: var(--still-sidebar-color, #eaeaeb);
+  --background-secondary-alt: #e3e3e4;
+  --background-modifier-hover: rgb(0 0 0 / 0.05);
+  --background-modifier-active-hover: rgb(0 0 0 / 0.08);
+  /* Translucent hairlines: over the page they read as #dbdbdc, and over a
+     translucent window they stay soft instead of turning into hard rules. */
+  --background-modifier-border: rgb(0 0 0 / 0.12);
+  --background-modifier-border-hover: rgb(0 0 0 / 0.16);
+  --background-modifier-border-focus: rgb(0 0 0 / 0.24);
+  --background-modifier-form-field: var(--background-primary);
+  --background-modifier-cover: rgb(0 0 0 / 0.28);
+
+  --text-normal: var(--still-text-color, #232324);
+  --text-muted: var(--still-muted-color, #4d4d4d);
+  --text-faint: #939393;
+
+  --interactive-normal: rgb(0 0 0 / 0.1);
+  --interactive-hover: rgb(0 0 0 / 0.15);
+
+  /* Hues: softened, so callouts and highlights sit inside the grey ladder. */
+  --color-red: #e45749;
+  --color-orange: #b76b02;
+  --color-yellow: #c18302;
+  --color-green: #50a150;
+  --color-cyan: #0d97b3;
+  --color-blue: #62afef;
+  --color-purple: #a626a4;
+  --color-pink: #e45749;
+
+  --still-hairline: rgb(0 0 0 / 0.08);
+  --still-hairline-strong: rgb(0 0 0 / 0.12);
+  --still-wash: rgb(0 0 0 / 0.04);
+  --still-raised: #ffffff;
+  --still-quote: #eaeaeb;
+  --still-page-shadow: 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 2px -1px rgb(0 0 0 / 0.07), 0 8px 8px -4px rgb(0 0 0 / 0.05), 0 24px 24px -12px rgb(0 0 0 / 0.035);
+  --still-float-shadow: 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px rgb(0 0 0 / 0.05), 0 12px 24px rgb(0 0 0 / 0.08);
+  --still-dialog-shadow: 0 0 0 1px rgb(0 0 0 / 0.06), 0 24px 64px rgb(0 0 0 / 0.16);
+
+  --code-normal: #1f2328;
+  --code-comment: #9b9a97;
+  --code-function: #0b7285;
+  --code-keyword: #9065b0;
+  --code-important: #d9480f;
+  --code-operator: #0b7285;
+  --code-property: #9a6700;
+  --code-punctuation: #6b6a66;
+  --code-string: #0f7b6c;
+  --code-tag: #c92a2a;
+  --code-value: #c2410c;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. Dark — climbs from near-black                                           */
+/* -------------------------------------------------------------------------- */
+
+.theme-dark {
+  --color-base-00: #161616;
+  --color-base-05: #191919;
+  --color-base-10: #1d1d1d;
+  --color-base-20: #202020;
+  --color-base-25: #262626;
+  --color-base-30: #313131;
+  --color-base-35: #383838;
+  --color-base-40: #454545;
+  --color-base-50: #65645f;
+  --color-base-60: #858582;
+  --color-base-70: #b3b3b0;
+  --color-base-100: #f0efed;
+
+  --background-primary: var(--still-page-color, #191919);
+  --background-primary-alt: #202020;
+  --background-secondary: var(--still-sidebar-color, #202020);
+  --background-secondary-alt: #282828;
+  --background-modifier-hover: rgb(255 255 255 / 0.05);
+  --background-modifier-active-hover: rgb(255 255 255 / 0.08);
+  --background-modifier-border: rgb(255 255 255 / 0.1);
+  --background-modifier-border-hover: rgb(255 255 255 / 0.14);
+  --background-modifier-border-focus: rgb(255 255 255 / 0.24);
+  --background-modifier-form-field: #202020;
+  --background-modifier-cover: rgb(0 0 0 / 0.5);
+
+  --text-normal: var(--still-text-color, #f0efed);
+  --text-muted: var(--still-muted-color, #ababab);
+  --text-faint: #7a7a7a;
+
+  --interactive-normal: #292929;
+  --interactive-hover: #313131;
+
+  --color-red: #e56458;
+  --color-orange: #d5803b;
+  --color-yellow: #d8a32f;
+  --color-green: #46a171;
+  --color-cyan: #37a4b4;
+  --color-blue: #2783de;
+  --color-purple: #b577d6;
+  --color-pink: #db6999;
+
+  --still-hairline: rgb(255 255 255 / 0.07);
+  --still-hairline-strong: rgb(255 255 255 / 0.11);
+  --still-wash: rgb(255 255 255 / 0.045);
+  --still-raised: #262626;
+  --still-quote: #202020;
+  /* Drop shadows don't read on dark: lift with a lit edge instead. */
+  --still-page-shadow: 0 0 0 1px rgb(255 255 255 / 0.07), 0 2px 2px -1px rgb(0 0 0 / 0.1), 0 8px 8px -4px rgb(0 0 0 / 0.1), 0 24px 24px -12px rgb(0 0 0 / 0.07);
+  --still-float-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.08), 0 10px 32px rgb(0 0 0 / 0.4);
+  --still-dialog-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.08), 0 24px 72px rgb(0 0 0 / 0.5);
+
+  --code-normal: #c9d1d9;
+  --code-comment: #6a737d;
+  --code-function: #7ec9d8;
+  --code-keyword: #c792ea;
+  --code-important: #f087bd;
+  --code-operator: #7ec9d8;
+  --code-property: #e2c08d;
+  --code-punctuation: #a8a8a8;
+  --code-string: #a5d6a7;
+  --code-tag: #f087bd;
+  --code-value: #ffab70;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Derived tokens                                                          */
+/* -------------------------------------------------------------------------- */
+
+body {
+  --divider-color: var(--still-hairline);
+  --divider-color-hover: var(--still-hairline-strong);
+
+  --link-color: var(--still-link-color, var(--text-accent));
+  --link-color-hover: var(--still-link-color, var(--text-accent-hover));
+  --link-external-color: var(--still-link-color, var(--text-accent));
+  --link-external-color-hover: var(--still-link-color, var(--text-accent-hover));
+
+  --icon-color: var(--text-muted);
+  --icon-color-hover: var(--text-normal);
+  --icon-color-active: var(--text-normal);
+  --icon-color-focused: var(--text-normal);
+
+  --nav-item-color: var(--text-muted);
+  --nav-item-color-hover: var(--text-normal);
+  --nav-item-color-active: var(--text-normal);
+  --nav-item-background-hover: var(--background-modifier-hover);
+  --nav-item-background-active: var(--background-modifier-hover);
+  --nav-item-background-selected: color-mix(in srgb, var(--interactive-accent) 14%, transparent);
+  --nav-collapse-icon-color: var(--text-muted);
+  --nav-collapse-icon-color-collapsed: var(--text-muted);
+
+  --tab-container-background: var(--background-secondary);
+  --tab-background-active: var(--background-modifier-hover);
+  --tab-text-color: var(--text-faint);
+  --tab-text-color-active: var(--text-normal);
+  --tab-text-color-focused: var(--text-faint);
+  --tab-text-color-focused-active: var(--text-normal);
+  --tab-text-color-focused-active-current: var(--text-normal);
+  --tab-outline-color: transparent;
+  --tab-outline-width: 0px;
+  --tab-divider-color: transparent;
+
+  --titlebar-background: var(--background-secondary);
+  --titlebar-background-focused: var(--background-secondary);
+  --ribbon-background: var(--background-secondary);
+  --ribbon-background-collapsed: var(--background-secondary);
+  --status-bar-background: var(--background-secondary);
+  --status-bar-border-width: 0px;
+
+  --button-shadow: none;
+
+  --blockquote-border-color: var(--background-modifier-border-hover);
+  --blockquote-background-color: var(--still-quote);
+  --blockquote-color: var(--text-normal);
+  --hr-color: var(--background-modifier-border);
+  --table-border-color: var(--background-modifier-border);
+  --table-header-background: transparent;
+  --table-header-background-hover: transparent;
+  --table-row-background-hover: var(--background-modifier-hover);
+  --tag-background: color-mix(in oklch, var(--color-accent) 10%, transparent);
+  --tag-background-hover: color-mix(in oklch, var(--color-accent) 20%, transparent);
+  --tag-color: var(--text-accent);
+  --tag-color-hover: var(--text-accent-hover);
+  --embed-border-start: 2px solid var(--still-hairline-strong);
+  --metadata-border-color: transparent;
+  --metadata-label-text-color: var(--text-muted);
+  --list-marker-color: var(--still-list-marker-color, var(--text-faint));
+  --list-marker-color-hover: var(--text-muted);
+  --checkbox-color: var(--still-checkbox-color, var(--interactive-accent));
+  --checkbox-color-hover: var(--still-checkbox-color, var(--interactive-accent-hover));
+  --indentation-guide-width: 0px;
+  --indentation-guide-color: var(--still-hairline-strong);
+  --indentation-guide-color-active: var(--background-modifier-border-hover);
+  --code-background: var(--background-secondary);
+  --h4-color: var(--text-muted);
+  --h6-color: var(--text-muted);
+
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: var(--still-hairline-strong);
+  --scrollbar-active-thumb-bg: var(--background-modifier-border-focus);
+
+  --graph-line: var(--still-hairline-strong);
+  --graph-node: var(--text-muted);
+  --graph-node-unresolved: var(--text-faint);
+  --graph-node-focused: var(--interactive-accent);
+  --graph-node-tag: var(--text-faint);
+  --graph-node-attachment: var(--text-faint);
+}
+
+/* ========================================================================== */
+/* 5. Typography                                                              */
+/* ========================================================================== */
+
+/* Quieter glyphs: back and forward arrows read as chevrons, and the pencil
+   and closed folder lose their extra stroke. */
+.lucide-arrow-left path[d="M19 12H5"],
+.lucide-arrow-right path[d="M5 12h14"],
+.lucide-edit-3 path[d="M13 21h8"],
+.lucide-folder-closed path[d="M2 10h20"] {
+  display: none;
+}
+
+.lucide-arrow-left path[d="m12 19-7-7 7-7"] {
+  transform: translateX(2px);
+}
+
+.lucide-arrow-right path[d="m12 5 7 7-7 7"] {
+  transform: translateX(-2px);
+}
+
+body {
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+.markdown-rendered a,
+.cm-hmd-internal-link,
+.cm-link {
+  text-underline-offset: 3px;
+}
+
+.inline-title:not([data-level]) {
+  letter-spacing: normal;
+}
+
+body.still-centered-title .inline-title {
+  text-align: center;
+}
+
+/* Option: CJK typography. Han text set against Latin words and digits gets
+   the customary eighth-em gap even where none was typed (a typed space is
+   left alone), and an opening bracket at the start of a line sits flush
+   when the font supports it. The gap is drawn by the browser, so the note's
+   text never changes. Code keeps its exact spacing. Reading view also keeps
+   a lone character off the last line of a paragraph; the editor doesn't,
+   so lines never reflow behind the caret while typing. The line height
+   opens to 1.75 for denser Han glyphs, and the Line height slider still
+   wins. */
+body.still-cjk {
+  --line-height-normal: var(--still-line-height, 1.75);
+}
+
+body.still-cjk :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content, .inline-title) {
+  text-autospace: normal;
+  text-spacing-trim: trim-start;
+}
+
+body.still-cjk :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) :is(code, pre, kbd, .cm-inline-code, .HyperMD-codeblock) {
+  text-autospace: no-autospace;
+}
+
+body.still-cjk .markdown-rendered :is(p, li, td, th, .callout-content) {
+  text-wrap-style: pretty;
+}
+
+body.still-cjk .markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+  text-wrap-style: balance;
+}
+
+/* Option: justified paragraphs, as Chinese typesetting expects. Chromium
+   spreads Han text between characters and Latin text between words, and
+   the last line of a paragraph stays at the start. Headings, code and table
+   rows keep their own alignment. */
+body.still-justify .markdown-rendered :is(p, li),
+body.still-justify .markdown-source-view.mod-cm6 .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row) {
+  text-align: justify;
+}
+
+/* ========================================================================== */
+/* 6. Workspace chrome                                                        */
+/* ========================================================================== */
+
+.workspace-ribbon,
+.workspace-sidedock-vault-profile {
+  border: 0;
+}
+
+/* A divider is a drag affordance, not a permanent rule. */
+body:not(.is-mobile) .mod-sidedock > .workspace-leaf-resize-handle:not(:hover) {
+  border-color: transparent;
+}
+
+.view-header {
+  flex-shrink: 0;
+  height: var(--header-height);
+  padding-inline: 8px;
+  border-bottom: 0;
+}
+
+.view-header-title-container {
+  justify-content: center;
+}
+
+.view-header-title-parent {
+  color: var(--text-faint);
+}
+
+.view-header-title {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  font-weight: 500;
+}
+
+/* The header title stays out of the way until the pointer reaches it. */
+body:not(.still-header-title):not(.is-mobile) .view-header-title-container {
+  opacity: 0;
+  transition: opacity var(--still-fast) var(--still-ease-out);
+}
+
+body:not(.still-header-title):not(.is-mobile) .view-header:hover .view-header-title-container,
+body:not(.still-header-title):not(.is-mobile) .view-header-title-container:focus-within {
+  opacity: 1;
+}
+
+.status-bar {
+  border: 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-variant-numeric: tabular-nums;
+}
+
+.status-bar-item.mod-clickable:hover {
+  border-radius: var(--radius-s);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Floating page: beside an open sidebar the page lifts off the frame as a    */
+/* card. Collapsed sidebars give the page the full window.                    */
+/* -------------------------------------------------------------------------- */
+
+body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root {
+  gap: var(--still-gutter);
+  padding-bottom: var(--still-gutter);
+  background-color: var(--background-secondary);
+}
+
+body:not(.is-mobile):not(.still-flat-page) .workspace.is-left-sidedock-open:not(.is-right-sidedock-open) .mod-root {
+  margin-right: var(--still-gutter);
+}
+
+body:not(.is-mobile):not(.still-flat-page) .workspace.is-right-sidedock-open:not(.is-left-sidedock-open) .mod-root {
+  margin-left: var(--still-gutter);
+}
+
+body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-split {
+  gap: var(--still-gutter);
+}
+
+body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-tab-container {
+  border-radius: var(--radius-s);
+  box-shadow: var(--still-page-shadow);
+}
+
+body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-leaf-resize-handle {
+  border-color: transparent;
+}
+
+/* ========================================================================== */
+/* 7. Tabs — floating                                                         */
+/* ========================================================================== */
+
+.workspace-tab-header-container {
+  border-bottom: 0;
+}
+
+.workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner {
+  gap: 4px;
+  align-items: center;
+}
+
+.workspace-tabs:not(.mod-stacked) .workspace-tab-header::before,
+.workspace-tabs:not(.mod-stacked) .workspace-tab-header::after,
+.workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner::after {
+  display: none;
+}
+
+.workspace-tab-header {
+  transition: background-color var(--still-fast) var(--still-ease-out),
+    color var(--still-fast) var(--still-ease-out);
+}
+
+.workspace-tab-header:not(.is-active):hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.workspace-tab-header-inner-title {
+  font-size: var(--font-ui-small);
+}
+
+.workspace-tab-header-inner-close-button {
+  border-radius: var(--radius-s);
+}
+
+/* Main tab strip: equal floating tabs with centered titles. */
+.workspace .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+  flex: 0 1 var(--tab-width);
+  width: var(--tab-width);
+  min-width: 0;
+  height: calc(var(--header-height) - 16px);
+  padding: 0;
+  border-radius: var(--tab-radius);
+  box-shadow: none;
+}
+
+.mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner {
+  padding: 0 8px 0 12px;
+  gap: 6px;
+}
+
+.mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner-title {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header.is-active {
+  background-color: var(--tab-background-active);
+}
+
+/* Option: tabs sized to their titles. Core's inline-size containment makes
+   a tab ignore its title width, so it is reset here. */
+body.still-tabs-fit .workspace .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+  flex: 0 1 auto;
+  width: max-content;
+  max-width: 220px;
+  container-type: normal;
+}
+
+body.still-tabs-fit .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner-title {
+  width: auto;
+  text-align: start;
+}
+
+/* Centered strip. `safe` falls back to start alignment when tabs overflow,
+   so a crowded strip still scrolls from its first tab. */
+body:not(.still-tabs-left):not(.is-phone) .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner {
+  flex: 1 1 auto;
+  justify-content: safe center;
+}
+
+body:not(.still-tabs-left):not(.is-phone) .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-spacer {
+  display: none;
+}
+
+/* Balance the actions on the right (new tab, tab list and, when the right
+   sidebar is closed, its toggle) so the tabs center on the page. */
+body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space):not(.mod-top-right-space) .workspace-tab-header-container-inner {
+  padding-inline-start: 64px;
+}
+
+body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space).mod-top-right-space .workspace-tab-header-container-inner {
+  padding-inline-start: 96px;
+}
+
+/* Close glyph appears on hover for a fine pointer; keyboard and touch keep it. */
+@media (hover: hover) and (pointer: fine) {
+  body:not(.is-mobile) .workspace-tab-header:not(.is-active):not(:hover):not(:focus-within) .workspace-tab-header-inner-close-button {
+    opacity: 0;
+  }
+}
+
+/* Chrome icon buttons share one 32px hit area. Scoped to Obsidian's own
+   bars so plugin buttons keep the padding their authors chose. */
+body:not(.is-mobile) :is(.view-header, .sidebar-toggle-button, .workspace-drawer-vault-actions, .nav-buttons-container) .clickable-icon {
+  padding: 8px;
+}
+
+body:not(.is-mobile) .sidebar-toggle-button .clickable-icon {
+  min-width: 32px;
+}
+
+/* Tab-bar actions (new tab, tab list) get the same 32px hit area as the
+   rest of the chrome. */
+body:not(.is-mobile) .mod-root :is(.workspace-tab-header-new-tab, .workspace-tab-header-tab-list) {
+  margin: 0;
+}
+
+body:not(.is-mobile) .mod-root :is(.workspace-tab-header-new-tab, .workspace-tab-header-tab-list) > .clickable-icon {
+  padding: 8px;
+}
+
+/* Sidebar tab bars: quiet icon tiles with room between them. */
+.mod-sidedock .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner {
+  gap: 8px;
+}
+
+/* Sidebar tab bars: quiet icon tiles. */
+.mod-sidedock .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+  height: calc(var(--header-height) - 16px);
+  border-radius: var(--radius-s);
+}
+
+.mod-sidedock .workspace-tab-header.is-active {
+  background-color: var(--background-modifier-hover);
+  box-shadow: none;
+}
+
+/* Inactive sidebar tab icons sit a step lighter than the other chrome icons,
+   so the active tab reads at a glance. Hover and active keep the usual
+   icon colors. */
+.mod-sidedock .workspace-tab-header:not(.is-active):not(:hover) {
+  --icon-color: var(--text-faint);
+}
+
+/* ========================================================================== */
+/* 8. Navigation                                                              */
+/* ========================================================================== */
+
+/* Sidebar views sit on an 8px gutter; their own headers drop theirs. */
+body:not(.is-mobile) .mod-sidedock .workspace-leaf-content > .view-content {
+  padding: 0 8px 8px;
+}
+
+body:not(.is-mobile) .mod-sidedock .view-content .nav-header {
+  padding-inline: 0;
+}
+
+.nav-header {
+  padding: 8px 16px;
+}
+
+.nav-header .search-input-container {
+  margin-block: 8px;
+}
+
+.nav-files-container {
+  padding-top: 0;
+  padding-inline: 8px;
+}
+
+.tree-item-self {
+  border-radius: var(--radius-s);
+  transition: background-color var(--still-fast) var(--still-ease-out),
+    color var(--still-fast) var(--still-ease-out);
+}
+
+.tree-item-self.is-clickable:active {
+  background-color: var(--background-modifier-active-hover);
+}
+
+/* Folders carry the structure in weight; files stay regular. */
+.nav-folder-title {
+  --nav-item-weight: 600;
+  --nav-item-weight-hover: 600;
+}
+
+.nav-folder-title .collapse-icon svg.svg-icon {
+  width: 12px;
+  height: 12px;
+  transition: transform var(--still-moderate) var(--still-glide);
+}
+
+.nav-file-tag {
+  background-color: transparent;
+  color: var(--text-faint);
+}
+
+.tree-item-flair {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.nav-buttons-container {
+  gap: 2px;
+}
+
+.clickable-icon {
+  transition: background-color var(--still-fast) var(--still-ease-out),
+    color var(--still-fast) var(--still-ease-out);
+}
+
+.clickable-icon:active {
+  background-color: var(--background-modifier-active-hover);
+}
+
+.search-result-file-match {
+  border-radius: var(--radius-s);
+}
+
+/* Option: outline guides. Core's own indentation guide, a hairline per
+   heading level, in the outline view only; the branch under the heading the
+   pointer is on darkens, so a long outline reads as a tree. */
+body.still-outline-guides .workspace-leaf-content[data-type="outline"] {
+  --nav-indentation-guide-width: 1px;
+  --nav-indentation-guide-color: var(--still-hairline-strong);
+}
+
+body.still-outline-guides .workspace-leaf-content[data-type="outline"] .tree-item-children {
+  transition: border-color var(--still-fast) var(--still-ease-out);
+}
+
+body.still-outline-guides .workspace-leaf-content[data-type="outline"] .tree-item-self:hover + .tree-item-children {
+  border-inline-start-color: var(--text-faint);
+}
+
+/* Option: quiet sidebar toolbar. Buttons rest as a short row of dots. On
+   hover or keyboard focus the dots open from the centre into tiles and the
+   icons surface one after another, left to right; leaving folds them back,
+   quicker than they came. The row keeps one height in both states, so the
+   search field and the tree never move. Only the small buttons inside the
+   row change size; icons animate opacity and scale only. */
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child {
+  --still-nav-tile: 28px;
+  --still-nav-dot: 4px;
+  --still-nav-open: 260ms;
+  --still-nav-close: 180ms;
+  padding-top: 4px;
+}
+
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .search-input-container {
+  margin-top: 4px;
+}
+
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-buttons-container {
+  height: var(--still-nav-tile);
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Opening: a short intent delay so a pointer passing through doesn't fire
+   it, then the tiles glide open. */
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-action-button {
+  flex: 0 1 auto;
+  width: var(--still-nav-tile);
+  min-width: 0;
+  height: var(--still-nav-tile);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  transition: width var(--still-nav-open) var(--still-glide) 60ms,
+    height var(--still-nav-open) var(--still-glide) 60ms,
+    border-radius var(--still-nav-open) var(--still-glide) 60ms,
+    background-color var(--still-fast) var(--still-ease-out);
+}
+
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-action-button svg {
+  flex: none;
+  transition: opacity 200ms var(--still-ease-out) var(--still-nav-icon-delay, 140ms),
+    transform 280ms var(--still-glide) var(--still-nav-icon-delay, 140ms);
+}
+
+/* Icons surface left to right. */
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-action-button:nth-child(2) { --still-nav-icon-delay: 160ms; }
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-action-button:nth-child(3) { --still-nav-icon-delay: 180ms; }
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-action-button:nth-child(4) { --still-nav-icon-delay: 200ms; }
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-action-button:nth-child(5) { --still-nav-icon-delay: 220ms; }
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-action-button:nth-child(n+6) { --still-nav-icon-delay: 240ms; }
+
+/* At rest: dots. Closing runs the other way round: icons fade first, then
+   the tiles fold into dots. */
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child:not(:hover):not(:focus-within) .nav-action-button {
+  width: var(--still-nav-dot);
+  height: var(--still-nav-dot);
+  border-radius: 999px;
+  background-color: var(--background-modifier-border);
+  transition: width var(--still-nav-close) var(--still-glide) 60ms,
+    height var(--still-nav-close) var(--still-glide) 60ms,
+    border-radius var(--still-nav-close) var(--still-glide) 60ms,
+    background-color var(--still-nav-close) var(--still-ease-out) 60ms;
+}
+
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child:not(:hover):not(:focus-within) .nav-action-button.is-active {
+  background-color: var(--text-faint);
+}
+
+body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child:not(:hover):not(:focus-within) .nav-action-button svg {
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 90ms var(--still-ease-out), transform 120ms var(--still-ease-out);
+}
+
+/* Option: quiet vault switcher. The profile floats over the sidebar's foot
+   and lets the pointer through, except on its buttons; reaching a button
+   reveals the vault name. */
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  border-top: 0;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile .clickable-icon {
+  pointer-events: auto;
+}
+
+/* Help stays one keypress away (F1 or the command palette); the vault foot
+   keeps only Settings. */
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-drawer-vault-actions .clickable-icon:first-child {
+  display: none;
+}
+
+/* Room under the last row so the floating foot never covers it. */
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-leaf-content > :is(.view-content, .node-insert-event) {
+  padding-bottom: 64px;
+}
+
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile .workspace-drawer-vault-switcher {
+  transition: opacity var(--still-fast) var(--still-ease-out);
+}
+
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:not(:hover) .workspace-drawer-vault-switcher:not(.has-active-menu) {
+  opacity: 0;
+}
+
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:hover .workspace-drawer-vault-switcher {
+  pointer-events: auto;
+}
+
+/* ========================================================================== */
+/* 9. Sidebar peek                                                            */
+/*    A collapsed sidebar parks just off-screen and slides in when the        */
+/*    pointer rests on a thin trigger strip at the edge. Obsidian writes      */
+/*    `display: none; width: 0` inline on collapsed sidebars, so display and  */
+/*    width need !important here. The left ribbon is `.mod-primary`.          */
+/* ========================================================================== */
+
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"] {
+  --still-peek-offset: 0px;
+  display: flex !important;
+  width: var(--still-peek-width) !important;
+  position: absolute;
+  inset-block: 0;
+  z-index: 11;
+  opacity: 0;
+  /* Parked, only the trigger strip below takes the pointer, so the hidden
+     panel never blocks what sits under it. */
+  pointer-events: none;
+  transition: transform var(--still-moderate) var(--still-glide),
+    opacity var(--still-moderate) var(--still-glide);
+}
+
+/* A ribbon that stays in the layout keeps its column: the trigger sits on
+   the ribbon's edge and the panel opens beside it. */
+body.show-ribbon:not(.still-peek-ribbon):not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-left-split {
+  --still-peek-offset: var(--ribbon-width);
+}
+
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-left-split {
+  left: 0;
+  right: auto;
+  transform: translateX(calc(var(--still-peek-offset) + var(--still-peek-trigger) - 100%));
+}
+
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-right-split {
+  left: auto;
+  right: 0;
+  transform: translateX(calc(100% - var(--still-peek-trigger)));
+}
+
+/* Core hides collapsed sidebar content in translucent windows; peek needs it. */
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"] > .workspace-tabs {
+  visibility: visible;
+}
+
+/* The panel surface sits on a pseudo-element: opaque under the whole panel
+   so page content never shows through the file tree, whatever background a
+   translucency snippet puts on the sidebar itself. */
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--background-secondary);
+  box-shadow: var(--still-float-shadow);
+}
+
+/* Option: soft peek. The panel stays opaque under its own content, then
+   feathers out past the edge that faces the page, so the file tree reads as
+   part of the page rather than a slab laid over it. No filters: the fade is a
+   plain gradient on the same pseudo-element. */
+body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"] {
+  --still-peek-fade: 144px;
+}
+
+body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]::before {
+  box-shadow: none;
+}
+
+body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-left-split::before {
+  right: calc(-1 * var(--still-peek-fade));
+  background: linear-gradient(to right,
+    var(--background-primary) calc(100% - var(--still-peek-fade)),
+    color-mix(in srgb, var(--background-primary) 80%, transparent) calc(100% - var(--still-peek-fade) * 0.7),
+    color-mix(in srgb, var(--background-primary) 35%, transparent) calc(100% - var(--still-peek-fade) * 0.35),
+    transparent);
+}
+
+body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-right-split::before {
+  left: calc(-1 * var(--still-peek-fade));
+  background: linear-gradient(to left,
+    var(--background-primary) calc(100% - var(--still-peek-fade)),
+    color-mix(in srgb, var(--background-primary) 80%, transparent) calc(100% - var(--still-peek-fade) * 0.7),
+    color-mix(in srgb, var(--background-primary) 35%, transparent) calc(100% - var(--still-peek-fade) * 0.35),
+    transparent);
+}
+
+/* The trigger strip, on the panel edge that faces the page. */
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: var(--still-peek-trigger);
+  pointer-events: auto;
+}
+
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-left-split::after {
+  right: 0;
+}
+
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-right-split::after {
+  left: 0;
+}
+
+/* Open: on hover, while a view inside has focus, or with the ribbon. The
+   panel moves from its parked edge outward, so the pointer stays on it for
+   the whole slide. Focus, not the active leaf: a leaf in the collapsed
+   sidebar stays active after the pointer leaves, which held the panel open. */
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]:hover,
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]:focus-within,
+body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:hover + .mod-sidedock.is-sidedock-collapsed[style*="display"] {
+  transform: translateX(var(--still-peek-offset));
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: var(--still-peek-delay);
+}
+
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]:is(:hover, :focus-within)::after,
+body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:hover + .mod-sidedock.is-sidedock-collapsed[style*="display"]::after {
+  pointer-events: none;
+}
+
+/* Frameless windows: clear the window controls in the panel header, with
+   the same spacing core gives an open sidebar. */
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .mod-sidedock.mod-left-split.is-sidedock-collapsed[style*="display"] > .workspace-tabs:first-child .workspace-tab-header-container {
+  padding-left: calc(var(--size-4-2) + var(--frame-left-space));
+}
+
+body.is-hidden-frameless:not(.mod-macos):not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .mod-sidedock.mod-right-split.is-sidedock-collapsed[style*="display"] > .workspace-tabs:first-child .workspace-tab-header-container {
+  padding-right: var(--frame-right-space);
+}
+
+/* The peek panel must not act as a window drag region. */
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed .workspace-tab-header-container {
+  app-region: no-drag;
+}
+
+/* Option: auto-hide ribbon. It parks at the left edge and opens together
+   with a collapsed left sidebar, as one drawer. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  z-index: 13;
+  opacity: 0;
+  background-color: var(--background-secondary);
+  transform: translateX(calc(var(--still-peek-trigger) - 100%));
+  transition: transform var(--still-moderate) var(--still-glide),
+    opacity var(--still-moderate) var(--still-glide);
+}
+
+/* A translucency snippet repaints .workspace-ribbon with a near-clear tint
+   (!important), so the background above never survives. Revealed beside a
+   collapsed sidebar, the ribbon floats over the page, so it needs a surface.
+   It goes on a pseudo-element the snippet's selectors don't reach, the same
+   way the peek panel does it, with a short feather on the edge facing the
+   page. Beside an open sidebar the ribbon has no surface: the sidebar makes
+   room for it instead (below). The surface takes the peek panel's color, so
+   ribbon and panel read as one drawer, as in Baseline. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary.is-collapsed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to right, var(--still-ribbon-surface, var(--background-secondary)) calc(100% - 10px), transparent);
+}
+
+body.still-peek-soft.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary.is-collapsed {
+  --still-ribbon-surface: var(--background-primary);
+}
+
+/* Revealed by its own edge, or alongside a peeking left sidebar. The
+   sibling check is a direct-sibling :has() on one element, so it stays
+   cheap to match. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:hover,
+body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:has(+ .mod-sidedock.is-sidedock-collapsed[style*="display"]:hover) {
+  opacity: 1;
+  transform: none;
+  transition-delay: var(--still-peek-delay);
+}
+
+body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .mod-sidedock.mod-left-split.is-sidedock-collapsed[style*="display"] {
+  padding-left: var(--ribbon-width);
+}
+
+/* An open left sidebar makes room while the ribbon is out: its content
+   slides right by the ribbon's width (less an 8px overlap) and slides back
+   when the pointer leaves, so icons never sit on the file tree. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
+  transition: padding-left var(--still-moderate) var(--still-glide);
+}
+
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:hover + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
+  padding-left: calc(var(--ribbon-width) - 8px);
+  transition-delay: var(--still-peek-delay);
+}
+
+/* macOS: core sizes the traffic-light gap assuming the ribbon fills the
+   corner. A parked ribbon leaves the corner empty, so add its width back.
+   While an open sidebar is shifted for the ribbon, the header gives back the
+   same amount, so the window controls and toolbar stay where they are. */
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
+  padding-left: calc(var(--size-4-2) + var(--frame-left-space) + var(--ribbon-width));
+  transition: padding-left var(--still-moderate) var(--still-glide);
+}
+
+/* Inside the open sidebar the header takes the sidebar's own transition, so
+   the two always move together: a translucency snippet that switches the
+   sidebar's transition off with !important would otherwise leave the header
+   sliding back after the sidebar had already jumped. */
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs.mod-top-left-space,
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs.mod-top-left-space > .workspace-tab-header-container {
+  transition: inherit;
+}
+
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .workspace-ribbon.mod-primary:hover + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
+  padding-left: calc(var(--size-4-2) + var(--frame-left-space) + 8px);
+  transition-delay: var(--still-peek-delay);
+}
+
+/* Ribbon tiles follow Baseline: 32px hit areas 4px apart, 12px from the
+   window edge, starting flush under the header line. Icons at full opacity,
+   as in Baseline, so they hold their own beside the file tree's text. */
+body:not(.is-mobile) .workspace-ribbon.mod-primary {
+  --icon-opacity: 1;
+  padding: 0 4px 12px 12px;
+}
+
+body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-actions {
+  gap: 4px;
+}
+
+body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 8px;
+}
+
+/* ========================================================================== */
+/* 10. Controls                                                               */
+/* ========================================================================== */
+
+/* Element-level control styles sit in :where() so they carry no
+   specificity: any plugin that styles its own buttons or inputs (Crisp
+   Reading Rail's heading labels are plain <button>s) wins outright. The
+   button frame itself comes from core via --input-shadow. */
+:where(
+  input[type="text"],
+  input[type="search"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="url"],
+  textarea,
+  select,
+  .dropdown
+):focus {
+  box-shadow: inset 0 0 0 1px var(--interactive-accent),
+    0 0 0 3px color-mix(in srgb, var(--interactive-accent) 16%, transparent);
+}
+
+:where(button:not(.clickable-icon)) {
+  font-weight: 500;
+  transition: background-color var(--still-fast) var(--still-ease-out),
+    box-shadow var(--still-fast) var(--still-ease-out);
+}
+
+:where(button, .clickable-icon, [role="button"]):focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+.checkbox-container,
+.checkbox-container::after {
+  transition: background-color var(--still-moderate) var(--still-glide),
+    transform var(--still-moderate) var(--still-glide);
+}
+
+/* ========================================================================== */
+/* 11. Floating surfaces                                                      */
+/* ========================================================================== */
+
+.menu,
+.suggestion-container,
+.popover,
+.notice {
+  background-color: var(--still-raised);
+  border: 0;
+  box-shadow: var(--still-float-shadow);
+}
+
+.menu {
+  padding: 4px;
+}
+
+.menu-item {
+  border-radius: var(--radius-s);
+  padding: 5px 8px;
+  font-size: var(--font-ui-small);
+}
+
+.menu-separator {
+  margin: 4px;
+  border-color: var(--still-hairline);
+}
+
+.menu-group-title,
+.menu-item-title.mod-group {
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  font-weight: 500;
+}
+
+.suggestion-container {
+  padding: 4px;
+  border-radius: var(--menu-radius);
+}
+
+.suggestion-item {
+  border-radius: var(--radius-s);
+}
+
+.popover.hover-popover {
+  border-radius: var(--radius-m);
+}
+
+.notice {
+  color: var(--text-normal);
+  border-radius: var(--radius-m);
+}
+
+.tooltip {
+  border-radius: var(--radius-s);
+  font-size: var(--font-ui-smaller);
+  padding: 5px 9px;
+}
+
+.modal,
+.prompt {
+  background-color: var(--still-raised);
+  border: 0;
+  border-radius: var(--modal-radius);
+  box-shadow: var(--still-dialog-shadow);
+}
+
+/* A dialog that is its own window: the window is the frame. */
+body.is-popout-modal .modal {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.modal-title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.prompt-input-container {
+  border-bottom: 1px solid var(--still-hairline);
+}
+
+.prompt-input-container input.prompt-input {
+  background: transparent;
+  box-shadow: none;
+}
+
+.prompt-results {
+  padding: 4px;
+}
+
+.prompt-results .suggestion-item {
+  padding: 7px 10px;
+}
+
+.prompt-instructions {
+  border-top: 1px solid var(--still-hairline);
+  color: var(--text-faint);
+}
+
+/* Core turns settings dropdowns into right-aligned text with a round arrow
+   chip on macOS; keep them as plain filled fields like everywhere else. */
+body:not(.is-mobile) .modal.mod-settings {
+  --dropdown-background: var(--interactive-normal);
+  --dropdown-icon-background: transparent;
+  --dropdown-text-align: start;
+}
+
+/* Settings sidebar: roomy rows on the window's own ground. */
+.modal.mod-sidebar-layout .vertical-tab-header {
+  border-right: 0;
+  background-color: transparent;
+}
+
+body:not(.is-phone) .modal.mod-sidebar-layout :is(.vertical-tab-header-group-title, .vertical-tab-nav-item) {
+  padding: 8px 12px;
+  align-items: center;
+  font-size: var(--font-ui-small);
+  line-height: normal;
+  border-radius: var(--radius-s);
+}
+
+body:not(.is-phone) .modal.mod-sidebar-layout .vertical-tab-nav-item:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.modal.mod-sidebar-layout .vertical-tab-nav-item-icon {
+  color: inherit;
+}
+
+.setting-item {
+  border-top-color: var(--still-hairline);
+}
+
+.setting-item-description {
+  padding-top: 0;
+}
+
+.checkbox-container,
+.checkbox-container::after {
+  box-shadow: none;
+}
+
+/* Settings in its own window (Obsidian 1.14): the title text goes, the
+   window controls sit inside a taller bar, and the sidebar runs to the top
+   under them. */
+body.is-frameless.is-popout-modal:not(.is-mobile) {
+  --titlebar-height: 40px;
+  --traffic-lights-offset-x: 48px;
+  --traffic-lights-offset-y: 56px;
+}
+
+/* Core pads the window body by the titlebar height; the bar now floats. */
+body.is-frameless.is-hidden-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) {
+  padding-top: 0;
+}
+
+body.is-frameless.is-popout-modal:not(.is-mobile) .titlebar {
+  z-index: 1;
+  border: 0;
+  background-color: transparent;
+}
+
+body.is-frameless.is-popout-modal:not(.is-mobile) .titlebar-text {
+  display: none;
+}
+
+body.is-frameless.is-popout-modal.mod-macos:not(.is-mobile) .vertical-tab-header {
+  padding-top: var(--titlebar-height);
+}
+
+body.is-frameless.is-popout-modal:not(.is-mobile) .community-modal-search {
+  margin-left: var(--frame-left-space);
+}
+
+/* Browse windows use the same floating titlebar as Settings, but their
+   search and sort controls must sit below its native drag region. */
+body.is-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) > .modal.mod-community-modal {
+  padding-top: var(--titlebar-height);
+}
+
+.community-item {
+  border-radius: var(--radius-m);
+  border-color: var(--still-hairline);
+}
+
+/* Entrance: a fade with a short rise; opacity and transform only. */
+@keyframes still-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.985);
+  }
+}
+
+@keyframes still-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+}
+
+body:not(.still-motion-off):not(.is-mobile) :is(.menu, .suggestion-container, .popover.hover-popover) {
+  animation: still-pop var(--still-fast) var(--still-ease-out);
+  transform-origin: top center;
+}
+
+body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-container :is(.modal, .prompt) {
+  animation: still-rise 200ms var(--still-ease-out);
+}
+
+/* ========================================================================== */
+/* 12. Content                                                                */
+/* ========================================================================== */
+
+.markdown-rendered code,
+.cm-s-obsidian span.cm-inline-code {
+  border-radius: calc(4px * var(--still-r));
+  padding: 0.12em 0.36em;
+}
+
+.markdown-rendered pre {
+  border: 1px solid var(--still-hairline);
+  border-radius: var(--code-radius);
+  padding: 0.9em 1.1em;
+}
+
+/* Quotes: a block on its own ground with an inset accent bar. */
+.markdown-rendered blockquote {
+  position: relative;
+  border-inline-start: 0;
+  border-radius: var(--still-content-radius);
+  background-color: var(--blockquote-background-color);
+  padding-block: 16px;
+  padding-inline: calc(var(--blockquote-border-thickness) + 32px) 16px;
+}
+
+.markdown-rendered blockquote::before {
+  content: "";
+  position: absolute;
+  inset-block: 16px;
+  inset-inline-start: 16px;
+  width: var(--blockquote-border-thickness);
+  border-radius: 99px;
+  background-color: var(--blockquote-border-color);
+}
+
+.markdown-rendered blockquote > blockquote {
+  background-color: transparent;
+  padding-block: 0;
+  padding-inline: calc(var(--blockquote-border-thickness) + 16px) 0;
+}
+
+.markdown-rendered blockquote > blockquote::before {
+  inset-block: 0;
+  inset-inline-start: 0;
+}
+
+/* Tables: hairline rows, tabular numbers. */
+.markdown-rendered table {
+  font-variant-numeric: tabular-nums;
+}
+
+.markdown-rendered th {
+  color: var(--text-normal);
+}
+
+.markdown-rendered :is(th, td) {
+  border-inline-width: 0;
+}
+
+/* Callouts: a wash of the callout hue, no frame. Since Obsidian 1.13 the
+   callout color is a full color value, so color-mix is used. */
+.callout {
+  background-color: color-mix(in srgb, var(--callout-color) 8%, transparent);
+}
+
+.callout-title {
+  gap: 8px;
+}
+
+.callout-content > :first-child {
+  margin-top: 0.4em;
+}
+
+/* Option: card callouts. The title rides on a tinted frame, a large faint
+   icon marks the corner, and the content sits on an inner card. */
+body.still-card-callouts .callout {
+  --callout-padding: 4px;
+  position: relative;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--callout-color) 20%, transparent);
+}
+
+body.still-card-callouts.theme-dark .callout {
+  background-color: color-mix(in srgb, var(--callout-color) 30%, transparent);
+}
+
+body.still-card-callouts .callout-title {
+  padding: 12px 12px 16px;
+}
+
+body.still-card-callouts .callout-icon {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  width: 56px;
+  opacity: 0.2;
+}
+
+body.still-card-callouts .callout-icon .svg-icon {
+  width: 100%;
+  height: 100%;
+}
+
+body.still-card-callouts .callout-content {
+  margin-inline-start: 0;
+  padding: 16px;
+  border-radius: calc(var(--callout-radius) - 4px);
+  background-color: color-mix(in srgb, var(--callout-color) 10%, var(--background-primary));
+}
+
+body.still-card-callouts.theme-dark .callout-content {
+  background-color: color-mix(in srgb, var(--callout-color) 15%, var(--background-primary));
+}
+
+body.still-card-callouts .callout-content > :first-child {
+  margin-top: 0;
+}
+
+.markdown-rendered hr,
+.markdown-source-view hr {
+  border-top-color: var(--hr-color);
+}
+
+/* Properties: the block lines up with the text column (core nudges it 4px
+   left), rows reach 8px past it on both sides and keys sit back in line. */
+.metadata-container {
+  --metadata-property-radius: calc(4.8px * var(--still-r));
+}
+
+.markdown-source-view .metadata-container,
+.markdown-preview-view .metadata-container {
+  transform: none;
+}
+
+.metadata-container .metadata-content {
+  margin-inline: -8px;
+}
+
+.metadata-container .metadata-properties-heading {
+  padding-inline: 0;
+}
+
+.metadata-container .metadata-property-key {
+  padding-inline: 8px;
+}
+
+/* Long text values stay on one line until focused, so the block keeps an
+   even rhythm. */
+.metadata-input-longtext:not(:focus) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre;
+}
+
+.mod-root .metadata-container .metadata-add-button {
+  gap: 8px;
+  margin-top: 4px;
+  padding-inline: 8px;
+  color: var(--text-faint);
+}
+
+.markdown-embed,
+.file-embed {
+  border-radius: var(--embed-radius);
+}
+
+/* Images and frames round to the image radius everywhere, plugin galleries
+   included. Zero specificity: any rule that sets its own radius wins. */
+:where(img:not(.link-favicon), iframe, video, .file-embed) {
+  border-radius: var(--image-radius);
+}
+
+.bases-view {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Per-note classes: add to a note's cssclasses property. The names match     */
+/* Minimal's, so notes read the same under either theme.                      */
+/* -------------------------------------------------------------------------- */
+
+/* wide: a wider line for tables, dashboards and image-heavy notes. max: the
+   full pane. Both need "Readable line length" on; other notes keep the line
+   width. */
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).wide {
+  --file-line-width: calc(var(--still-line-width, 700px) * 1.35);
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).max {
+  --file-line-width: 100%;
+}
+
+/* img-grid: images on consecutive lines, which Obsidian renders as one
+   paragraph, share a row in reading view, uncropped. A single image, or one
+   beside text, is left alone. The :has() check only runs inside notes that
+   carry the class. */
+.markdown-preview-view.img-grid p:has(> .image-embed ~ .image-embed) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 8px;
+  align-items: start;
+}
+
+.markdown-preview-view.img-grid p:has(> .image-embed ~ .image-embed) > br {
+  display: none;
+}
+
+.markdown-preview-view.img-grid p:has(> .image-embed ~ .image-embed) > .image-embed img {
+  width: 100%;
+  margin: 0;
+}
+
+/* ========================================================================== */
+/* 13. Options                                                                */
+/* ========================================================================== */
+
+body.still-graphite {
+  --interactive-accent: var(--text-normal);
+  --interactive-accent-hover: var(--text-muted);
+  --text-on-accent: var(--background-primary);
+  --text-accent: var(--text-normal);
+  --text-accent-hover: var(--text-muted);
+  --link-color: var(--still-link-color, var(--text-normal));
+  --link-color-hover: var(--still-link-color, var(--text-normal));
+  --link-external-color: var(--still-link-color, var(--text-normal));
+  --link-external-color-hover: var(--still-link-color, var(--text-normal));
+  --link-decoration: underline;
+  --link-external-decoration: underline;
+  --nav-item-background-selected: var(--background-modifier-active-hover);
+}
+
+body.still-graphite :is(.markdown-rendered a, .cm-hmd-internal-link, .cm-link) {
+  text-decoration-color: var(--still-hairline-strong);
+}
+
+body.still-plain-tags {
+  --tag-background: transparent;
+  --tag-background-hover: transparent;
+  --tag-padding-x: 0;
+  --tag-padding-y: 0;
+  --tag-size: inherit;
+  --tag-color: var(--link-color);
+  --tag-color-hover: var(--link-color-hover);
+}
+
+body.still-keep-done-tasks {
+  --checklist-done-decoration: none;
+  --checklist-done-color: var(--text-normal);
+}
+
+/* Option: heading text takes one hue per level. Each hue is mixed 75/25 with
+   the text color so it stays readable in light and dark. The hues are set
+   here rather than through --hN-color, which Still keeps muted for H4/H6. */
+body.still-colored-headings :is(.markdown-rendered h1, .HyperMD-header-1) {
+  color: color-mix(in srgb, var(--color-red) 75%, var(--text-normal));
+}
+body.still-colored-headings :is(.markdown-rendered h2, .HyperMD-header-2) {
+  color: color-mix(in srgb, var(--color-orange) 75%, var(--text-normal));
+}
+body.still-colored-headings :is(.markdown-rendered h3, .HyperMD-header-3) {
+  color: color-mix(in srgb, var(--color-yellow) 75%, var(--text-normal));
+}
+body.still-colored-headings :is(.markdown-rendered h4, .HyperMD-header-4) {
+  color: color-mix(in srgb, var(--color-green) 75%, var(--text-normal));
+}
+body.still-colored-headings :is(.markdown-rendered h5, .HyperMD-header-5) {
+  color: color-mix(in srgb, var(--color-blue) 75%, var(--text-normal));
+}
+body.still-colored-headings :is(.markdown-rendered h6, .HyperMD-header-6) {
+  color: color-mix(in srgb, var(--color-purple) 75%, var(--text-normal));
+}
+
+body.theme-dark.still-pdf-dark .pdf-container .pdfViewer .page {
+  filter: invert(1) hue-rotate(180deg) contrast(0.8);
+}
+
+/* Option: dim PDF pages in dark mode until the pointer reaches them.
+   Opacity only, so it stays cheap and combines with Dark PDFs. */
+body.theme-dark.still-pdf-dim .pdf-container .pdfViewer .page:not(:hover) {
+  opacity: 0.75;
+}
+
+/* Option: note images rest dimmed in dark mode, the same way as PDF pages.
+   Link favicons stay crisp. */
+body.theme-dark.still-img-dim :is(.markdown-rendered, .markdown-source-view.mod-cm6) img:not(.link-favicon):not(:hover) {
+  opacity: 0.75;
+}
+
+/* Option: images fill the line width, in reading and editing views. Only
+   media without a width of its own; tall ones are letterboxed so they stay
+   within the window. */
+body.still-media-fill :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) .image-embed:not([width]),
+body.still-media-fill :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) .image-embed:not([width]) > .image-wrapper {
+  width: 100%;
+}
+
+body.still-media-fill :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) :is(.image-embed:not([width]) img:not([width]), video:not([width]), iframe:not([width])) {
+  width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+}
+
+/* Option: striped Bases tables. Rows are virtualized and recycled while
+   scrolling, so DOM order is not row order: the stripes are drawn on the
+   table body by position instead of on rows with :nth-child. */
+body.still-bases-stripes .bases-tbody {
+  background-image: linear-gradient(to bottom, transparent 50%, var(--still-wash) 50%);
+  background-size: 100% calc(var(--bases-table-row-height) * 2);
+}
+
+/* Option: quiet status bar — a short line at the bottom center that opens
+   into a pill on hover. */
+body.still-quiet-status:not(.is-mobile) .status-bar {
+  left: 50%;
+  right: auto;
+  bottom: 4px;
+  translate: -50% 0;
+  justify-content: center;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background-color: var(--still-raised);
+  box-shadow: var(--still-float-shadow);
+  transition: max-width var(--still-moderate) var(--still-glide),
+    height var(--still-moderate) var(--still-glide),
+    bottom var(--still-moderate) var(--still-glide);
+}
+
+body.still-quiet-status:not(.is-mobile) .status-bar > * {
+  white-space: nowrap;
+  transition: opacity var(--still-moderate) var(--still-glide);
+}
+
+body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within) {
+  bottom: 2px;
+  max-width: 160px;
+  height: 4px;
+  min-height: 0;
+  padding-block: 0;
+  overflow: hidden;
+  background-color: color-mix(in srgb, var(--text-normal) 20%, transparent);
+  box-shadow: none;
+}
+
+body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within) > * {
+  opacity: 0;
+}
+
+/* ========================================================================== */
+/* 14. Translucent and separate windows                                       */
+/* ========================================================================== */
+
+/* In a translucent window, any backdrop-filter inside the workspace (a
+   plugin's frosted buttons, say) makes Chromium keep stale frames after
+   layout changes and sample the empty window behind it: sidebars ghost and
+   halos appear. The native window already blurs the wallpaper, so the
+   workspace drops CSS backdrop blur there. !important is needed to reach
+   plugin rules of any specificity. Menus and dialogs are outside
+   .workspace and keep theirs. */
+body.is-translucent:not(.is-popout-window) .workspace *,
+body.is-translucent:not(.is-popout-window) .workspace *::before,
+body.is-translucent:not(.is-popout-window) .workspace *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  /* A plugin element with will-change gets its own compositor layer, which
+     can leave old frames on the glass: tooltips, row highlights and text
+     stay visible after they are gone. !important also beats inline styles.
+     Inline 3D transforms (translate3d) promote layers too and are out of a
+     theme's reach; plugins have to avoid them. */
+  will-change: auto !important;
+}
+
+/* Over a translucent window the page card keeps its shape but drops its
+   shadow, which would otherwise draw a dark rim on the glass. */
+body.is-translucent:not(.is-popout-window):not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-tab-container {
+  box-shadow: none;
+}
+
+/* Popout and modal windows stay opaque even when the main window uses a
+   translucency snippet. */
+body:is(.is-popout-window, .is-popout-modal) {
+  background-color: var(--background-secondary);
+}
+
+/* Plugin views drawn on --background-secondary-alt (Crisp Visual's cards,
+   Crisp Launchpad's dark cards) read as framed outlines on the page, not
+   grey tiles. */
+.workspace-leaf-content[data-type^="crisp"] {
+  --background-secondary-alt: transparent;
+}
+
+/* ========================================================================== */
+/* 15. Mobile                                                                 */
+/* ========================================================================== */
+
+/* Touch surfaces take the theme's radius scale (a step rounder than on
+   desktop) while reading content keeps its desktop corners; the page gets a
+   24px reading margin, and sheets and drawers sit on the sidebar tone. */
+body.is-mobile {
+  --still-touch-target: 44px;
+  --radius-s: calc(16px * var(--still-r));
+  --radius-m: calc(16px * var(--still-r));
+  --radius-l: calc(24px * var(--still-r));
+  --radius-xl: calc(32px * var(--still-r));
+  --touch-radius-xxs: var(--radius-s);
+  --touch-radius-xs: var(--radius-s);
+  --touch-radius-s: var(--radius-s);
+  --touch-radius-m: var(--radius-m);
+  --touch-radius-l: var(--radius-l);
+  --touch-radius-xl: var(--radius-xl);
+
+  --input-height: var(--still-touch-target);
+  --file-margins-y: 8px;
+  --file-margins-x: 24px;
+  --file-margins: var(--file-margins-y) var(--file-margins-x);
+  --view-header-height: var(--header-height);
+  --still-drawer-gutter: 16px;
+
+  --modal-background: var(--background-secondary);
+  --mobile-sidebar-background: var(--background-secondary);
+
+  --nav-item-padding: 12px 24px;
+  --nav-item-color: var(--text-muted);
+  --nav-item-size: var(--font-ui-small);
+  --nav-item-weight-active: 500;
+  /* 10px per level with core's 4px padding, so deep files keep most of a
+     narrow drawer for their names. */
+  --nav-item-children-margin-start: 6px;
+
+  /* Floating controls lose the frosted "raised" treatment: no backdrop
+     blur, no halo shadow. Cheaper to draw and calmer to look at. */
+  --raised: none;
+
+  --still-sheet: var(--background-secondary);
+  --still-sheet-card: var(--background-primary);
+  --menu-divider-color: var(--background-modifier-border);
+  --menu-divider-width: 1px;
+}
+
+body.is-mobile.theme-dark {
+  --modal-background: var(--background-primary);
+  --still-sheet: var(--background-primary);
+  --still-sheet-card: color-mix(in srgb, var(--background-primary), white 5%);
+  --menu-divider-color: var(--background-modifier-hover);
+}
+
+/* Option: pure black for OLED screens. Page, sidebars, sheets and dialogs go
+   black; code, embeds and form fields keep one step of lift so they still
+   read as blocks. */
+body.is-mobile.theme-dark.still-black-mobile {
+  --background-primary: #000000;
+  --background-secondary: #000000;
+  --background-primary-alt: var(--color-base-05);
+  --background-secondary-alt: var(--color-base-10);
+  --background-modifier-form-field: var(--color-base-05);
+  --code-background: var(--color-base-10);
+  --embed-background: var(--color-base-05);
+}
+
+/* Bottom sheet menus: a tinted sheet with the grabber floating at the top,
+   and each group of actions on its own rounded card with inset dividers. */
+body.is-phone {
+  --menu-padding: 32px 16px;
+}
+
+body.is-phone > .menu {
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--radius-l) var(--radius-l) 0 0;
+  background-color: var(--still-sheet);
+  box-shadow: none;
+}
+
+body.is-phone > .menu .menu-grabber {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  margin: 8px auto;
+}
+
+body.is-phone > .menu .menu-scroll {
+  max-height: min(80dvh, calc(100dvh - var(--keyboard-height, 0px) - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px) - 16px));
+  overflow-y: auto;
+  padding: 32px 16px calc(16px + var(--safe-area-inset-bottom));
+}
+
+body.is-phone > .menu .menu-item {
+  gap: 16px;
+  padding: 16px 20px;
+  font-size: var(--nav-item-size);
+  border-radius: 0;
+}
+
+body.is-phone > .menu .menu-item:not(.is-label) {
+  background-color: var(--still-sheet-card);
+}
+
+body.is-phone > .menu .menu-item.mobile-tap:not(.is-disabled):not(.is-label) {
+  background-color: color-mix(in srgb, var(--still-sheet-card), var(--text-normal) 6%);
+}
+
+body.is-phone > .menu .menu-group .menu-item:only-child {
+  border-radius: var(--radius-m);
+}
+
+body.is-phone > .menu .menu-separator {
+  margin: 12px 16px;
+}
+
+/* Navigation bar: a plain tinted pill with a hairline; no blur, no halo. */
+body.is-phone.is-floating-nav .mobile-navbar {
+  border: 1px solid var(--background-modifier-hover);
+  background-color: color-mix(in srgb, var(--background-secondary) 94%, transparent);
+  box-shadow: none;
+}
+
+body.is-phone:not(.is-floating-nav) .mobile-navbar {
+  border: 0;
+  background-color: var(--background-primary);
+}
+
+/* Drawers: the sidebar tone throughout, a compact vault header, and the
+   view switcher as plain text rather than a filled pill. */
+body.is-mobile .workspace-drawer .workspace-drawer-inner {
+  background-color: transparent;
+}
+
+body.is-mobile .workspace-drawer .workspace-leaf-content > .node-insert-event,
+body.is-mobile .workspace-drawer .workspace-leaf-content > .view-content > .node-insert-event {
+  padding-inline: var(--still-drawer-gutter);
+}
+
+body.is-mobile .workspace-drawer .nav-buttons-container {
+  gap: 4px;
+  padding: 0 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+body.is-mobile .workspace-drawer .nav-action-button {
+  flex: 1 0 var(--still-touch-target);
+  min-width: var(--still-touch-target);
+  min-height: var(--still-touch-target);
+}
+
+body.is-mobile .workspace-drawer .nav-action-button.is-active {
+  color: var(--interactive-accent);
+}
+
+body.is-mobile .workspace-drawer .workspace-drawer-header {
+  padding-top: 12px;
+  padding-inline: 24px;
+}
+
+body.is-mobile .workspace-drawer .workspace-drawer-header-name-text {
+  font-size: var(--font-ui-small);
+  min-width: 0;
+  white-space: nowrap;
+}
+
+body.is-phone .workspace-drawer-header-left {
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  gap: 4px;
+}
+
+/* A separate count row keeps long vault and note names readable. */
+body.is-phone .workspace-drawer .workspace-drawer-header {
+  min-height: 68px;
+  padding: 8px 16px;
+}
+
+body.is-phone .workspace-drawer-header-name {
+  min-width: 0;
+  width: 100%;
+  white-space: nowrap;
+}
+
+body.is-mobile .workspace-drawer-header-info {
+  margin-top: 0;
+  margin-inline-start: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+/* The view list opens over the drawer's content, so it needs an opaque
+   surface. The drawer tone matches the fade core draws above it on phones.
+   Core's vertical padding keeps the last view clear of the select button. */
+body.is-mobile .workspace-drawer .workspace-drawer-tab-options-list {
+  padding-inline: 0;
+  background-color: var(--mobile-sidebar-background);
+}
+
+body.is-mobile .workspace-drawer .workspace-drawer-tab-select .workspace-tab-header-inner {
+  background-color: transparent;
+}
+
+/* Phones keep Obsidian's bottom navigation, keyboard toolbar and swipe
+   transforms. Only their reading gutter and touch surfaces change. */
+body.is-phone {
+  --file-margins-x: 16px;
+}
+
+body.is-mobile :is(.mobile-navbar-action, .mobile-toolbar-option) {
+  min-width: var(--still-touch-target);
+  min-height: var(--still-touch-target);
+}
+
+/* Tablet tabs scroll at their natural width instead of shrinking into
+   small targets. New-tab and tab-list actions stay outside that strip. */
+body.is-tablet {
+  --header-height: 52px;
+  --mobile-sidebar-width-pinned: clamp(180px, 24vw, 280px);
+  --mobile-sidebar-max-width: min(360px, 85vw);
+}
+
+body.is-tablet .workspace .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+  flex-shrink: 0;
+  min-width: var(--still-touch-target);
+  height: var(--still-touch-target);
+}
+
+body.is-tablet .workspace .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner {
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+body.is-tablet :is(.view-header, .workspace-tab-header-container) .clickable-icon {
+  min-width: var(--still-touch-target);
+  min-height: var(--still-touch-target);
+  padding: 10px;
+}
+
+/* Pinned drawers share the page's height. A cap leaves room for reading
+   even when both are pinned in a compact tablet window. Resize handles
+   and all native pin/unpin behavior remain in Obsidian's control. */
+body.is-tablet .workspace-drawer.is-pinned {
+  max-width: 30%;
+  margin: 0;
+  border-radius: 0;
+}
+
+body.is-tablet .workspace-drawer.is-pinned.mod-left {
+  border-inline-end: 1px solid var(--still-hairline);
+}
+
+body.is-tablet .workspace-drawer.is-pinned.mod-right {
+  border-inline-start: 1px solid var(--still-hairline);
+}
+
+/* The title gets a full row in tablet drawers, pinned or floating.
+   Settings and Pin stay reachable below it instead of squeezing the name
+   and file counts into a sliver. */
+body.is-tablet .workspace-drawer .workspace-drawer-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--still-touch-target);
+  gap: 4px;
+  height: auto;
+  padding: 12px;
+}
+
+body.is-tablet .workspace-drawer .workspace-drawer-header-left {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+body.is-tablet .workspace-drawer .workspace-drawer-header-icon.mod-pin {
+  grid-column: 2;
+  justify-self: end;
+}
+
+/* Overlay drawers are quiet cards inside the safe area. No replacement
+   for Obsidian's gesture transforms or keyboard positioning is applied. */
+body.is-tablet .workspace-drawer:not(.is-pinned) {
+  margin: var(--safe-area-inset-top) 8px calc(var(--keyboard-height) + max(8px, var(--safe-area-inset-bottom)));
+  height: auto;
+  padding-top: 0;
+  border-radius: var(--radius-m);
+}
+
+body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
+  padding-top: 0;
+}
+
+/* ========================================================================== */
+/* 16. Reduced motion & print                                                 */
+/* ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.menu, .suggestion-container, .popover, .modal, .prompt) {
+    animation: none !important;
+  }
+
+  .mod-sidedock.is-sidedock-collapsed,
+  body.still-peek-ribbon .mod-sidedock.mod-left-split,
+  body.still-peek-ribbon .workspace-tabs.mod-top-left-space .workspace-tab-header-container,
+  .workspace-ribbon,
+  .status-bar,
+  .status-bar > *,
+  .view-header-title-container,
+  .nav-folder-title .collapse-icon svg.svg-icon,
+  .checkbox-container,
+  .checkbox-container::after,
+  body.still-quiet-nav .nav-header .nav-action-button,
+  body.still-quiet-nav .nav-header .nav-action-button svg {
+    transition: none !important;
+  }
+}
+
+@media print {
+  .callout {
+    break-inside: avoid;
+  }
+}
