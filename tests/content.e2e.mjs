@@ -7,7 +7,10 @@
 // spacing slider ignored, CJK typography that leaks into code or overrides
 // the line-height slider, PDF dimming in light mode, and Bases stripes that
 // follow DOM order: virtualized rows are recycled while scrolling, so stripes
-// must come from a row's position, checked here on captured pixels.
+// must come from a row's position, checked here on captured pixels. Also
+// headings and spacing sized off the root font size, which differs from the
+// text size in popout windows (15px vs 17px) and with iOS text scaling, and
+// card callouts whose last block (a nested callout) adds an extra gap below.
 // Usage: node tests/content.e2e.mjs <vault> <report.json> [base path] [table view]
 // The Bases stripe checks need a .base file with a table view long enough to
 // scroll; without the last two arguments they are skipped.
@@ -20,9 +23,9 @@ const code=String.raw`(async()=>{
  const results=[],check=(name,pass,evidence)=>results.push({name,pass,evidence});
  const pause=ms=>new Promise(r=>setTimeout(r,ms)),wc=require('electron').remote.getCurrentWebContents();
  if(app.customCss.theme!=='Still')throw Error('Select Still first');
- const saved={classes:document.body.className,style:document.body.getAttribute('style'),leaf:app.workspace.activeLeaf};
+ const saved={classes:document.body.className,style:document.body.getAttribute('style'),html:document.documentElement.getAttribute('style'),leaf:app.workspace.activeLeaf};
  const sheets=app.customCss.extraStyleEls.map(e=>[e.sheet,e.sheet.disabled]);
- const opts=['still-media-fill','still-pdf-dim','still-bases-stripes','still-colored-headings','still-peek-soft','still-cjk','still-justify','still-img-dim','still-outline-guides'];
+ const opts=['still-media-fill','still-pdf-dim','still-bases-stripes','still-colored-headings','still-peek-soft','still-cjk','still-justify','still-img-dim','still-outline-guides','still-card-callouts'];
  let host,leaf,stage='setup';const probes=[];
  const toggle=(c,on)=>document.body.classList.toggle(c,on);
  const image=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').fillRect(0,0,w,h);return c.toDataURL()};
@@ -77,8 +80,8 @@ const code=String.raw`(async()=>{
   check('Soft peek fades the page-facing edge with a gradient and no shadow',slabOn.shadow==='none'&&slabOn.image.startsWith('linear-gradient')&&parseFloat(slabOn.left)<0,slabOn);
   stage='lists';
   const gap=()=>Math.round(host.querySelector('li').getBoundingClientRect().height);
-  document.body.style.setProperty('--still-list-spacing','0rem');const tight=gap();
-  document.body.style.setProperty('--still-list-spacing','0.6rem');const loose=gap();
+  document.body.style.setProperty('--still-list-spacing','0');const tight=gap();
+  document.body.style.setProperty('--still-list-spacing','0.6');const loose=gap();
   document.body.style.removeProperty('--still-list-spacing');
   check('List spacing setting changes the space around items',loose>tight,{tight,loose});
   stage='pdf';
@@ -142,6 +145,29 @@ const code=String.raw`(async()=>{
   check('Images stack by default',new Set(gridOff.tops).size===3,gridOff);
   check('img-grid puts consecutive images on one row',new Set(gridOn.tops).size===1&&gridOn.widths.every(w=>w>150&&w<240),gridOn);
   check('img-grid leaves single and inline images alone',gridOn.solo===gridOff.solo&&gridOn.inline===gridOff.inline,{off:gridOff,on:gridOn});
+  // Headings, the note title and block spacing follow the text size. Popout
+  // windows set the root to 15px while the text stays 17px, and iOS scales
+  // the root with the system text size, so rem-sized headings drift from
+  // the body text: an H3 ends up smaller than a paragraph.
+  stage='root size';
+  host.insertAdjacentHTML('beforeend','<div class="markdown-preview-view markdown-rendered rs-read" style="width:600px"><div class="inline-title">T</div><h1>a</h1><h3>b</h3><h5>c</h5><p>x</p><ul><li>one</li><li>two</li></ul></div>'+
+   '<div class="markdown-source-view mod-cm6"><div class="cm-content"><div class="cm-line HyperMD-header HyperMD-header-1 rs-cm-h1">a</div><div class="cm-line rs-cm-p">x</div></div></div>');
+  const sizes=()=>{const g=(s,k='fontSize')=>Math.round(parseFloat(getComputedStyle(host.querySelector(s))[k])*100)/100;return {p:g('.rs-read p'),title:g('.rs-read .inline-title'),h1:g('.rs-read h1'),h3:g('.rs-read h3'),h5:g('.rs-read h5'),cmH1:g('.rs-cm-h1'),cmP:g('.rs-cm-p'),pGap:g('.rs-read p','marginBottom'),li:g('.rs-read li','marginBottom'),h1Gap:g('.rs-read h1','marginTop')}};
+  const atRoot=sizes();document.documentElement.style.fontSize='15px';const atSmallRoot=sizes();
+  if(saved.html===null)document.documentElement.removeAttribute('style');else document.documentElement.setAttribute('style',saved.html);
+  check('Headings and spacing ignore the window root size',JSON.stringify(atRoot)===JSON.stringify(atSmallRoot),{root:atRoot,smallRoot:atSmallRoot});
+  check('An H3 is never smaller than body text',atSmallRoot.h3>=atSmallRoot.p&&atSmallRoot.cmH1===atSmallRoot.h1,atSmallRoot);
+  // Card callouts: a nested callout as the last block leaves the same gap
+  // below as the card's padding above, and a collapsed callout's corner
+  // icon stays inside it. Plain callouts keep core's spacing.
+  stage='card callouts';
+  const fold='<div class="callout is-collapsible is-collapsed" data-callout="info"><div class="callout-title"><div class="callout-icon"><svg class="svg-icon" viewBox="0 0 24 24" width="24" height="24"></svg></div><div class="callout-title-inner">Inner</div><div class="callout-fold is-collapsed"></div></div><div class="callout-content" style="display:none"><p>x</p></div></div>';
+  host.insertAdjacentHTML('beforeend','<div class="markdown-preview-view markdown-rendered co-read" style="width:600px"><div class="callout" data-callout="warning"><div class="callout-title"><div class="callout-icon"><svg class="svg-icon" viewBox="0 0 24 24" width="24" height="24"></svg></div><div class="callout-title-inner">Outer</div></div><div class="callout-content"><p>Body</p>'+fold+'</div></div></div>');
+  const card=()=>{const outer=host.querySelector('.co-read > .callout'),c=outer.querySelector(':scope > .callout-content'),inner=c.querySelector('.callout'),b=e=>e.getBoundingClientRect();return {top:Math.round(b(c.firstElementChild).top-b(c).top),bottom:Math.round(b(c).bottom-b(inner).bottom),iconOut:Math.round(b(inner.querySelector('.callout-icon')).bottom-b(inner).bottom)}};
+  const plainCo=card();toggle('still-card-callouts',true);const cardCo=card();toggle('still-card-callouts',false);
+  check('Card callouts leave no extra gap under a nested callout',cardCo.bottom<=cardCo.top+1,cardCo);
+  check('A collapsed card callout keeps its corner icon inside',cardCo.iconOut<=0,cardCo);
+  check('Plain callouts keep core spacing under a nested callout',plainCo.bottom>0,plainCo);
   host.remove();host=null;
   if(BASE_PATH){
   stage='bases';
@@ -178,6 +204,7 @@ const code=String.raw`(async()=>{
  finally{
   host?.remove();for(const p of probes)p.remove();leaf?.detach();
   for(const[s,d]of sheets)try{s.disabled=d}catch{}
+  if(saved.html===null)document.documentElement.removeAttribute('style');else document.documentElement.setAttribute('style',saved.html);
   document.body.className=saved.classes;if(saved.style===null)document.body.removeAttribute('style');else document.body.setAttribute('style',saved.style);
   if(saved.leaf)app.workspace.setActiveLeaf(saved.leaf,{focus:false});
  }

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.1 · 2026-10-14
+
+### Fixed
+- **Headings follow the text size.** Heading and note title sizes were in `rem`, and paragraph, heading and list spacing too. The root font size isn't the text size everywhere: popout windows set it to 15px while text stays at the font size setting, so an H3 came out smaller than body text there, and iOS scales it with the system text size. Headings are now in `em`, as in core, and spacing is a multiple of the text size. The Paragraph spacing and List item spacing sliders keep their values, which now mean multiples of the text size.
+- **Card callouts: no extra gap under a nested callout.** When the last block in a card was a nested callout, its bottom margin added to the card's padding (33px below, 16px above). The large corner icon of a collapsed card callout is no longer cut off at the bottom.
+- Tests: 5 new checks in `tests/content.e2e.mjs`.
+
+### 中文
+- 标题字号改为跟随正文字号：标题、笔记标题、段距、标题间距、列表间距原来用 `rem`，而根字号不一定等于正文字号——弹出窗口里根字号是 15px、正文仍是设置的字号，三级标题比正文还小；iOS 上根字号还会随系统字号变化。现在标题用 `em`（与 Obsidian 核心一致），间距按正文字号的倍数计算；「段落间距」「列表项间距」滑块保留原数值，含义变为正文字号的倍数。
+- 卡片 callout 里最后一项是嵌套 callout 时，底部不再多出一段空白（原来下方 33px、上方 16px）；折叠的卡片 callout 右上角大图标不再被裁掉底部。
+- 测试：`tests/content.e2e.mjs` 新增 5 项检查。
+
 ## 0.6.0 · 2026-10-14
 
 ### Added
