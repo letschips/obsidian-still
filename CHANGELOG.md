@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.2 · 2026-10-14
+
+### Fixed
+- **Image grids keep paragraph text in normal flow.** Consecutive images share a row without turning nearby text into narrow grid cells. Standard Markdown images work alongside attachment embeds, and narrow panes wrap the images without cropping.
+- Image grids keep their row width when **Images fill the line width** is also enabled.
+- The options reference now describes paragraph and list spacing as multiples of the text size, matching 0.6.1.
+- Added `tests/image-grid.e2e.mjs`, using the actual Obsidian Markdown renderer with transient text and no note writes.
+
+### 中文
+- 图片网格保留正文的正常排版，不再把图片前后的文字挤进窄列；标准 Markdown 图片和附件嵌入均可并排，窄面板自动换行、不裁切。
+- 同时开启「图片填满行宽」时，网格中的图片仍保持并排，不再恢复为全宽竖排。
+- 选项文档中的段距、列表间距单位同步为正文字号的倍数。
+- 新增 `tests/image-grid.e2e.mjs`，使用真实 Obsidian Markdown 渲染器及无文件绑定的临时文本验证，不改写笔记。
+
 ## 0.6.1 · 2026-10-14
 
 ### Fixed

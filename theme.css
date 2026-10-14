@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.6.1 · MIT License · https://github.com/letschips
+  Version 0.6.2 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1987,22 +1987,36 @@ body.still-card-callouts .callout-content > :last-child {
   --file-line-width: 100%;
 }
 
-/* img-grid: images on consecutive lines, which Obsidian renders as one
-   paragraph, share a row in reading view, uncropped. A single image, or one
-   beside text, is left alone. The :has() check only runs inside notes that
-   carry the class. */
-.markdown-preview-view.img-grid p:has(> .image-embed ~ .image-embed) {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
-  gap: 8px;
-  align-items: start;
+/* img-grid: consecutive attachment embeds and standard Markdown images
+   share a row, uncropped. Keep the paragraph in normal flow: naked text
+   nodes must never become anonymous grid cells. Leave a little room for
+   the whitespace between inline images; narrow panes wrap naturally. */
+.markdown-preview-view.img-grid p:has(> :is(.image-embed, img) ~ :is(.image-embed, img)) {
+  --still-grid-columns: 2;
+  --still-grid-item-width: calc((100% - var(--still-grid-columns) * (8px + 0.5em)) / var(--still-grid-columns));
 }
 
-.markdown-preview-view.img-grid p:has(> .image-embed ~ .image-embed) > br {
+.markdown-preview-view.img-grid p:has(> :is(.image-embed, img) ~ :is(.image-embed, img) ~ :is(.image-embed, img)) {
+  --still-grid-columns: 3;
+}
+
+/* The per-note row width also wins over the global media-fill option. */
+.markdown-preview-view.img-grid p:has(> :is(.image-embed, img) ~ :is(.image-embed, img)) > :is(.image-embed, img),
+body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, img) ~ :is(.image-embed, img)) > :is(.image-embed, img) {
+  display: inline-block;
+  vertical-align: top;
+  box-sizing: border-box;
+  width: min(calc(100% - 8px), max(140px, var(--still-grid-item-width)));
+  margin-block: 0 8px;
+  margin-inline: 0 8px;
+}
+
+/* Remove only breaks between images. Breaks next to text stay intact. */
+.markdown-preview-view.img-grid p > :is(.image-embed, img) + br:has(+ :is(.image-embed, img)) {
   display: none;
 }
 
-.markdown-preview-view.img-grid p:has(> .image-embed ~ .image-embed) > .image-embed img {
+.markdown-preview-view.img-grid p:has(> :is(.image-embed, img) ~ :is(.image-embed, img)) > .image-embed img {
   width: 100%;
   margin: 0;
 }
