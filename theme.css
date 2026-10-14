@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.6.2 · MIT License · https://github.com/letschips
+  Version 0.6.3 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -84,8 +84,8 @@ settings:
     id: still-cjk
     title: CJK typography
     title.zh: 中文排版
-    description: For Chinese and Japanese writing. A small gap where Han characters meet Latin letters or digits with no space typed, no lone character at the end of a paragraph in reading view, and a roomier default line height (1.75). Code is left exactly as typed.
-    description.zh: 适合中文和日文写作。中文与英文、数字相邻且没打空格时自动留出小间隙；阅读视图段尾不留单字；默认行高放宽到 1.75。代码保持原样。
+    description: For Chinese and Japanese writing. A small gap where Han characters meet Latin letters or digits with no space typed, improved paragraph endings in reading view, and a roomier default line height (1.75). iOS keeps normal paragraph wrapping. Code is left exactly as typed.
+    description.zh: 适合中文和日文写作。中文与英文、数字相邻且没打空格时自动留出小间隙；优化阅读视图的段落断行，iOS 正文保留普通换行；默认行高放宽到 1.75。代码保持原样。
     type: class-toggle
     default: false
   -
@@ -833,7 +833,10 @@ body.still-cjk :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content
   text-autospace: no-autospace;
 }
 
-body.still-cjk .markdown-rendered :is(p, li, td, th, .callout-content) {
+/* WebKit on iOS rebalances every line of a short paragraph under pretty,
+   leaving a ragged column well short of the line width, so iOS keeps
+   normal wrapping. */
+body.still-cjk:not(.is-ios) .markdown-rendered :is(p, li, td, th, .callout-content) {
   text-wrap-style: pretty;
 }
 
@@ -2238,9 +2241,14 @@ body.is-mobile {
      narrow drawer for their names. */
   --nav-item-children-margin-start: 6px;
 
-  /* Floating controls lose the frosted "raised" treatment: no backdrop
-     blur, no halo shadow. Cheaper to draw and calmer to look at. */
-  --raised: none;
+  /* Floating controls (header buttons, navbar, toolbar, prompt field) keep
+     core's raised surface without its frosted glass: an opaque tone and a
+     hairline instead of backdrop blur and a halo. Cheaper to draw, calmer
+     to look at, and icons never sit on the text scrolling underneath. */
+  --raised-background: var(--background-secondary);
+  --raised-blur: none;
+  --raised-shadow: 0 0 0 1px var(--still-hairline);
+  --raised-mask-display: none;
 
   --still-sheet: var(--background-secondary);
   --still-sheet-card: var(--background-primary);
@@ -2249,6 +2257,7 @@ body.is-mobile {
 }
 
 body.is-mobile.theme-dark {
+  --raised-background: var(--still-raised);
   --modal-background: var(--background-primary);
   --still-sheet: var(--background-primary);
   --still-sheet-card: color-mix(in srgb, var(--background-primary), white 5%);
@@ -2318,16 +2327,22 @@ body.is-phone > .menu .menu-separator {
   margin: 12px 16px;
 }
 
-/* Navigation bar: a plain tinted pill with a hairline; no blur, no halo. */
-body.is-phone.is-floating-nav .mobile-navbar {
-  border: 1px solid var(--background-modifier-hover);
-  background-color: color-mix(in srgb, var(--background-secondary) 94%, transparent);
-  box-shadow: none;
-}
-
+/* The floating navigation bar is a raised pill like the header buttons
+   (see above). Without floating navigation it is a plain page-toned bar. */
 body.is-phone:not(.is-floating-nav) .mobile-navbar {
   border: 0;
   background-color: var(--background-primary);
+}
+
+/* Prompts (quick switcher, command palette): touch-height rows with the
+   same inset as menus, instead of the compact desktop list. */
+body.is-phone .prompt-results {
+  padding: 8px;
+}
+
+body.is-phone .prompt .suggestion-item {
+  min-height: var(--still-touch-target);
+  padding: 12px 16px;
 }
 
 /* Drawers: the sidebar tone throughout, a compact vault header, and the

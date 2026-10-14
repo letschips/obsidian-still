@@ -8,7 +8,7 @@ Still is a quiet, monochrome theme for Obsidian. Neutral greys carry the structu
 - **Floating tabs.** Equal-width tabs with centered titles, centered above the page.
 - **Sidebar peek.** Collapse a sidebar and rest the pointer on the window edge: it slides in, and slides away when you leave.
 - **Calm reading.** A readable line length, light headings, block quotes, washed callouts and hairline tables.
-- **CJK typography** (optional). A gap where Chinese meets Latin letters or digits, and no lone character at the end of a paragraph.
+- **CJK typography** (optional). A gap where Chinese meets Latin letters or digits, and improved paragraph endings. iOS keeps normal paragraph wrapping.
 - **Light to render.** No interface blur, 3D transforms or body-wide `:has()`, so typing and scrolling stay fast.
 
 | Light | Dark |
@@ -47,7 +47,7 @@ Still is an original theme; no code from other themes is bundled. Its direction 
 Still 是一个安静的单色 Obsidian 主题：灰阶构成层次，细线代替粗边框，界面里唯一的颜色是你在 Obsidian 里选的强调色。
 
 - 侧栏展开时页面浮起成卡片；标签等宽居中；收起的侧栏，鼠标停在窗口边缘就会滑出。
-- 可选的**中文排版**：中英文、数字之间自动留空隙，段尾不留单字。
+- 可选的**中文排版**：中英文、数字之间自动留空隙，优化段落断行；iOS 正文保留普通换行。
 - 安装 Style Settings 后可调行宽、颜色、圆角、标签、侧栏等；开关类选项默认关闭，界面语言为中文时显示中文名称。
 - 在笔记属性 `cssclasses` 里写 `wide`、`max`、`img-grid`，可以单独加宽这篇笔记或把图片排成网格。
 - 安装：设置 → 外观 → 主题 → 管理，搜索 **Still**。需要 Obsidian 1.14.0 或更高版本。

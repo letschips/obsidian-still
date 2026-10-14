@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.3 · 2026-10-14
+
+### Fixed
+- **Phone header buttons and navigation bar have a surface again.** With the floating navigation, Obsidian draws the header buttons, navigation bar, editing toolbar and prompt field as raised pills over the page. Still turned off core's frosted glass with `--raised: none`, which also removed their background, so icons sat on the text scrolling underneath and the navigation bar let it show through. They now keep an opaque tone (the sidebar grey in light mode, a lifted grey in dark and pure-black modes) with a hairline, still without blur or a halo.
+- **Quick switcher and command palette on phones:** rows are touch-height (44px) with a 16px inset, instead of the compact desktop list that ran to the screen edge.
+- **CJK typography on iOS:** paragraphs keep normal wrapping. WebKit's `pretty` rebalanced every line of a short paragraph, leaving a ragged column well short of the line width in reading view. Other platforms keep `pretty`.
+- Tests: 4 new checks in `tests/surfaces.e2e.mjs`.
+- Mobile checks now initialize phone and tablet layouts separately, load the file explorer before measuring it, and capture screenshots through CDP with a timeout.
+
+### 中文
+- 手机顶部按钮和底部导航栏恢复底色：开启浮动导航时，Obsidian 把顶部按钮、导航栏、编辑工具栏和搜索框画成浮在页面上的胶囊。Still 原来用 `--raised: none` 关掉毛玻璃，连底色也一起去掉了，按钮直接压在滚动的正文上，导航栏也会透出下面的文字。现在保留不透明底色（浅色用侧栏灰，深色和纯黑模式用浮起灰）加一圈细线，仍然不做模糊和光晕。
+- 手机上的快速切换和命令面板：每行改为 44px 触控高度、左右留 16px，不再沿用贴边的桌面紧凑列表。
+- iOS 上的中文排版：段落改回普通换行。WebKit 的 `pretty` 会把短段落的每一行都重新平衡，阅读视图里整段只排到约八成宽；其他平台仍保留 `pretty`。
+- 测试：`tests/surfaces.e2e.mjs` 新增 4 项检查。
+- 移动端检查分别初始化手机和平板布局，测量前加载文件列表，并改用带超时的 CDP 截图，避免后台窗口截图挂起。
+
 ## 0.6.2 · 2026-10-14
 
 ### Fixed

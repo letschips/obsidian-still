@@ -5,11 +5,45 @@
 // are attempted through Chrome touch input and remain distinct from real hardware.
 // Usage: node tests/mobile.e2e.mjs <vault> <report.json> [targeted|all]
 import {spawnSync} from 'node:child_process';
-import {writeFileSync,mkdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {setTimeout as pause} from 'node:timers/promises';
 const VAULT=process.argv[2];if(!VAULT){console.error('Usage: node '+process.argv[1].split('/').pop()+' <vault name> <report.json> ...');process.exit(2)}
 const reportPath=resolve(process.argv[3]??'still-mobile-results.json');mkdirSync(dirname(reportPath),{recursive:true});
 const scope=process.argv[4]??'all';const palette=process.argv[5]??'theme-light';
+// Core chooses phone/tablet when the window loads. A CDP viewport resize
+// alone cannot switch that choice, so initialize each native layout first.
+if(scope==='all'||scope==='targeted'){
+ const cli=(...args)=>spawnSync('obsidian',[`vault=${VAULT}`,...args],{encoding:'utf8',timeout:15000});
+ const evaluate=js=>{const r=cli('eval',`code=${js}`),n=r.stdout.lastIndexOf('=> ');if(n<0)throw Error(r.stdout||r.stderr);return JSON.parse(r.stdout.slice(n+3))};
+ const saved=evaluate('JSON.stringify({bounds:require("electron").remote.getCurrentWindow().getBounds(),mobile:app.isMobile})');
+ if(!saved.mobile)throw Error('Enable actual Obsidian mobile emulation first');
+ async function prepare(width,height){
+  const resize=cli('eval',`code=require('electron').remote.getCurrentWindow().setSize(${width},${height})`);if(resize.error)throw resize.error;
+  cli('reload');let ready=false;
+  for(let n=0;n<30&&!ready;n++){await pause(200);cli('dev:debug','on');try{const state=evaluate('JSON.stringify({mobile:app.isMobile,phone:document.body.classList.contains("is-phone"),tablet:document.body.classList.contains("is-tablet")})');ready=state.mobile&&(width<600?state.phone:state.tablet)}catch{}}
+  if(!ready)throw Error('Mobile window did not finish reloading');
+ }
+ const parts=[];
+ try{
+  for(const[kind,width,height]of [['phone',390,844],['tablet',820,1180]]){
+   await prepare(width,height);
+   const partPath=reportPath.replace(/\.json$/,'')+'-'+kind+'.json';
+   const run=spawnSync(process.execPath,[fileURLToPath(import.meta.url),VAULT,partPath,scope==='targeted'?kind+'-targeted':kind,palette],{encoding:'utf8',timeout:60000});
+   if(run.error)throw run.error;
+   process.stdout.write(run.stdout);if(run.stderr)process.stderr.write(run.stderr);
+   parts.push(JSON.parse(readFileSync(partPath,'utf8')));
+  }
+ }finally{
+  cli('eval',`code=require('electron').remote.getCurrentWindow().setBounds(${JSON.stringify(saved.bounds)})`);
+  cli('reload');await pause(500);cli('dev:debug','on');
+ }
+ const report={vault:VAULT,theme:'Still',scope,palette,profiles:parts.flatMap(p=>p.profiles),results:parts.flatMap(p=>p.results),passed:parts.reduce((n,p)=>n+p.passed,0),total:parts.reduce((n,p)=>n+p.total,0),errors:parts.filter(p=>p.error).map(p=>({stage:p.stage,error:p.error}))};
+ writeFileSync(reportPath,JSON.stringify(report,null,2)+'\n');
+ console.log(`${report.passed}/${report.total} passed across native phone and tablet layouts`);
+ process.exit(report.errors.length||report.passed!==report.total?1:0);
+}
 const code=String.raw`(async()=>{
  const results=[],profiles=[],check=(name,pass,evidence)=>results.push({name,pass,evidence});
  const pause=ms=>new Promise(r=>setTimeout(r,ms)),electron=require('electron').remote;
@@ -37,7 +71,7 @@ const code=String.raw`(async()=>{
   const item=Object.values(view.fileItems).find(i=>i.file.children?.length&&i.file.parent?.isRoot());
   const was=item.collapsed;if(was){item.setCollapsed(false);await pause(250)}
   const text=e=>e.querySelector('.tree-item-inner').getBoundingClientRect().left;
-  const child=[...drawer.querySelectorAll('.tree-item-self[data-path]')].find(e=>e.dataset.path.startsWith(item.file.path+'/')&&!e.dataset.path.slice(item.file.path.length+1).includes('/')&&e.offsetHeight&&!e.style.translate);
+  const child=Object.values(view.fileItems).find(i=>i.file.parent===item.file&&i.selfEl.offsetHeight&&!i.selfEl.style.translate)?.selfEl;
   const r={folder:item.file.path,parent:text(item.selfEl),child:child&&text(child)};r.step=child?r.child-r.parent:Infinity;
   if(was){item.setCollapsed(true);await pause(150)}
   return r;
@@ -58,13 +92,16 @@ const code=String.raw`(async()=>{
   set(true,true);const black=read();set(true,false);const dark=read();set(false,true);const light=read();
   document.body.className=saved;return{black,dark,light};
  }
- async function shot(name){const im=await wc.capturePage();require('fs').writeFileSync(ARTIFACT_DIR+'/'+name+'-'+PALETTE+'.png',im.toPNG())}
+ async function shot(name){
+  const im=await Promise.race([debug.sendCommand('Page.captureScreenshot',{format:'png',captureBeyondViewport:true}),pause(8000).then(()=>{throw Error('Screenshot timed out')})]);
+  require('fs').writeFileSync(ARTIFACT_DIR+'/'+name+'-'+PALETTE+'.png',Buffer.from(im.data,'base64'));
+ }
  try{
   for(const [s]of sheets)s.disabled=true;
   document.body.classList.remove('is-translucent','theme-light','theme-dark');document.body.classList.add(PALETTE);
   await debug.sendCommand('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:5});
   const Menu=await menuCtor();
-  const phones=SCOPE==='targeted'?[[390,844]]:[[320,740],[390,844],[430,932],[844,390]];
+  const phones=SCOPE.startsWith('tablet')?[]:SCOPE.endsWith('targeted')?[[390,844]]:[[320,740],[390,844],[430,932],[844,390]];
   for(const[w,h]of phones){
    stage='phone '+w+'x'+h;const device=await viewport(w,h);profiles.push(device);check(stage+' uses native phone layout',document.body.classList.contains('is-phone'),device);
    document.body.style.setProperty('--safe-area-inset-top',h>w?'47px':'0px');document.body.style.setProperty('--safe-area-inset-bottom','34px');
@@ -73,7 +110,7 @@ const code=String.raw`(async()=>{
    const searchLeaf=app.workspace.getLeavesOfType('search')[0],fileLeaf=app.workspace.getLeavesOfType('file-explorer')[0];
    if(searchLeaf){app.workspace.leftSplit.selectTab(searchLeaf);app.workspace.setActiveLeaf(searchLeaf,{focus:false});await searchLeaf.loadIfDeferred();app.workspace.leftSplit.expand();await pause(200)}
    const search=searchLeaf?.view.containerEl.querySelector('input[type=search]');const target=search&&rect(search);
-   if(fileLeaf){app.workspace.leftSplit.selectTab(fileLeaf);app.workspace.setActiveLeaf(fileLeaf,{focus:false});app.workspace.leftSplit.expand();await pause(200)}check(stage+' search touch height',!!target&&target.height>=44,{target});
+   if(fileLeaf){await fileLeaf.loadIfDeferred();app.workspace.leftSplit.selectTab(fileLeaf);app.workspace.setActiveLeaf(fileLeaf,{focus:false});app.workspace.leftSplit.expand();await pause(200)}check(stage+' search touch height',!!target&&target.height>=44,{target});
    const buttons=[...drawer.querySelectorAll('.nav-action-button')].filter(e=>e.offsetWidth&&e.offsetHeight).map(rect);
    check(stage+' toolbar touch targets',buttons.length>0&&buttons.every(b=>b.width>=44&&b.height>=44),buttons);
    const name=drawer.querySelector('.workspace-drawer-header-name-text'),info=drawer.querySelector('.workspace-drawer-header-info');
@@ -81,7 +118,7 @@ const code=String.raw`(async()=>{
    const tree=await treeStep(drawer);check(stage+' nested rows keep the drawer width',tree.step<=12,tree);
    if(w===390){const b=blackMobile(drawer),k='rgb(0, 0, 0)';check('pure black option is black in dark mode only, code keeps a lift',b.black.page==='#000000'&&b.black.drawer===k&&b.black.code!==k&&b.dark.page!=='#000000'&&b.light.page!=='#000000',b)}
    if(w===390){const radius=contentRadius();check('reading content keeps desktop corners',Object.keys(radius.expected).every(k=>radius.actual[k]===radius.expected[k]),radius)}
-   if(SCOPE==='all'&&w===390)await shot('phone-drawer-390');
+   if(w===390)await shot('phone-drawer-390');
    app.workspace.leftSplit.collapse();await pause(300);
    for(const keyboard of [0,Math.min(280,Math.floor(h*.35))]){
     document.body.style.setProperty('--keyboard-height',keyboard+'px');
@@ -93,14 +130,14 @@ const code=String.raw`(async()=>{
     check(stage+' grouped menu has rounded boundaries keyboard='+keyboard,rounded>0,{rounded});
     sc.scrollTop=sc.scrollHeight;await pause(30);const last=[...el.querySelectorAll('.menu-item')].at(-1),l=rect(last),s=rect(sc);
     check(stage+' final menu action is reachable keyboard='+keyboard,l.bottom<=s.bottom+1&&l.top>=s.top-1,{last:l,scroll:s,overflow:getComputedStyle(sc).overflowY});
-    if(SCOPE==='all'&&w===390&&keyboard===0)await shot('phone-menu-390');
+    if(w===390&&keyboard===0)await shot('phone-menu-390');
     menu.hide();menu=null;
    }
    document.body.style.setProperty('--keyboard-height','0px');
    const navbar=document.querySelector('.mobile-navbar'),nav=rect(navbar);
    check(stage+' bottom navigation stays in viewport',nav.left>=-1&&nav.right<=w+1,{nav,width:w,hidden:document.body.classList.contains('is-hidden-nav')});
   }
-  const tablets=SCOPE==='targeted'?[[820,1180]]:[[600,900],[820,1180],[1194,834],[1366,1024]];
+  const tablets=SCOPE.startsWith('phone')?[]:SCOPE.endsWith('targeted')?[[820,1180]]:[[600,900],[820,1180],[1194,834],[1366,1024]];
   for(const[w,h]of tablets){
    stage='tablet '+w+'x'+h;const device=await viewport(w,h);profiles.push(device);check(stage+' uses native tablet layout',document.body.classList.contains('is-tablet'),device);
    document.body.style.setProperty('--safe-area-inset-top','24px');document.body.style.setProperty('--safe-area-inset-bottom','20px');
@@ -112,13 +149,13 @@ const code=String.raw`(async()=>{
    check(stage+' both drawers preserve reading width',root.width>=w*.35,{left,right,root,width:w});
    const vaultName=document.querySelector('.workspace-drawer.mod-left .workspace-drawer-header-name-text'),nameRect=rect(vaultName),line=parseFloat(getComputedStyle(vaultName).lineHeight);
    check(stage+' pinned vault name stays on one line',nameRect.height<=line+1,{name:nameRect,line,whiteSpace:getComputedStyle(vaultName).whiteSpace});
-   if(SCOPE==='all'&&w===1194)await shot('tablet-pinned-1194');
+   if(w===1194)await shot('tablet-pinned-1194');
    app.workspace.leftSplit.setPinned(false);app.workspace.rightSplit.setPinned(false);await pause(350);app.workspace.leftSplit.expand();await pause(350);
    const floating=rect(document.querySelector('.workspace-drawer.mod-left'));
    check(stage+' floating drawer clears safe edges',floating.top>=24&&floating.bottom<=h-19,{floating,height:h});
    const floatingDrawer=document.querySelector('.workspace-drawer.mod-left'),fname=rect(floatingDrawer.querySelector('.workspace-drawer-header-name-text')),finfo=floatingDrawer.querySelector('.workspace-drawer-header-info'),fi=rect(finfo),fline=parseFloat(getComputedStyle(finfo).lineHeight);
    check(stage+' floating drawer counts keep one line of their own',fi.height<=fline+1&&fi.top>=fname.bottom-1,{name:fname,info:fi,line:fline});
-   if(SCOPE==='all'&&w===820)await shot('tablet-drawer-820');
+   if(w===820)await shot('tablet-drawer-820');
   }
   return JSON.stringify({vault:app.vault.getName(),theme:app.customCss.theme,scope:SCOPE,palette:PALETTE,profiles,results,passed:results.filter(r=>r.pass).length,total:results.length});
  }catch(e){return JSON.stringify({stage,error:String(e),stack:e.stack,profiles,results,passed:results.filter(r=>r.pass).length,total:results.length})}

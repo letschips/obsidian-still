@@ -100,6 +100,30 @@ const code=String.raw`(async()=>{
   const darkButton={normal:luma('--interactive-normal'),hover:luma('--interactive-hover')};
   doc.body.classList.remove('theme-dark');doc.body.classList.add(...hadPalette);
   check('Dark buttons lighten on hover',darkButton.hover>darkButton.normal,darkButton);
+  // Phones with the floating navigation draw the header buttons, navbar,
+  // toolbar and prompt field as raised pills over the page. Without core's
+  // frosted glass they still need an opaque surface of their own, or icons
+  // sit on the text scrolling underneath.
+  stage='phone chrome';const phoneClasses=['is-mobile','is-phone','is-floating-nav','is-ios','still-cjk','still-black-mobile'],hadPhone=phoneClasses.filter(c=>doc.body.classList.contains(c)),hadTone=['theme-light','theme-dark'].filter(c=>doc.body.classList.contains(c));
+  doc.body.classList.remove(...phoneClasses);doc.body.classList.add('is-mobile','is-phone','is-floating-nav','is-ios');
+  const phone=doc.createElement('div');
+  phone.innerHTML='<div class="view-actions mod-raised" style="width:80px;height:40px"></div><div class="prompt" style="position:relative;inset:auto;top:0;height:auto;max-height:none"><div class="prompt-input-container mod-raised"><input class="prompt-input" type="text"></div><div class="prompt-results"><div class="suggestion-item">crisp-asr</div></div></div><div class="markdown-rendered"><p class="still-wrap-probe">x</p></div>';
+  host.append(phone);
+  const raisedEl=phone.querySelector('.mod-raised'),raised=()=>{const s=view.getComputedStyle(raisedEl);return {bg:s.backgroundColor,page:tone('--background-primary'),blur:s.backdropFilter}};
+  const tones={};
+  for(const [name,classes] of [['light',['theme-light']],['dark',['theme-dark']],['black',['theme-dark','still-black-mobile']]]){
+   doc.body.classList.remove('theme-light','theme-dark','still-black-mobile');doc.body.classList.add(...classes);tones[name]=raised();
+  }
+  doc.body.classList.remove('theme-light','theme-dark','still-black-mobile');doc.body.classList.add(...hadTone);
+  check('Phone raised controls keep an opaque surface apart from the page',Object.values(tones).every(t=>/^rgb\(/.test(t.bg)&&t.bg!==t.page),tones);
+  check('Phone raised controls draw no backdrop blur',Object.values(tones).every(t=>t.blur==='none'),tones);
+  const item=phone.querySelector('.suggestion-item'),list=phone.querySelector('.prompt-results');
+  const row={height:Math.round(item.getBoundingClientRect().height),padX:parseFloat(view.getComputedStyle(item).paddingLeft),inset:parseFloat(view.getComputedStyle(list).paddingLeft)};
+  check('Phone prompt rows are touch-sized with a readable inset',row.height>=44&&row.padX>=16&&row.inset>=8,row);
+  doc.body.classList.add('still-cjk');const probe=phone.querySelector('.still-wrap-probe'),wrapIos=view.getComputedStyle(probe).textWrapStyle;
+  doc.body.classList.remove('is-ios');const wrapOther=view.getComputedStyle(probe).textWrapStyle;
+  check('CJK paragraphs skip WebKit pretty wrapping on iOS only',wrapIos!=='pretty'&&wrapOther==='pretty',{ios:wrapIos,other:wrapOther});
+  phone.remove();doc.body.classList.remove(...phoneClasses);doc.body.classList.add(...hadPhone);
   if(MODE==='all'){stage='full surfaces';
    const normal=state();check('Normal motion keeps Still entrances',normal.menu==='still-pop'&&normal.prompt==='still-rise',normal);
    doc.body.classList.add('still-motion-off');const off=state();check('Entrance option stops Still animation',off.menu!=='still-pop'&&off.prompt!=='still-rise',off);doc.body.classList.remove('still-motion-off');
