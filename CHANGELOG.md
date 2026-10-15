@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.6.4 · 2026-10-15
+
+### Fixed
+- **Quiet vault switcher is easy to click.** Reaching Settings revealed the vault name, but the 4px gap between the two (and the name being shorter than the button) dropped the hover, and the name vanished under the pointer on its way over. The whole vault foot now holds the hover once the pointer is in, and the name lingers for 300ms after the pointer leaves, still clickable. At rest its spot still lets the pointer through to the sidebar.
+- Tests: added `tests/vault-foot.e2e.mjs` (4 checks, main window).
+
+### 中文
+- 安静的库切换器更好点了：原来鼠标到设置按钮时库名会出现，但往左移时会经过两者之间 4px 的空隙（库名也比按钮矮），悬停随即丢失，库名在鼠标到达前就消失了。现在鼠标进入后整条库栏都保持悬停；离开后库名停留 300ms，期间仍可点击。平时库名所在位置依然不挡侧栏。
+- 测试：新增 `tests/vault-foot.e2e.mjs`（4 项检查，在主窗口运行）。
+
 ## 0.6.3 · 2026-10-14
 
 ### Fixed

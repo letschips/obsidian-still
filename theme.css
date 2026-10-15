@@ -395,6 +395,7 @@ body {
   --still-fast: 140ms;
   --still-moderate: 240ms;
   --still-peek-delay: 150ms;
+  --still-vault-linger: 300ms;
   --still-peek-width: 300px;
   --still-peek-trigger: 6px;
   --still-gutter: 8px;
@@ -1287,16 +1288,24 @@ body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-leaf-content > 
   padding-bottom: 64px;
 }
 
+/* Once the pointer is in, the whole foot holds the hover, so the gap between
+   Settings and the name (and a slightly off line) does not drop it. */
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:hover {
+  pointer-events: auto;
+}
+
+/* The name stays clickable while it lingers; visibility, not pointer-events,
+   takes it away, because only visibility can wait. */
 body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile .workspace-drawer-vault-switcher {
-  transition: opacity var(--still-fast) var(--still-ease-out);
+  pointer-events: auto;
+  transition: opacity var(--still-fast) var(--still-ease-out), visibility 0s;
 }
 
 body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:not(:hover) .workspace-drawer-vault-switcher:not(.has-active-menu) {
   opacity: 0;
-}
-
-body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:hover .workspace-drawer-vault-switcher {
-  pointer-events: auto;
+  visibility: hidden;
+  transition: opacity var(--still-fast) var(--still-ease-out) var(--still-vault-linger),
+    visibility 0s linear calc(var(--still-vault-linger) + var(--still-fast));
 }
 
 /* ========================================================================== */
