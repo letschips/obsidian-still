@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.6.3 · MIT License · https://github.com/letschips
+  Version 0.6.5 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -9,9 +9,9 @@
 
   Principles
   - Obsidian variables first; selectors stay short and low in specificity.
-  - Light to render: no filters or backdrop blur, no 3D transforms or
-    will-change, no body-level :has(). Motion animates transform and
-    opacity on a few panels only.
+  - Light to render: no backdrop blur or filters on the interface, no 3D
+    transforms or will-change, no body-level :has(). Motion animates
+    transform and opacity on a few panels only.
   - Works without Style Settings. Every option below is additive.
   - Opaque by design. Window translucency is left to an optional snippet:
     the theme never sets backdrop-filter, uses translucent hairlines rather
@@ -258,8 +258,8 @@ settings:
     id: still-hide-vault
     title: Quiet vault switcher
     title.zh: 安静的库切换器
-    description: The vault foot floats over the sidebar with only the Settings button; the vault name appears when the pointer reaches it. Help stays on F1.
-    description.zh: 库信息浮在侧栏底部，只留设置按钮；鼠标移上去才显示库名。帮助可按 F1 打开。
+    description: The vault foot floats over the sidebar with only the Settings button; the vault name appears when the pointer reaches it. Help is in the command palette (search for Help).
+    description.zh: 库信息浮在侧栏底部，只留设置按钮；鼠标移上去才显示库名。帮助可在命令面板搜索「查看帮助」打开。
     type: class-toggle
     default: false
   -
@@ -467,7 +467,10 @@ body {
   --link-decoration: none;
   --link-external-decoration: none;
   --link-decoration-hover: underline;
-  --link-unresolved-opacity: 0.6;
+  /* Unresolved links read in muted ink with a dotted underline (drawn
+     below), so the cue is not colour or opacity alone. */
+  --link-unresolved-color: var(--text-muted);
+  --link-unresolved-opacity: 1;
   --link-unresolved-decoration-style: dotted;
 
   --blockquote-border-thickness: 2px;
@@ -717,9 +720,9 @@ body {
 
   --tab-container-background: var(--background-secondary);
   --tab-background-active: var(--background-modifier-hover);
-  --tab-text-color: var(--text-faint);
+  --tab-text-color: var(--text-muted);
   --tab-text-color-active: var(--text-normal);
-  --tab-text-color-focused: var(--text-faint);
+  --tab-text-color-focused: var(--text-muted);
   --tab-text-color-focused-active: var(--text-normal);
   --tab-text-color-focused-active-current: var(--text-normal);
   --tab-outline-color: transparent;
@@ -732,8 +735,6 @@ body {
   --ribbon-background-collapsed: var(--background-secondary);
   --status-bar-background: var(--background-secondary);
   --status-bar-border-width: 0px;
-
-  --button-shadow: none;
 
   --blockquote-border-color: var(--background-modifier-border-hover);
   --blockquote-background-color: var(--still-quote);
@@ -802,6 +803,13 @@ body {
 .cm-hmd-internal-link,
 .cm-link {
   text-underline-offset: 3px;
+}
+
+/* Core draws the unresolved line from --link-decoration, which Still sets to
+   none; give the dotted style a line to draw. */
+.markdown-rendered .internal-link.is-unresolved,
+.markdown-source-view.mod-cm6 .is-unresolved .cm-underline {
+  text-decoration-line: underline;
 }
 
 .inline-title:not([data-level]) {
@@ -1139,11 +1147,11 @@ body:not(.is-mobile) .mod-sidedock .view-content .nav-header {
 
 .nav-file-tag {
   background-color: transparent;
-  color: var(--text-faint);
+  color: var(--text-muted);
 }
 
 .tree-item-flair {
-  color: var(--text-faint);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1277,8 +1285,8 @@ body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-
   pointer-events: auto;
 }
 
-/* Help stays one keypress away (F1 or the command palette); the vault foot
-   keeps only Settings. */
+/* Help stays in the command palette (Obsidian binds no key to it); the
+   vault foot keeps only Settings. */
 body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-drawer-vault-actions .clickable-icon:first-child {
   display: none;
 }
@@ -1531,12 +1539,12 @@ body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscr
   transition-delay: var(--still-peek-delay);
 }
 
-/* Ribbon tiles follow Baseline: 32px hit areas 4px apart, 12px from the
-   window edge, starting flush under the header line. Icons at full opacity,
+/* Ribbon tiles follow Baseline: 32px hit areas 4px apart, centred in the
+   44px ribbon, starting flush under the header line. Icons at full opacity,
    as in Baseline, so they hold their own beside the file tree's text. */
 body:not(.is-mobile) .workspace-ribbon.mod-primary {
   --icon-opacity: 1;
-  padding: 0 4px 12px 12px;
+  padding: 0 6px 12px;
 }
 
 body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-actions {
@@ -1620,7 +1628,7 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
 
 .menu-group-title,
 .menu-item-title.mod-group {
-  color: var(--text-faint);
+  color: var(--text-muted);
   font-size: var(--font-ui-smaller);
   font-weight: 500;
 }
@@ -1687,7 +1695,7 @@ body.is-popout-modal .modal {
 
 .prompt-instructions {
   border-top: 1px solid var(--still-hairline);
-  color: var(--text-faint);
+  color: var(--text-muted);
 }
 
 /* Core turns settings dropdowns into right-aligned text with a round arrow
@@ -1858,6 +1866,12 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
 
 .markdown-rendered :is(th, td) {
   border-inline-width: 0;
+  padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
+}
+
+/* Live Preview pads an inner wrapper instead of the cell. */
+.markdown-source-view.mod-cm6 .cm-table-widget .table-cell-wrapper {
+  padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
 }
 
 /* Callouts: a wash of the callout hue, no frame. Since Obsidian 1.13 the
@@ -1866,8 +1880,20 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
   background-color: color-mix(in srgb, var(--callout-color) 8%, transparent);
 }
 
+/* Core inks the title and icon with the raw hue, which is tuned for the
+   wash and falls below 4.5:1 as text. Mix it halfway toward the text color;
+   the wash keeps the raw hue. */
+.callout {
+  --still-callout-ink: color-mix(in srgb, var(--callout-color) 50%, var(--text-normal));
+}
+
 .callout-title {
   gap: 8px;
+  color: var(--still-callout-ink);
+}
+
+.callout-icon .svg-icon {
+  color: var(--still-callout-ink);
 }
 
 .callout-content > :first-child {
@@ -1887,8 +1913,10 @@ body.still-card-callouts.theme-dark .callout {
   background-color: color-mix(in srgb, var(--callout-color) 30%, transparent);
 }
 
+/* The right padding keeps a long title clear of the corner icon
+   (56px wide, 16px from the edge). */
 body.still-card-callouts .callout-title {
-  padding: 12px 12px 16px;
+  padding: 12px 72px 16px 12px;
 }
 
 body.still-card-callouts .callout-icon {

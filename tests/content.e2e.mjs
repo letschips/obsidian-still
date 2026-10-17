@@ -10,7 +10,10 @@
 // must come from a row's position, checked here on captured pixels. Also
 // headings and spacing sized off the root font size, which differs from the
 // text size in popout windows (15px vs 17px) and with iOS text scaling, and
-// card callouts whose last block (a nested callout) adds an extra gap below.
+// card callouts whose last block (a nested callout) adds an extra gap below,
+// callout titles inked with the raw fill hue, card titles running under the
+// corner icon, unresolved links told apart by opacity alone, and table
+// padding tokens that nothing reads.
 // Usage: node tests/content.e2e.mjs <vault> <report.json> [base path] [table view]
 // The Bases stripe checks need a .base file with a table view long enough to
 // scroll; without the last two arguments they are skipped.
@@ -126,6 +129,11 @@ const code=String.raw`(async()=>{
   const tblRead=edges('.tbl-read'),tblEdit=edges('.tbl-edit');
   check('Tables have no vertical rules in reading view or the editor',[...tblRead,...tblEdit].every(([l,r])=>l===0&&r===0),{read:tblRead,edit:tblEdit});
   check('Tables keep a hairline under every row',[...tblRead,...tblEdit].every(([,,b])=>b>0),{read:tblRead,edit:tblEdit});
+  // Cell padding follows --table-cell-padding-x/y in both views (the editor
+  // pads an inner wrapper).
+  host.querySelector('.tbl-edit td').innerHTML='<div class="table-cell-wrapper">1</div>';
+  const padRead=getComputedStyle(host.querySelector('.tbl-read td')).padding,padEdit=getComputedStyle(host.querySelector('.tbl-edit .table-cell-wrapper')).padding;
+  check('Table cells use the theme padding in reading view and the editor',padRead==='7px 12px'&&padEdit==='7px 12px',{read:padRead,edit:padEdit});
   // Per-note classes (cssclasses): "wide" and "max" widen one note's line in
   // both views; other notes keep the line width.
   stage='note widths';
@@ -168,6 +176,22 @@ const code=String.raw`(async()=>{
   check('Card callouts leave no extra gap under a nested callout',cardCo.bottom<=cardCo.top+1,cardCo);
   check('A collapsed card callout keeps its corner icon inside',cardCo.iconOut<=0,cardCo);
   check('Plain callouts keep core spacing under a nested callout',plainCo.bottom>0,plainCo);
+  // Callout titles and icons are inked darker than the raw hue (the raw hue
+  // is a fill color, below 4.5:1 as text); a card title keeps clear of the
+  // corner icon.
+  stage='callout ink';
+  const outerCo=host.querySelector('.co-read > .callout'),coTitle=outerCo.querySelector('.callout-title'),coSvg=outerCo.querySelector('.callout-icon .svg-icon');
+  const ink={raw:getComputedStyle(outerCo).getPropertyValue('--callout-color').trim(),title:getComputedStyle(coTitle).color,icon:getComputedStyle(coSvg).color};
+  const probeInk=document.createElement('span');probeInk.style.color=ink.raw;host.append(probeInk);ink.rawResolved=getComputedStyle(probeInk).color;probeInk.remove();
+  check('Callout title and icon use a darker ink than the raw hue',ink.title!==ink.rawResolved&&ink.title===ink.icon,ink);
+  toggle('still-card-callouts',true);const cardPad=parseFloat(getComputedStyle(coTitle).paddingRight),cardIcon=outerCo.querySelector('.callout-icon').getBoundingClientRect().width;toggle('still-card-callouts',false);
+  check('Card callout titles reserve the corner icon',cardPad>=cardIcon+16,{cardPad,cardIcon});
+  // Unresolved links carry a dotted underline, not only a fainter color.
+  stage='unresolved links';
+  host.insertAdjacentHTML('beforeend','<div class="markdown-rendered ul-read"><a class="internal-link is-unresolved">x</a></div><div class="markdown-source-view mod-cm6"><div class="cm-content"><span class="cm-hmd-internal-link is-unresolved ul-edit"><span class="cm-underline">x</span></span></div></div>');
+  const ul=e=>{const cs=getComputedStyle(e);return [cs.textDecorationLine,cs.textDecorationStyle,getComputedStyle(e.closest('.is-unresolved')).opacity]};
+  const ulRead=ul(host.querySelector('.ul-read a')),ulEdit=ul(host.querySelector('.ul-edit .cm-underline'));
+  check('Unresolved links draw a dotted underline at full opacity',[ulRead,ulEdit].every(([l,s,o])=>l==='underline'&&s==='dotted'&&o==='1'),{read:ulRead,edit:ulEdit});
   host.remove();host=null;
   if(BASE_PATH){
   stage='bases';

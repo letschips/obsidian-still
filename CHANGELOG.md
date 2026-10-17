@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.6.5 · 2026-10-17
+
+### Fixed
+- **Callout titles and icons are readable.** They used the raw callout hue, a fill color that fell to about 2:1 against the wash in light mode (note and info). Titles and icons now use the hue mixed halfway with the text color, 4.5:1 or better for every hue in both modes and both callout styles. The wash is unchanged.
+- **Card callouts:** a long title no longer runs under the corner icon.
+- **Unresolved links** draw their dotted underline and use the muted text color at full opacity. They were told apart by 0.6 opacity alone, below 3:1.
+- **Faint small text** (inactive tabs, file tags, tree flairs, menu group titles, prompt instructions) uses the muted text color, which clears 4.5:1.
+- **Table cells** use the theme's 7px / 12px padding in reading view and Live Preview. The padding tokens were declared but never read, so tables stayed at core's 4px / 8px.
+- **Ribbon icons** are centred in the ribbon instead of touching the sidebar edge.
+- Quiet vault switcher: the description now says Help is in the command palette. Obsidian binds no key to Help, so "Help stays on F1" was wrong.
+- Removed the unused `--button-shadow` token; the header version is current.
+- Tests: 4 new checks in `tests/content.e2e.mjs`; the ribbon check in `tests/surfaces.e2e.mjs` now asserts centring.
+
+### 中文
+- callout 标题和图标看得清了：原来直接用 callout 的色相，这是按底色调的颜色，浅色模式下 note、info 的标题对比度只有约 2:1。现在标题和图标用色相与正文色各半混合，所有颜色在深浅模式、两种 callout 样式下都达到 4.5:1 以上；底色不变。
+- 卡片 callout：长标题不再压到右上角的大图标下面。
+- 未解析链接：补上虚线下划线，改用次要文字色、不再半透明。原来只靠 0.6 的透明度区分，对比度不到 3:1。
+- 小号淡色文字（非当前标签、文件标签、树状列表角标、菜单分组标题、命令面板提示）改用次要文字色，达到 4.5:1。
+- 表格单元格在阅读视图和实时预览里都用主题的 7px / 12px 内边距。原来这两个变量声明了但没有被读取，表格一直是核心的 4px / 8px。
+- 功能区图标在功能区里居中，不再贴着侧栏边缘。
+- 安静的库切换器：说明改为「帮助可在命令面板搜索打开」。Obsidian 没有给帮助绑定快捷键，原来写的 F1 不对。
+- 删除无效的 `--button-shadow` 变量；文件头版本号更新。
+- 测试：`tests/content.e2e.mjs` 新增 4 项检查；`tests/surfaces.e2e.mjs` 的功能区检查改为断言居中。
+
 ## 0.6.4 · 2026-10-15
 
 ### Fixed

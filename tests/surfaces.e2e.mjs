@@ -64,9 +64,9 @@ const code=String.raw`(async()=>{
   check('Floating ribbon matches the peek panel surface',soft.includes(tone('--background-primary'))&&solid.includes(tone('--background-secondary')),{soft,solid});
   check('Floating ribbon paints its own opaque surface',parked.image.startsWith('linear-gradient')&&parked.position==='absolute'&&parked.zIndex==='-1'&&plain.image==='none',{plain,parked});
   check('Ribbon beside an open sidebar has no surface',open.image==='none',{open});
-  // Ribbon tiles: 32px hit areas, 4px apart, 12px from the window edge.
-  stage='ribbon tiles';const tiles=[...host.querySelectorAll('.side-dock-ribbon-action')],box=tiles.map(t=>t.getBoundingClientRect()),actions=view.getComputedStyle(host.querySelector('.side-dock-actions'));
-  check('Ribbon tiles are 32px with a 4px gap',box.every(b=>b.width===32&&b.height===32)&&actions.rowGap==='4px'&&view.getComputedStyle(ribbon).paddingLeft==='12px',{sizes:box.map(b=>[b.width,b.height]),gap:actions.rowGap,paddingLeft:view.getComputedStyle(ribbon).paddingLeft});
+  // Ribbon tiles: 32px hit areas, 4px apart, centred in the ribbon.
+  stage='ribbon tiles';const tiles=[...host.querySelectorAll('.side-dock-ribbon-action')],box=tiles.map(t=>t.getBoundingClientRect()),actions=view.getComputedStyle(host.querySelector('.side-dock-actions')),ribbonStyle=view.getComputedStyle(ribbon);
+  check('Ribbon tiles are 32px with a 4px gap, centred',box.every(b=>b.width===32&&b.height===32)&&actions.rowGap==='4px'&&ribbonStyle.paddingLeft==='6px'&&ribbonStyle.paddingRight==='6px',{sizes:box.map(b=>[b.width,b.height]),gap:actions.rowGap,paddingLeft:ribbonStyle.paddingLeft,paddingRight:ribbonStyle.paddingRight});
   // A leaf in a collapsed sidebar stays active after the pointer leaves; the
   // peek panel must still park, and stay open only while focus is inside.
   stage='peek focus';const dock=doc.createElement('div');dock.className='workspace-split mod-sidedock mod-right-split is-sidedock-collapsed';dock.style.cssText='display:none;width:0';
