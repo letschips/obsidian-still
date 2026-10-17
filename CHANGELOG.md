@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.6.6 · 2026-10-17
+
+### Fixed
+- **No frosted glass on mobile menus, prompts and suggestions.** Obsidian's mobile rules blurred them and left them 90% opaque on phones and tablets. They are now solid, as on desktop.
+- **Image and PDF embed buttons** are an opaque chip without blur on every platform.
+- **Dialogs keep Still's shadow** (the lit edge in dark mode) instead of core's, which replaced it whenever the backdrop was dimmed.
+- **Mobile dark mode:** the base color steps climb in order again (pure black included: embeds and code no longer swap brightness), tags keep Still's lighter tint, and Plain tags stays plain. In mobile light mode the darkest step is Still's ink, not pure black.
+- **Tablet dark mode:** the status area uses the tab strip's tone, as in light mode.
+- **Inline code in the editor** has the same 5px corners as in reading view (it took the 10px code-block radius).
+- **Graphite links** keep their hairline underline in the editor; it was drawn in the full text color. Bare URLs get the same underline offset.
+- **Dark PDFs** no longer get core's 1px frame.
+- Tests: 7 new checks in `tests/surfaces.e2e.mjs`.
+
+### 中文
+- 手机和平板上的菜单、命令面板、补全列表不再有毛玻璃：Obsidian 的移动端规则给它们加了模糊、只有 90% 不透明，现在和桌面一样是实底。
+- 图片和 PDF 嵌入右上角的按钮：所有平台都改为不透明底、不模糊。
+- 对话框保留 Still 的阴影（深色模式下的亮边）。原来只要背景变暗，就被核心阴影换掉。
+- 移动端深色模式：底色阶梯恢复由暗到亮的顺序（纯黑模式下嵌入块和代码块的明暗不再颠倒），标签保持 Still 较淡的底色，「朴素标签」选项也恢复无底色。移动端浅色模式下最深一级用 Still 的文字色，而不是纯黑。
+- 平板深色模式：顶部状态区与标签栏同色，和浅色模式一致。
+- 编辑器里的行内代码圆角改为 5px，和阅读视图一致（原来用了代码块的 10px）。
+- 石墨链接在编辑器里也是细线下划线（原来是正文色的实线）；裸链接的下划线偏移也一致了。
+- 深色模式的 PDF 页面不再有核心加的 1px 边框。
+- 测试：`tests/surfaces.e2e.mjs` 新增 7 项检查。
+
 ## 0.6.5 · 2026-10-17
 
 ### Fixed

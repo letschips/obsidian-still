@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.6.5 · MIT License · https://github.com/letschips
+  Version 0.6.6 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -505,6 +505,9 @@ body {
   --nav-indentation-guide-width: 0px;
 
   --pdf-shadow: none;
+  /* Image and PDF embed buttons: an opaque chip, no frosted glass. */
+  --embed-actions-blur: none;
+  --embed-actions-background: var(--background-primary);
   --scrollbar-radius: 99px;
   --divider-width: 1px;
 }
@@ -677,6 +680,8 @@ body:not(.is-mobile) {
   --still-page-shadow: 0 0 0 1px rgb(255 255 255 / 0.07), 0 2px 2px -1px rgb(0 0 0 / 0.1), 0 8px 8px -4px rgb(0 0 0 / 0.1), 0 24px 24px -12px rgb(0 0 0 / 0.07);
   --still-float-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.08), 0 10px 32px rgb(0 0 0 / 0.4);
   --still-dialog-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.08), 0 24px 72px rgb(0 0 0 / 0.5);
+  /* Core gives dark PDFs a 1px frame here; Still keeps pages unframed. */
+  --pdf-shadow: none;
 
   --code-normal: #c9d1d9;
   --code-comment: #6a737d;
@@ -801,7 +806,8 @@ body {
 
 .markdown-rendered a,
 .cm-hmd-internal-link,
-.cm-link {
+.cm-link,
+.cm-url {
   text-underline-offset: 3px;
 }
 
@@ -1657,7 +1663,9 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
   padding: 5px 9px;
 }
 
+/* Core repaints a dimmed dialog's shadow from .modal-container.mod-dim. */
 .modal,
+.modal-container.mod-dim .modal,
 .prompt {
   background-color: var(--still-raised);
   border: 0;
@@ -1666,7 +1674,8 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
 }
 
 /* A dialog that is its own window: the window is the frame. */
-body.is-popout-modal .modal {
+body.is-popout-modal .modal,
+body.is-popout-modal .modal-container.mod-dim .modal {
   border-radius: 0;
   box-shadow: none;
 }
@@ -1812,10 +1821,15 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
 /* 12. Content                                                                */
 /* ========================================================================== */
 
-.markdown-rendered code,
-.cm-s-obsidian span.cm-inline-code {
+.markdown-rendered code {
   border-radius: calc(4px * var(--still-r));
   padding: 0.12em 0.36em;
+}
+
+/* The editor rounds inline code (and its backtick ends) from --code-radius,
+   which Still sets for code blocks; scope the inline radius to the span. */
+.cm-s-obsidian span.cm-inline-code {
+  --code-radius: calc(4px * var(--still-r));
 }
 
 .markdown-rendered pre {
@@ -2080,11 +2094,14 @@ body.still-graphite {
   --nav-item-background-selected: var(--background-modifier-active-hover);
 }
 
-body.still-graphite :is(.markdown-rendered a, .cm-hmd-internal-link, .cm-link) {
+/* In the editor the line is drawn by an inner .cm-underline, which does not
+   take its parent's decoration color. */
+body.still-graphite :is(.markdown-rendered a, .cm-hmd-internal-link, .cm-link, .cm-url, :is(.cm-hmd-internal-link, .cm-link, .cm-url) .cm-underline) {
   text-decoration-color: var(--still-hairline-strong);
 }
 
-body.still-plain-tags {
+body.still-plain-tags,
+body.is-mobile.theme-dark.still-plain-tags {
   --tag-background: transparent;
   --tag-background-hover: transparent;
   --tag-padding-x: 0;
@@ -2291,14 +2308,38 @@ body.is-mobile {
   --still-sheet-card: var(--background-primary);
   --menu-divider-color: var(--background-modifier-border);
   --menu-divider-width: 1px;
+
+  /* Menus, prompts and suggestions: opaque, without core's mobile blur. */
+  --menu-backdrop-filter: none;
+  --prompt-backdrop-filter: none;
+  --suggestion-backdrop-filter: none;
+  --blur-opacity-m: 100%;
+}
+
+/* Core's mobile palettes reset a few base steps and the tag tint; keep
+   Still's ladder so it still climbs in order (pure black included). */
+body.is-mobile.theme-light {
+  --color-base-100: #232324;
 }
 
 body.is-mobile.theme-dark {
+  --color-base-00: #161616;
+  --color-base-10: #1d1d1d;
+  --color-base-20: #202020;
+  --tag-background: color-mix(in oklch, var(--color-accent) 10%, transparent);
+  --tag-background-hover: color-mix(in oklch, var(--color-accent) 20%, transparent);
   --raised-background: var(--still-raised);
   --modal-background: var(--background-primary);
   --still-sheet: var(--background-primary);
   --still-sheet-card: color-mix(in srgb, var(--background-primary), white 5%);
   --menu-divider-color: var(--background-modifier-hover);
+}
+
+/* Core gives the tablet status area the page tone in dark mode only; keep
+   it on the tab strip's tone as in light mode. */
+body.is-tablet.theme-dark {
+  --titlebar-background: var(--background-secondary);
+  --titlebar-background-focused: var(--background-secondary);
 }
 
 /* Option: pure black for OLED screens. Page, sidebars, sheets and dialogs go

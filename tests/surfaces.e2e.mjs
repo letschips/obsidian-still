@@ -124,6 +124,33 @@ const code=String.raw`(async()=>{
   doc.body.classList.remove('is-ios');const wrapOther=view.getComputedStyle(probe).textWrapStyle;
   check('CJK paragraphs skip WebKit pretty wrapping on iOS only',wrapIos!=='pretty'&&wrapOther==='pretty',{ios:wrapIos,other:wrapOther});
   phone.remove();doc.body.classList.remove(...phoneClasses);doc.body.classList.add(...hadPhone);
+  // Core 1.14 overrides Still from higher-specificity rules: mobile blur on
+  // menus, prompts and suggestions, frosted embed buttons, a dimmed dialog's
+  // shadow, the mobile dark ladder and tag tint, and the editor's inline code
+  // radius and link underline color.
+  stage='core overrides';
+  const ov=doc.createElement('div');ov.style.cssText='position:fixed;left:0;top:0;width:400px;z-index:-1';
+  ov.innerHTML='<div class="suggestion-container">s</div><div class="modal-container mod-dim"><div class="modal">m</div></div><div class="markdown-rendered"><div class="internal-embed image-embed"><div class="embed-actions">a</div></div><a class="tag">#t</a></div><div class="markdown-source-view mod-cm6 cm-s-obsidian"><div class="cm-content"><div class="cm-line"><span class="cm-inline-code">c</span> <span class="cm-hmd-internal-link"><span class="cm-underline">l</span></span></div></div></div>';
+  doc.body.append(ov);const oq=x=>ov.querySelector(x),ocs=(e,k)=>view.getComputedStyle(e)[k];
+  const ovClasses=['is-mobile','is-phone','is-tablet','theme-light','theme-dark','still-plain-tags','still-black-mobile','still-graphite'],hadOv=ovClasses.filter(c=>doc.body.classList.contains(c));
+  const ovSet=(...c)=>{doc.body.classList.remove(...ovClasses);doc.body.classList.add(...c)};
+  ovSet('theme-dark');
+  const dlg={shadow:ocs(oq('.modal'),'boxShadow'),embed:[ocs(oq('.embed-actions'),'backdropFilter'),ocs(oq('.embed-actions'),'backgroundColor')]};
+  check('Dimmed dialogs keep the Still shadow',dlg.shadow.includes('72px'),dlg);
+  check('Embed buttons are opaque without blur',dlg.embed[0]==='none'&&!/\/ 0\./.test(dlg.embed[1]),dlg);
+  const mob={};
+  for(const form of ['is-phone','is-tablet']){ovSet('theme-dark','is-mobile',form);mob[form]=[menu,prompt,oq('.suggestion-container')].map(e=>[ocs(e,'backdropFilter'),ocs(e,'backgroundColor')])}
+  check('Mobile menus, prompts and suggestions are opaque without blur',Object.values(mob).flat().every(([f,bg])=>f==='none'&&!/\/ 0\./.test(bg)),mob);
+  ovSet('theme-dark','is-mobile','is-phone');const bs=view.getComputedStyle(doc.body),ladder=['--color-base-00','--color-base-05','--color-base-10','--color-base-20'].map(k=>bs.getPropertyValue(k).trim()),tagTint=ocs(oq('a.tag'),'backgroundColor');
+  ovSet('theme-dark','is-mobile','is-phone','still-plain-tags');const plainTag=ocs(oq('a.tag'),'backgroundColor');
+  check('Mobile dark keeps a climbing base ladder',JSON.stringify(ladder)===JSON.stringify(['#161616','#191919','#1d1d1d','#202020']),ladder);
+  check('Plain tags stay plain in mobile dark',plainTag==='rgba(0, 0, 0, 0)'&&tagTint!==plainTag,{tagTint,plainTag});
+  ovSet('theme-light','still-graphite');
+  const ed={editor:ocs(oq('.cm-inline-code'),'borderTopLeftRadius'),underline:ocs(oq('.cm-underline'),'textDecorationColor')};
+  const readCode=doc.createElement('code');oq('.markdown-rendered').append(readCode);ed.read=ocs(readCode,'borderTopLeftRadius');
+  check('Inline code has the same radius in the editor and reading view',ed.editor===ed.read,ed);
+  check('Graphite links keep the hairline underline in the editor',ed.underline!==ocs(oq('.cm-underline'),'color'),ed);
+  ov.remove();doc.body.classList.remove(...ovClasses);doc.body.classList.add(...hadOv);
   if(MODE==='all'){stage='full surfaces';
    const normal=state();check('Normal motion keeps Still entrances',normal.menu==='still-pop'&&normal.prompt==='still-rise',normal);
    doc.body.classList.add('still-motion-off');const off=state();check('Entrance option stops Still animation',off.menu!=='still-pop'&&off.prompt!=='still-rise',off);doc.body.classList.remove('still-motion-off');
