@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.7 · 2026-10-20
+
+### Changed
+- **Quiet status bar is easier to reach and slower to leave.** It opens when the pointer comes within about 24px above the resting line (48px to each side), and stays open 500ms after the pointer leaves before folding.
+
+### Fixed
+- **Quiet status bar keeps its surface in translucent windows.** The pill and the resting line are painted on a pseudo-element, so snippets that clear the status bar background no longer leave them transparent.
+- Tests: new `tests/status-bar.e2e.mjs`.
+
+### 中文
+- 安静状态栏更容易唤出、收起更从容：鼠标到短线上方约 24px、左右各 48px 内就会展开；移开后停留 500ms 再收起。
+- 半透明窗口下安静状态栏不再透明：胶囊和短线的底色改由伪元素绘制，清掉状态栏背景的 snippet 不会再把它变透明。
+- 测试：新增 `tests/status-bar.e2e.mjs`。
+
 ## 0.6.6 · 2026-10-17
 
 ### Fixed
