@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.8 · 2026-10-20
+
+### Changed
+- **Quiet status bar has no resting line.** It stays hidden until the pointer nears the bottom center (a 256 × 32px band), then the pill fades in. When the pointer leaves, the pill fades out in place over 400ms instead of holding and then shrinking into the line.
+
+### 中文
+- 安静状态栏去掉了底部短线：平时完全隐藏，鼠标靠近底部中间（256 × 32px 的范围）时胶囊淡入；移开后原地 400ms 淡出，不再先停顿、再缩成短线。
+
 ## 0.6.7 · 2026-10-20
 
 ### Changed

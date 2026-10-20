@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.6.7 · MIT License · https://github.com/letschips
+  Version 0.6.8 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -274,8 +274,8 @@ settings:
     id: still-quiet-status
     title: Quiet status bar
     title.zh: 安静的状态栏
-    description: The status bar rests as a short line at the bottom center until hovered.
-    description.zh: 状态栏平时是底部中间的一条短线，悬停时展开。
+    description: The status bar stays hidden until the pointer nears the bottom center.
+    description.zh: 状态栏平时隐藏，鼠标靠近底部中间时出现。
     type: class-toggle
     default: false
   -
@@ -396,9 +396,9 @@ body {
   --still-moderate: 240ms;
   --still-peek-delay: 150ms;
   --still-vault-linger: 300ms;
-  --still-status-reach: 24px;
-  --still-status-reach-x: 48px;
-  --still-status-linger: 500ms;
+  --still-status-reach: 32px;
+  --still-status-reach-x: 128px;
+  --still-status-fade: 400ms;
   --still-peek-width: 300px;
   --still-peek-trigger: 6px;
   --still-gutter: 8px;
@@ -2179,11 +2179,11 @@ body.still-bases-stripes .bases-tbody {
   background-size: 100% calc(var(--bases-table-row-height) * 2);
 }
 
-/* Option: quiet status bar — a short line at the bottom center that opens
-   into a pill on hover. The surface is painted on ::before, so a snippet that
-   clears the bar's own background (translucent windows) cannot erase it; ::after
-   is an invisible reach zone that makes the resting line easy to find (no
-   overflow clipping here: it would also clip that zone out of hit testing). */
+/* Option: quiet status bar — hidden until the pointer nears the bottom center,
+   then the pill fades in; it fades out in place when the pointer leaves. The
+   surface is painted on ::before, so a snippet that clears the bar's own
+   background (translucent windows) cannot erase it. At rest the bar ignores
+   the pointer and only ::after, a band at the bottom center, picks it up. */
 body.still-quiet-status:not(.is-mobile) .status-bar {
   left: 50%;
   right: auto;
@@ -2196,11 +2196,7 @@ body.still-quiet-status:not(.is-mobile) .status-bar {
   isolation: isolate;
   background-color: transparent;
   box-shadow: var(--still-float-shadow);
-  transition: max-width var(--still-moderate) var(--still-glide),
-    height var(--still-moderate) var(--still-glide),
-    bottom var(--still-moderate) var(--still-glide),
-    padding var(--still-moderate) var(--still-glide),
-    box-shadow var(--still-moderate) var(--still-glide);
+  transition: opacity var(--still-moderate) var(--still-ease-out);
 }
 
 body.still-quiet-status:not(.is-mobile) .status-bar::before,
@@ -2214,43 +2210,27 @@ body.still-quiet-status:not(.is-mobile) .status-bar::before {
   inset: 0;
   border-radius: inherit;
   background-color: var(--still-raised);
-  transition: background-color var(--still-moderate) var(--still-glide);
 }
 
 body.still-quiet-status:not(.is-mobile) .status-bar::after {
   inset: -8px -8px -4px;
+  pointer-events: auto;
 }
 
 body.still-quiet-status:not(.is-mobile) .status-bar > * {
   white-space: nowrap;
-  transition: opacity var(--still-moderate) var(--still-glide);
 }
 
 body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within) {
-  bottom: 2px;
-  max-width: 160px;
-  height: 4px;
-  min-height: 0;
-  padding-block: 0;
-  box-shadow: none;
-  transition-delay: var(--still-status-linger);
-}
-
-body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within)::before {
-  background-color: color-mix(in srgb, var(--text-normal) 20%, transparent);
-  transition-delay: var(--still-status-linger);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--still-status-fade) var(--still-ease-out);
 }
 
 body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within)::after {
-  inset: calc(var(--still-status-reach) * -1) calc(var(--still-status-reach-x) * -1) -2px;
-}
-
-/* Hidden items leave hit testing, so only ::after reaches out at rest. */
-body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within) > * {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--still-fast) var(--still-glide) var(--still-status-linger),
-    visibility 0s linear calc(var(--still-status-linger) + var(--still-fast));
+  inset: auto auto -4px calc(50% - var(--still-status-reach-x));
+  width: calc(var(--still-status-reach-x) * 2);
+  height: var(--still-status-reach);
 }
 
 /* ========================================================================== */
@@ -2644,7 +2624,6 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
   body.still-peek-ribbon .workspace-tabs.mod-top-left-space .workspace-tab-header-container,
   .workspace-ribbon,
   .status-bar,
-  .status-bar::before,
   .status-bar > *,
   .view-header-title-container,
   .nav-folder-title .collapse-icon svg.svg-icon,

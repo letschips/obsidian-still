@@ -20,21 +20,24 @@ const code=String.raw`(async()=>{
   const surface=()=>getComputedStyle(bar,'::before').backgroundColor;
   const width=()=>bar.getBoundingClientRect().width;
 
-  stage='rest';await away();const line=bar.getBoundingClientRect(),restSurface=surface();
-  check('Resting line is painted even when the bar background is cleared',alpha(restSurface)>0&&line.width<=160&&line.height<=4,{restSurface,line:[line.width,line.height],barBackground:getComputedStyle(bar).backgroundColor});
+  const op=()=>Number(getComputedStyle(bar).opacity);
+  stage='rest';await away();const box=bar.getBoundingClientRect(),restSurface=surface(),restOpacity=op();
+  const edge=document.elementFromPoint(Math.round(box.left+12),Math.round(box.top+box.height/2));
+  check('Nothing shows at rest and the bar edges do not catch the pointer',restOpacity===0&&!bar.contains(edge)&&edge!==bar,{restOpacity,edge:edge?.className});
 
-  stage='reach';await mouse(cx+100,line.top-18);await pause(150);const near=bar.matches(':hover');
-  await away();await mouse(cx,line.top-60);await pause(150);const far=bar.matches(':hover');
-  check('Pointer near the line opens the bar; farther up it does not',near&&!far,{near,far,lineTop:line.top});
+  stage='reach';const bottom=innerHeight;await mouse(cx+100,bottom-24);await pause(150);const near=bar.matches(':hover');
+  await away();await mouse(cx,bottom-60);await pause(150);const far=bar.matches(':hover');
+  check('Pointer near the bottom center opens the bar; farther up it does not',near&&!far,{near,far});
 
-  stage='open';await mouse(cx,line.top-18);await pause(400);const openSurface=surface(),openWidth=width();
+  stage='open';await mouse(cx,bottom-24);await pause(400);const openSurface=surface(),openWidth=width(),openOpacity=op();
   const item=[...bar.children].find(e=>e.offsetWidth),ib=item.getBoundingClientRect();
   const hit=document.elementFromPoint(Math.round(ib.left+ib.width/2),Math.round(ib.top+ib.height/2));
-  check('Open pill is opaque and its items stay on top',alpha(openSurface)===1&&openWidth>160&&item.contains(hit),{openSurface,openWidth,hit:hit?.className});
+  check('Open pill is opaque and its items stay on top',openOpacity===1&&alpha(openSurface)===1&&item.contains(hit),{openOpacity,openSurface,hit:hit?.className});
 
-  stage='linger';await mouse(cx,innerHeight/2);await pause(250);const lingerWidth=width(),lingerOpacity=getComputedStyle(item).opacity;
-  await pause(1000);const goneWidth=width(),goneOpacity=getComputedStyle(item).opacity;
-  check('Pill lingers after the pointer leaves, then folds',lingerWidth===openWidth&&lingerOpacity==='1'&&goneWidth<=160&&goneOpacity==='0',{lingerWidth,lingerOpacity,goneWidth,goneOpacity});
+  stage='fade';await mouse(cx,innerHeight/2);const samples=[];const t0=performance.now();
+  while(performance.now()-t0<700){await new Promise(r=>requestAnimationFrame(r));samples.push([Math.round(performance.now()-t0),op(),width()])}
+  const early=samples.find(x=>x[0]>=80),fixed=samples.every(x=>x[2]===openWidth),monotone=samples.every((x,i)=>!i||x[1]<=samples[i-1][1]);
+  check('Pill fades out in place right away, without holding or reshaping',early[1]<1&&fixed&&monotone&&op()===0,{early,fixed,monotone,end:op()});
  }catch(e){check('Run '+stage,false,{error:String(e)})}finally{
   try{await dbg.sendCommand('Input.dispatchMouseEvent',{type:'mouseMoved',x:Math.round(innerWidth/2),y:Math.round(innerHeight/2)})}catch{}
   if(attached)try{dbg.detach()}catch{}
