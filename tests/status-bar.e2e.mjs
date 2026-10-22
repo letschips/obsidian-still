@@ -22,8 +22,15 @@ const code=String.raw`(async()=>{
 
   const op=()=>Number(getComputedStyle(bar).opacity);
   stage='rest';await away();const box=bar.getBoundingClientRect(),restSurface=surface(),restOpacity=op();
-  const edge=document.elementFromPoint(Math.round(box.left+12),Math.round(box.top+box.height/2));
-  check('Nothing shows at rest and the bar edges do not catch the pointer',restOpacity===0&&!bar.contains(edge)&&edge!==bar,{restOpacity,edge:edge?.className});
+  // The reach band (::after) is centred on the bar and is meant to catch the
+  // pointer, so sample the bar's edges only where they lie outside it. A bar
+  // narrower than the band has no such edge; then the bar itself must still
+  // ignore the pointer.
+  const band=getComputedStyle(bar,'::after'),bandLeft=box.left+parseFloat(band.left),bandRight=bandLeft+parseFloat(band.width);
+  const y=Math.round(box.top+box.height/2),xs=[box.left+12,box.right-12].filter(x=>x<bandLeft-1||x>bandRight+1).map(Math.round);
+  const edges=xs.map(x=>{const e=document.elementFromPoint(x,y);return {x,hit:e?.className,caught:!!e&&(e===bar||bar.contains(e))}});
+  const barPointer=getComputedStyle(bar).pointerEvents;
+  check('Nothing shows at rest and the bar edges do not catch the pointer',restOpacity===0&&barPointer==='none'&&edges.every(e=>!e.caught),{restOpacity,barPointer,bar:[Math.round(box.left),Math.round(box.right)],band:[Math.round(bandLeft),Math.round(bandRight)],edges});
 
   stage='reach';const bottom=innerHeight;await mouse(cx+100,bottom-24);await pause(150);const near=bar.matches(':hover');
   await away();await mouse(cx,bottom-60);await pause(150);const far=bar.matches(':hover');
