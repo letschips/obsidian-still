@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.7.1 · 2026-10-22
+
+### Added
+- **`table-wide`** for a note's `cssclasses`: tables spread wider than the text, up to the pane, and the text keeps its width. A narrow table still lines up with the text; a wider one scrolls on its own. Needs Readable line length.
+- **Example note**: `docs/Still example.md` shows the task states, table classes, callouts, footnotes and keys, with a `cssclasses` block to copy.
+
+### Fixed
+- **Indentation guides in notes follow Obsidian's setting** (Settings → Editor → Indentation guides). Still had hidden them, leaving only the active guide in the editor. The file tree still has none.
+- Tests: 5 new checks in `tests/blocks.e2e.mjs`.
+
+### 中文
+- 新增 `table-wide`：写进笔记 `cssclasses` 后，表格可以比正文更宽，最宽到窗格边缘，正文宽度不变。窄表格仍与正文对齐，更宽的表格在自身范围内横向滚动。需要开启「可读行宽」。
+- 新增示例笔记 `docs/Still example.md`：展示任务状态、表格类、callout、脚注和按键，并附可直接复制的 `cssclasses`。
+- 修复：笔记里的缩进辅助线跟随 Obsidian 的「缩进辅助线」设置（设置 → 编辑器）。Still 原来把它隐藏了，编辑器里只剩当前缩进线。文件树仍不显示缩进线。
+- 测试：`tests/blocks.e2e.mjs` 新增 5 项检查。
+
 ## 0.7.0 · 2026-10-22
 
 ### Added

@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.7.0 · MIT License · https://github.com/letschips
+  Version 0.7.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -772,7 +772,6 @@ body {
   --list-marker-color-hover: var(--text-muted);
   --checkbox-color: var(--still-checkbox-color, var(--interactive-accent));
   --checkbox-color-hover: var(--still-checkbox-color, var(--interactive-accent-hover));
-  --indentation-guide-width: 0px;
   --indentation-guide-color: var(--still-hairline-strong);
   --indentation-guide-color-active: var(--background-modifier-border-hover);
   --code-background: var(--background-secondary);
@@ -2260,6 +2259,53 @@ body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, 
 .markdown-preview-view.table-center table,
 .markdown-source-view.mod-cm6.table-center .cm-table-widget .table-wrapper {
   margin-inline: auto;
+}
+
+/* table-wide: tables take the wide line while the text keeps its width,
+   capped at the pane; a table wider still scrolls on its own. The block
+   is widened around its centre with a relative offset, since core pins
+   the editor widget's margins. Only notes with the class become size
+   containers. */
+.markdown-preview-view.is-readable-line-width.table-wide,
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide {
+  container-type: inline-size;
+}
+
+.markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > .el-table,
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget {
+  --still-table-width: min(max(var(--file-line-width), calc(var(--still-line-width, 700px) * 1.35)), var(--still-pane-width));
+  position: relative;
+  inset-inline-start: calc((100% - var(--still-table-width)) / 2);
+}
+
+.markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > .el-table {
+  --still-pane-width: 100cqi;
+  width: var(--still-table-width);
+  overflow-x: auto;
+}
+
+/* Inside the wide block a table is at least the text width and centred,
+   so a narrow one lines up with the text and a wide one grows to both
+   sides. */
+.markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > .el-table > table,
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget .table-wrapper {
+  min-width: min(var(--file-line-width), 100%);
+  margin-inline: auto;
+}
+
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget .table-wrapper {
+  width: fit-content;
+}
+
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget .table-editor {
+  min-width: 100%;
+}
+
+/* The editor widget keeps core's drag-handle gutter on both sides. */
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget {
+  --still-pane-width: calc(100cqi - 2 * var(--file-margins));
+  box-sizing: border-box;
+  width: calc(var(--still-table-width) + 2 * var(--size-4-4));
 }
 
 /* row-alt: a faint wash on every other row, Bases tables included. */
