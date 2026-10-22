@@ -5,7 +5,9 @@
 // Breaks caught: indentation guides hidden although Obsidian's setting is
 // on, table-wide or img-wide moving the text or pushing blocks past the
 // pane, Live Preview quotes and code blocks that drift from reading view,
-// stacked tab spines with no separator, embed-strict leaving the embed
+// including a quote that opens the note, Markdown images (a bare img) left
+// out of img-wide, sized images pushed off the text start, stacked tab
+// spines with no separator, embed-strict leaving the embed
 // frame, alternate task characters ([>], [-], [/] …) drawn as done
 // (core fills the box and checks it for any character), state marks missing
 // in either view (reading view tags the list item, the editor tags the
@@ -76,13 +78,16 @@ const code=String.raw`(async()=>{
   // An attachment image and a .base file, when the vault has them, cover
   // img-wide and Bases embeds under table-wide.
   const png=app.vault.getFiles().find(f=>/^(png|jpe?g|webp)$/.test(f.extension)),baseFile=app.vault.getFiles().find(f=>f.extension==='base');
-  view.setViewData('A paragraph long enough to fill the text column from one edge to the other, so its box shows the line.\n\n'+row(2)+'\ntext\n\n'+row(14)+'\ntext\n'+(png?'\n![['+png.path+']]\n':'')+(baseFile?'\n![['+baseFile.path+']]\n':''),true);
+  // The note opens with a quote (no line before it in the editor), and has
+  // a Markdown image (a bare img in reading view) with and without a width.
+  const svg='data:image/svg+xml;base64,'+btoa('<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="240"><rect width="1400" height="240" fill="#889"/></svg>');
+  view.setViewData('> A quote opens the note.\n> Second line.\n\n'+'A paragraph long enough to fill the text column from one edge to the other, so its box shows the line.\n\n![]('+svg+')\n\n![|200]('+svg+')\n\n'+row(2)+'\ntext\n\n'+row(14)+'\ntext\n'+(baseFile?'\n![['+baseFile.path+']]\n':'')+(png?'\n![['+png.path+']]\n':''),true);
   const R=e=>{const b=e.getBoundingClientRect();return [Math.round(b.left),Math.round(b.right)]};
   const measure=async(mode,cls)=>{await view.setMode(mode==='read'?view.previewMode:view.editMode);if(mode==='read')view.previewMode.rerender(true);await pause(700);
    const root=mode==='read'?view.previewMode.containerEl.querySelector('.markdown-preview-view'):view.editMode.editorEl.closest('.markdown-source-view');
-   for(let i=0;i<30&&root.querySelectorAll('table').length<2;i++)await pause(100);for(let i=0;i<30&&((png&&!root.querySelector('.image-embed img'))||(baseFile&&!root.querySelector('.bases-embed')));i++)await pause(100);root.classList.toggle('table-wide',cls);root.classList.toggle('img-wide',cls);await pause(300);
+   for(let i=0;i<30&&root.querySelectorAll('table').length<2;i++)await pause(100);for(let i=0;i<30&&([...root.querySelectorAll('img')].filter(i=>i.src.startsWith('data:image/svg')&&i.complete).length<2||(png&&!root.querySelector('.image-embed img'))||(baseFile&&!root.querySelector('.bases-embed')));i++)await pause(100);root.classList.toggle('table-wide',cls);root.classList.toggle('img-wide',cls);await pause(300);
    const sc=mode==='read'?root:root.querySelector('.cm-scroller'),pad=parseFloat(cs(sc).paddingLeft),b=sc.getBoundingClientRect();
-   const r={pane:[Math.round(b.left+pad),Math.round(b.right-pad)],text:R(root.querySelector(mode==='read'?'p':'.cm-line')),tables:[...root.querySelectorAll('table')].map(R),blocks:[...root.querySelectorAll(mode==='read'?'.el-table':'.cm-table-widget')].map(e=>{const[l,r]=R(e),g=mode==='read'?0:parseFloat(cs(e).paddingLeft);return [l+g,r-g]}),image:png?R(root.querySelector('.image-embed')):null,base:baseFile?R(root.querySelector('.bases-embed')):null,pageScroll:sc.scrollWidth>sc.clientWidth+1};root.classList.remove('table-wide','img-wide');return r};
+   const r={pane:[Math.round(b.left+pad),Math.round(b.right-pad)],text:R([...root.querySelectorAll(mode==='read'?'p':'.cm-line')].find(e=>e.textContent.startsWith('A paragraph long'))),md:[...root.querySelectorAll('img')].filter(i=>i.src.startsWith('data:image/svg')).map(R),quoteTop:mode==='edit'?[cs(root.querySelector('.HyperMD-quote')).borderTopWidth,cs(root.querySelector('.HyperMD-quote')).borderTopLeftRadius]:null,tables:[...root.querySelectorAll('table')].map(R),blocks:[...root.querySelectorAll(mode==='read'?'.el-table':'.cm-table-widget')].map(e=>{const[l,r]=R(e),g=mode==='read'?0:parseFloat(cs(e).paddingLeft);return [l+g,r-g]}),image:png?R(root.querySelector('.image-embed')):null,base:baseFile?R(root.querySelector('.bases-embed')):null,pageScroll:sc.scrollWidth>sc.clientWidth+1};root.classList.remove('table-wide','img-wide');return r};
   const wOff={read:await measure('read',false),edit:await measure('edit',false)},wOn={read:await measure('read',true),edit:await measure('edit',true)};
   popLeaf.detach();popLeaf=null;
   const inPane=(t,p)=>t[0]>=p[0]-1&&t[1]<=p[1]+1;
@@ -92,6 +97,9 @@ const code=String.raw`(async()=>{
   const spans=(o,k)=>o[k][0]<o.text[0]-10&&o[k][1]>o.text[1]+10&&inPane(o[k],o.pane)&&Math.abs((o[k][0]+o[k][1])-(o.text[0]+o.text[1]))<=2;
   if(png){check('Images keep the text width without img-wide',Object.values(wOff).every(o=>o.image[0]>=o.text[0]-1&&o.image[1]<=o.text[1]+1),wOff);
    check('img-wide widens images to both sides, within the pane',Object.values(wOn).every(o=>spans(o,'image')&&!o.pageScroll),wOn)}
+  check('img-wide widens a Markdown image in both views, as it does attachments',Object.values(wOn).every(o=>o.md[0][0]<o.text[0]-10&&o.md[0][1]>o.text[1]+10&&inPane(o.md[0],o.pane)),wOn);
+  check('img-wide leaves an image with a set width at the text start in both views',Object.values(wOn).every(o=>Math.abs(o.md[1][0]-o.text[0])<=1&&o.md[1][1]-o.md[1][0]<=201),wOn);
+  check('A quote that opens the note is rounded and padded at the top in Live Preview',wOn.edit.quoteTop[0]==='16px'&&wOn.edit.quoteTop[1]!=='0px',wOn.edit.quoteTop);
   if(baseFile)check('table-wide widens embedded Bases to both sides, within the pane',Object.values(wOn).every(o=>spans(o,'base')),wOn);
   // Live Preview quotes and code blocks match reading view. Obsidian writes
   // a hanging indent inline on quote lines, so the inset must not be padding.

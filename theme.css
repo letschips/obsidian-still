@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.7.2 · MIT License · https://github.com/letschips
+  Version 0.7.3 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1896,14 +1896,15 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
 /* Live Preview quotes match reading view. Obsidian writes a hanging indent
    inline on each quote line, so the 16px inset is drawn as a border in the
    quote's own color rather than padding; the bar sits inside it. The first
-   and last lines round the block and give it room above and below. */
+   and last lines round the block and give it room above and below, a quote
+   that opens the note included. */
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote {
   border: 0 solid var(--blockquote-background-color);
   border-inline-width: 16px;
   background-clip: padding-box;
 }
 
-.markdown-source-view.mod-cm6.is-live-preview :not(.HyperMD-quote) + .HyperMD-quote {
+.markdown-source-view.mod-cm6.is-live-preview :is(.cm-content > .HyperMD-quote:first-child, :not(.HyperMD-quote) + .HyperMD-quote) {
   border-block-start-width: 16px;
   border-start-start-radius: var(--still-content-radius);
   border-start-end-radius: var(--still-content-radius);
@@ -1915,7 +1916,7 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
   border-end-end-radius: var(--still-content-radius);
 }
 
-.markdown-source-view.mod-cm6.is-live-preview :not(.HyperMD-quote) + .HyperMD-quote::before {
+.markdown-source-view.mod-cm6.is-live-preview :is(.cm-content > .HyperMD-quote:first-child, :not(.HyperMD-quote) + .HyperMD-quote)::before {
   border-start-start-radius: 99px;
   border-start-end-radius: 99px;
 }
@@ -2327,8 +2328,8 @@ body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, 
 .markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > .el-table,
 .markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget,
 :is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.table-wide :is(.markdown-preview-sizer > div > p, .cm-content) > .bases-embed,
-.markdown-preview-view.is-readable-line-width.img-wide:not(.img-grid) .markdown-preview-sizer > div > p > .image-embed:not([width]),
-.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]) {
+.markdown-preview-view.is-readable-line-width.img-wide .markdown-preview-sizer > div > p:is(.markdown-preview-view:not(.img-grid) p, :not(:has(> :is(.image-embed, img) ~ :is(.image-embed, img)))) > :is(.image-embed:not([width]), img:not([width]):not(.link-favicon)),
+.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]):not(:has(img[width])) {
   position: relative;
   inset-inline-start: calc((100% - var(--still-wide-width)) / 2);
   max-width: none;
@@ -2344,19 +2345,22 @@ body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, 
 }
 
 /* Images without a set width fill the wide line, as with the "Images fill
-   the line width" option; tall ones stay within the window. img-grid wins
-   where both classes are set. */
-.markdown-preview-view.is-readable-line-width.img-wide:not(.img-grid) .markdown-preview-sizer > div > p > .image-embed:not([width]),
-.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]) {
+   the line width" option; tall ones stay within the window. Reading view
+   wraps attachments in .image-embed but renders Markdown and external
+   images as a bare img; the editor keeps a set width on the img alone. With
+   img-grid too, consecutive images form the grid and single ones widen. */
+.markdown-preview-view.is-readable-line-width.img-wide .markdown-preview-sizer > div > p:is(.markdown-preview-view:not(.img-grid) p, :not(:has(> :is(.image-embed, img) ~ :is(.image-embed, img)))) > :is(.image-embed:not([width]), img:not([width]):not(.link-favicon)),
+.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]):not(:has(img[width])) {
   display: block;
   width: var(--still-wide-width);
 }
 
-.markdown-preview-view.is-readable-line-width.img-wide:not(.img-grid) .markdown-preview-sizer > div > p > .image-embed:not([width]) img:not([width]),
-.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]) :is(.image-wrapper, img:not([width])) {
+.markdown-preview-view.is-readable-line-width.img-wide .markdown-preview-sizer > div > p:is(.markdown-preview-view:not(.img-grid) p, :not(:has(> :is(.image-embed, img) ~ :is(.image-embed, img)))) > .image-embed:not([width]) img:not([width]),
+.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]):not(:has(img[width])) :is(.image-wrapper, img) {
   width: 100%;
 }
 
+.markdown-preview-view.is-readable-line-width.img-wide .markdown-preview-sizer > div > p:is(.markdown-preview-view:not(.img-grid) p, :not(:has(> :is(.image-embed, img) ~ :is(.image-embed, img)))) > :is(.image-embed:not([width]), img:not([width]):not(.link-favicon)),
 :is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.img-wide .image-embed:not([width]) img:not([width]) {
   max-height: 75vh;
   object-fit: contain;

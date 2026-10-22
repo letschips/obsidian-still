@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.7.3 · 2026-10-22
+
+### Fixed
+- **`img-wide` widens Markdown and external images in reading view** (`![](url)`), not just attachments, so they match Live Preview.
+- **An image with a set width stays at the text start under `img-wide`.** In Live Preview, a Markdown image such as `![|200](url)` was pushed left of the text.
+- **A quote that opens a note** gets its rounded, padded top in Live Preview.
+
+### Changed
+- **`img-wide` with `img-grid`:** consecutive images form the grid and single images still widen. Before, `img-grid` turned `img-wide` off for the whole note.
+- Tests: 3 new checks in `tests/blocks.e2e.mjs`, rendered in a real note.
+
+### 中文
+- 修复：`img-wide` 在阅读视图里也加宽 Markdown 和外链图片（`![](url)`），不只附件图片，与实时预览一致。
+- 修复：`img-wide` 下设了宽度的图片保持在正文起点。实时预览里 `![|200](url)` 这类图片原来会被推到正文左侧外面。
+- 修复：笔记开头的引用块在实时预览里也有圆角和上方留白。
+- 变更：`img-wide` 与 `img-grid` 同时使用时，连续多图排成网格，单张图片仍然加宽。原来 `img-grid` 会让整篇笔记的 `img-wide` 失效。
+- 测试：`tests/blocks.e2e.mjs` 新增 3 项真实渲染检查。
+
 ## 0.7.2 · 2026-10-22
 
 ### Added

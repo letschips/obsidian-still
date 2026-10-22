@@ -35,7 +35,7 @@ Add these to a note's `cssclasses` property (the names match Minimal's):
 | `col-lines`, `table-lines` | Rules between columns; a full grid with an outer frame |
 | `table-center` | Narrow tables sit in the middle |
 | `table-wide` | Tables (and embedded Bases) spread wider than the text, up to the pane; the text keeps its width |
-| `img-wide` | Images without a set width spread wider than the text in the same way |
+| `img-wide` | Images without a set width spread wider than the text in the same way; with `img-grid`, single images still widen |
 | `embed-strict` | Note embeds read as part of the text, without a frame or title |
 
 Try them in the [example note](./docs/Still%20example.md): copy it into a vault and switch between reading view and Live Preview.
