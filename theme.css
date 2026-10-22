@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.6.9 · MIT License · https://github.com/letschips
+  Version 0.7.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -353,6 +353,12 @@ settings:
     title.zh: Bases 表格隔行条纹
     description: Every other row in a Bases table gets a faint wash.
     description.zh: Bases 表格每隔一行加一层浅色底。
+    type: class-toggle
+    default: false
+  -
+    id: still-canvas-plain
+    title: Plain Canvas background
+    title.zh: Canvas 无点阵背景
     type: class-toggle
     default: false
   -
@@ -2021,6 +2027,158 @@ body.still-card-callouts .callout-content > :last-child {
   border-radius: var(--embed-radius);
 }
 
+/* Task states beyond [x]. Core fills the box and draws a check for any
+   character, so a deferred or cancelled task would read as done. These
+   states keep an open frame and carry a small mark in their own ink.
+   Reading view tags the list item, the editor tags the checkbox. Other
+   characters keep core's checked box. */
+.task-list-item-checkbox:is([data-task=">"], li[data-task=">"] > *, li[data-task=">"] > p > *) {
+  --still-task-hue: var(--text-muted);
+  --still-task-mark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12h13M13 6l6 6-6 6'/></svg>");
+}
+
+.task-list-item-checkbox:is([data-task="<"], li[data-task="<"] > *, li[data-task="<"] > p > *) {
+  --still-task-hue: var(--text-muted);
+  --still-task-mark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.75' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='5.5' width='16' height='14.5' rx='2.5'/><path d='M4 10.5h16M9 3v4M15 3v4'/></svg>");
+}
+
+.task-list-item-checkbox:is([data-task="?"], li[data-task="?"] > *, li[data-task="?"] > p > *) {
+  --still-task-hue: var(--color-yellow);
+  --still-task-mark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M8.5 8.5a3.5 3.5 0 1 1 5 3.2c-.9.4-1.5 1.2-1.5 2.2v.6M12 19.5h.01'/></svg>");
+}
+
+.task-list-item-checkbox:is([data-task="!"], li[data-task="!"] > *, li[data-task="!"] > p > *) {
+  --still-task-hue: var(--color-orange);
+  --still-task-mark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round'><path d='M12 4.5v9.5M12 19.5h.01'/></svg>");
+}
+
+.task-list-item-checkbox:is([data-task="*"], li[data-task="*"] > *, li[data-task="*"] > p > *) {
+  --still-task-hue: var(--color-yellow);
+  --still-task-mark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z'/></svg>");
+}
+
+.task-list-item-checkbox:is([data-task="-"], li[data-task="-"] > *, li[data-task="-"] > p > *) {
+  --still-task-hue: var(--text-faint);
+  --still-task-mark: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'><path d='M6 12h12'/></svg>");
+}
+
+/* In progress: the box fills halfway. */
+.task-list-item-checkbox:is([data-task="/"], li[data-task="/"] > *, li[data-task="/"] > p > *) {
+  --still-task-hue: var(--checkbox-color);
+  --still-task-mark: none;
+}
+
+/* Hues sit a step toward the text color, like callout titles, so the
+   marks hold their contrast on the page in both modes. */
+.task-list-item-checkbox:checked:is([data-task=">"], [data-task="<"], [data-task="?"], [data-task="!"], [data-task="*"], [data-task="-"], [data-task="/"], li:is([data-task=">"], [data-task="<"], [data-task="?"], [data-task="!"], [data-task="*"], [data-task="-"], [data-task="/"]) > *, li:is([data-task=">"], [data-task="<"], [data-task="?"], [data-task="!"], [data-task="*"], [data-task="-"], [data-task="/"]) > p > *) {
+  --still-task-ink: color-mix(in srgb, var(--still-task-hue) 75%, var(--text-normal));
+  border-color: var(--still-task-ink);
+  background-color: transparent;
+}
+
+.task-list-item-checkbox:checked:is([data-task=">"], [data-task="<"], [data-task="?"], [data-task="!"], [data-task="*"], [data-task="-"], li:is([data-task=">"], [data-task="<"], [data-task="?"], [data-task="!"], [data-task="*"], [data-task="-"]) > *, li:is([data-task=">"], [data-task="<"], [data-task="?"], [data-task="!"], [data-task="*"], [data-task="-"]) > p > *)::after {
+  background-color: var(--still-task-ink);
+  -webkit-mask-image: var(--still-task-mark);
+  -webkit-mask-position: 50% 50%;
+  -webkit-mask-size: 72%;
+}
+
+.task-list-item-checkbox:checked:is([data-task="/"], li[data-task="/"] > *, li[data-task="/"] > p > *) {
+  border-color: var(--checkbox-color);
+  background-image: linear-gradient(to right, var(--checkbox-color) 50%, transparent 50%);
+}
+
+.task-list-item-checkbox:checked:is([data-task="/"], li[data-task="/"] > *, li[data-task="/"] > p > *):dir(rtl) {
+  background-image: linear-gradient(to left, var(--checkbox-color) 50%, transparent 50%);
+}
+
+.task-list-item-checkbox:checked:is([data-task="/"], li[data-task="/"] > *, li[data-task="/"] > p > *)::after {
+  display: none;
+}
+
+/* Cancelled reads like done, a step fainter. */
+:is(.markdown-rendered li.task-list-item, .markdown-source-view.mod-cm6 .HyperMD-task-line)[data-task="-"] {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+/* Footnotes: the marker stays on the line without opening up its leading,
+   and the notes read as quiet end matter. */
+.markdown-rendered :is(sup, sub) {
+  line-height: 0;
+}
+
+.markdown-rendered .footnote-ref .footnote-link {
+  padding-inline: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.markdown-rendered .footnotes {
+  margin-block-start: var(--heading-spacing);
+  color: var(--text-muted);
+}
+
+.markdown-rendered .footnotes > hr {
+  margin-block: 0 var(--p-spacing);
+}
+
+.markdown-rendered .footnotes li::marker {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keys: a quiet cap with a hairline frame and a slightly heavier base. */
+:is(.markdown-rendered, .cm-html-embed) kbd {
+  border: 1px solid var(--still-hairline-strong);
+  border-radius: calc(4px * var(--still-r));
+  box-shadow: inset 0 -1px 0 var(--still-hairline-strong);
+  background-color: var(--background-primary);
+  padding: 0.05em 0.4em 0.1em;
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+/* Canvas: cards take Still's hairline and reading radius, the dot grid
+   steps back, and the toolbars float like Still's menus. Colored cards
+   keep core's frame. */
+body {
+  --canvas-dot-pattern: var(--still-hairline-strong);
+}
+
+body.still-canvas-plain {
+  --canvas-dot-pattern: transparent;
+}
+
+.canvas-node-container {
+  border-radius: var(--still-content-radius);
+}
+
+/* A text card is a note embed; it takes the card's ground, not the
+   embed wash Still gives embeds inside notes. */
+.canvas-node-content.markdown-embed {
+  background-color: transparent;
+}
+
+.canvas-node:not(.is-themed):not(.is-selected):not(.is-focused) .canvas-node-container {
+  border-color: var(--still-hairline-strong);
+}
+
+.canvas-selection.mod-node-highlight {
+  border-radius: var(--still-content-radius);
+}
+
+.canvas-card-menu,
+.canvas-control-group {
+  border: 1px solid var(--still-hairline);
+  border-radius: var(--radius-s);
+  background-color: var(--background-primary);
+  box-shadow: var(--shadow-s);
+}
+
+.canvas-control-item {
+  border-color: var(--still-hairline);
+}
+
 /* Images and frames round to the image radius everywhere, plugin galleries
    included. Zero specificity: any rule that sets its own radius wins. */
 :where(img:not(.link-favicon), iframe, video, .file-embed) {
@@ -2079,6 +2237,105 @@ body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, 
 .markdown-preview-view.img-grid p:has(> :is(.image-embed, img) ~ :is(.image-embed, img)) > .image-embed img {
   width: 100%;
   margin: 0;
+}
+
+/* Tables, in reading view and the editor. table-small and table-tiny set
+   smaller text (Bases tables embedded in the note too); table-nowrap keeps
+   cells on one line. */
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-small {
+  --table-text-size: calc(var(--font-text-size) * 0.875);
+  --bases-table-font-size: calc(var(--font-text-size) * 0.8125);
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-tiny {
+  --table-text-size: calc(var(--font-text-size) * 0.8);
+  --bases-table-font-size: calc(var(--font-text-size) * 0.75);
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-nowrap {
+  --table-white-space: nowrap;
+}
+
+/* table-center: tables narrower than the line sit in the middle. */
+.markdown-preview-view.table-center table,
+.markdown-source-view.mod-cm6.table-center .cm-table-widget .table-wrapper {
+  margin-inline: auto;
+}
+
+/* row-alt: a faint wash on every other row, Bases tables included. */
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).row-alt {
+  --table-row-alt-background: var(--still-wash);
+  --table-row-alt-background-hover: var(--table-row-background-hover);
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).row-alt .bases-tbody {
+  background-image: linear-gradient(to bottom, transparent 50%, var(--still-wash) 50%);
+  background-size: 100% calc(var(--bases-table-row-height) * 2);
+}
+
+/* col-lines: hairlines between columns. table-lines: a full grid with an
+   outer frame. */
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).col-lines .markdown-rendered :is(th, td):not(:last-child),
+.markdown-preview-view.col-lines :is(th, td):not(:last-child) {
+  border-inline-end-width: var(--table-border-width);
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-lines {
+  --table-column-first-border-width: var(--table-border-width);
+  --table-column-last-border-width: var(--table-border-width);
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-lines .markdown-rendered :is(th, td),
+.markdown-preview-view.table-lines :is(th, td) {
+  border-inline-width: var(--table-border-width);
+}
+
+/* table-numbers: rows are numbered in a slot at the start of the first
+   column. In reading view the slot is inline, so it holds whatever padding
+   a plugin gives the cell; in the editor the cell holds an editor block,
+   so the number sits in the wrapper's start padding instead. */
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-numbers table {
+  counter-reset: still-row;
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-numbers tbody > tr > td:first-child {
+  counter-increment: still-row;
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-numbers tbody > tr > td:first-child::before {
+  content: counter(still-row);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.markdown-preview-view.table-numbers thead > tr > th:first-child::before {
+  content: "";
+}
+
+.markdown-preview-view.table-numbers :is(thead > tr > th, tbody > tr > td):first-child::before {
+  display: inline-block;
+  min-width: 2em;
+}
+
+/* The slot and the label stay on one line, so a narrow first column never
+   drops the label under its number. */
+.markdown-preview-view.table-numbers :is(thead > tr > th, tbody > tr > td):first-child {
+  --table-white-space: nowrap;
+}
+
+.markdown-source-view.mod-cm6.table-numbers .cm-table-widget tbody > tr > td:first-child {
+  position: relative;
+}
+
+.markdown-source-view.mod-cm6.table-numbers .cm-table-widget tbody > tr > td:first-child::before {
+  position: absolute;
+  inset-block-start: var(--table-cell-padding-y);
+  inset-inline-start: var(--table-cell-padding-x);
+}
+
+.markdown-source-view.mod-cm6.table-numbers .cm-table-widget :is(th, td):first-child .table-cell-wrapper {
+  padding-inline-start: calc(var(--table-cell-padding-x) + 2em);
 }
 
 /* ========================================================================== */
@@ -2638,8 +2895,31 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
   }
 }
 
+/* Print and Export to PDF. Core hides the interface and prints in light
+   mode; Still keeps headings with what follows, keeps figures and rows
+   whole, and wraps code that would run past the paper edge. */
 @media print {
-  .callout {
+  .callout,
+  .markdown-rendered :is(img, svg, figure, .image-embed, .mermaid, tr) {
     break-inside: avoid;
+  }
+
+  .markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+    break-after: avoid;
+  }
+
+  .markdown-rendered :is(p, li) {
+    orphans: 2;
+    widows: 2;
+  }
+
+  .markdown-rendered pre,
+  .markdown-rendered pre > code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .markdown-rendered :is(.collapse-indicator, .copy-code-button, .callout-fold) {
+    display: none;
   }
 }

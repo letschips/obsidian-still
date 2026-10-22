@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.7.0 · 2026-10-22
+
+### Added
+- **Task states.** `[>]` forwarded, `[<]` scheduled, `[?]` question, `[!]` important, `[*]` star and `[-]` cancelled keep an open box with their own mark, and `[/]` in progress fills the box halfway. Obsidian drew all of them as done. Cancelled tasks are struck and faded. Other characters keep the checked box.
+- **Table classes** for a note's `cssclasses`, named as in Minimal: `table-small`, `table-tiny`, `table-nowrap`, `table-numbers`, `row-alt`, `col-lines`, `table-lines` and `table-center`. They work in reading view and the editor.
+- **Keys.** `<kbd>` is a framed key cap.
+- **Canvas.** Cards use Still's hairline and corner radius, text cards drop the embed tint, the dot grid is fainter, and the toolbars match Still's menus. New option: **Plain Canvas background**.
+- **Print and Export to PDF.** Headings stay with the text that follows, images and table rows are not split across pages, long code lines wrap, and fold and copy buttons are hidden.
+- Tests: new `tests/blocks.e2e.mjs`.
+
+### Fixed
+- **Footnote markers no longer add space above their line.** Footnotes themselves are set in the secondary text color.
+
+### 中文
+- 任务状态：`[>]` 转出、`[<]` 已排期、`[?]` 疑问、`[!]` 重要、`[*]` 星标、`[-]` 取消保持空框并显示各自的标记，`[/]` 进行中把框填一半。Obsidian 原来把它们都显示成已完成。取消的任务加删除线并变淡；其他字符仍显示为勾选。
+- 表格类：在笔记 `cssclasses` 里写 `table-small`、`table-tiny`、`table-nowrap`、`table-numbers`、`row-alt`、`col-lines`、`table-lines`、`table-center`（与 Minimal 同名），阅读视图和编辑器都生效。
+- 按键：`<kbd>` 显示为带细框的键帽。
+- Canvas：卡片使用 Still 的细线和圆角，文本卡片去掉嵌入底色，点阵更淡，工具栏与 Still 的菜单一致。新选项「Canvas 无点阵背景」。
+- 打印和导出 PDF：标题不与下文分页，图片和表格行不跨页，长代码行自动折行，隐藏折叠和复制按钮。
+- 脚注标记不再撑高所在行；脚注正文改用次要文字色。
+- 测试：新增 `tests/blocks.e2e.mjs`。
+
 ## 0.6.9 · 2026-10-22
 
 ### Fixed

@@ -19,13 +19,14 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Soft sidebar peek: the peeking sidebar sits on the page color and fades into the page, with no shadowed edge | Off |
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
 | Interface | Quiet sidebar toolbar: buttons rest as dots | Off |
-| Interface | Quiet status bar: rests as a short line at the bottom center | Off |
+| Interface | Quiet status bar: hidden until the pointer nears the bottom center | Off |
 | Interface | Outline guides: a hairline per heading level in the outline view; the branch under the pointer darkens | Off |
 | Interface | Disable entrance motion | Off |
 | Interface | Pure black on phones and tablets in dark mode, for OLED screens | Off |
 | Content | Card callouts: tinted frame with an inner content card | Off |
 | Content | Images fill the line width (only media without a set width; tall ones stay within the window) | Off |
 | Content | Striped Bases tables: stripes follow row position, so they stay put while long tables scroll | Off |
+| Content | Plain Canvas background: no dot grid | Off |
 | Content | Colored headings: one hue per level, red at H1 to purple at H6 | Off |
 | Content | Plain tags, don't strike completed tasks, dark PDFs, dim PDFs or images in dark mode | Off |
 
