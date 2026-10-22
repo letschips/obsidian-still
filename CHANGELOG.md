@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.7.2 · 2026-10-22
+
+### Added
+- **`img-wide`** for a note's `cssclasses`: images without a set width spread wider than the text, up to the pane, as `table-wide` does for tables. `img-grid` wins where both are set.
+- **`table-wide` covers embedded Bases** as well as Markdown tables.
+- **`embed-strict`** for a note's `cssclasses`: note embeds lose their ground, bar, padding and title, so a note stitched together from `![[note#section]]` reads as one text. The link to the source still shows on hover.
+
+### Fixed
+- **Quotes in Live Preview match reading view**: the same rounded block with an inset bar, instead of a flat strip with the bar on its edge.
+- **Code blocks in Live Preview** have the same hairline frame as in reading view.
+- **Stacked tabs** have a hairline between spines again; in dark mode they had run together.
+- Tests: 9 new checks in `tests/blocks.e2e.mjs`.
+
+### 中文
+- 新增 `img-wide`：写进笔记 `cssclasses` 后，没设宽度的图片可以比正文更宽，最宽到窗格边缘，和 `table-wide` 对表格的处理一样。与 `img-grid` 同时使用时以 `img-grid` 为准。
+- `table-wide` 现在也加宽笔记里内嵌的 Bases。
+- 新增 `embed-strict`：笔记里的嵌入去掉底色、竖线、内边距和标题，用 `![[笔记#章节]]` 拼成的长文读起来像一篇。鼠标移上去仍可跳转到原文。
+- 修复：实时预览里的引用块与阅读视图一致，是带内缩竖线的圆角卡片，不再是竖线贴边的灰条。
+- 修复：实时预览里的代码块和阅读视图一样有细线边框。
+- 修复：堆叠标签页的各个标签之间恢复细线分隔，深色模式下不再糊成一片。
+- 测试：`tests/blocks.e2e.mjs` 新增 9 项检查。
+
 ## 0.7.1 · 2026-10-22
 
 ### Added

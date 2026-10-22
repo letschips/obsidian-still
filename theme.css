@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.7.1 · MIT License · https://github.com/letschips
+  Version 0.7.2 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1064,6 +1064,12 @@ body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-st
   padding-inline-start: 96px;
 }
 
+/* Stacked tabs: core separates the spines with a 1px line drawn in the tab
+   outline color, which Still clears elsewhere. */
+.workspace-tabs.mod-stacked {
+  --tab-outline-color: var(--still-hairline-strong);
+}
+
 /* Close glyph appears on hover for a fine pointer; keyboard and touch keep it. */
 @media (hover: hover) and (pointer: fine) {
   body:not(.is-mobile) .workspace-tab-header:not(.is-active):not(:hover):not(:focus-within) .workspace-tab-header-inner-close-button {
@@ -1849,6 +1855,13 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
   padding: 0.9em 1.1em;
 }
 
+/* Code blocks in the editor get the same hairline frame. Inline code keeps
+   none. */
+.cm-s-obsidian div:is(.HyperMD-codeblock-bg, .HyperMD-codeblock-begin-bg, .HyperMD-codeblock-end-bg) {
+  --code-border-width: 1px;
+  --code-border-color: var(--still-hairline);
+}
+
 /* Quotes: a block on its own ground with an inset accent bar. */
 .markdown-rendered blockquote {
   position: relative;
@@ -1878,6 +1891,38 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
 .markdown-rendered blockquote > blockquote::before {
   inset-block: 0;
   inset-inline-start: 0;
+}
+
+/* Live Preview quotes match reading view. Obsidian writes a hanging indent
+   inline on each quote line, so the 16px inset is drawn as a border in the
+   quote's own color rather than padding; the bar sits inside it. The first
+   and last lines round the block and give it room above and below. */
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote {
+  border: 0 solid var(--blockquote-background-color);
+  border-inline-width: 16px;
+  background-clip: padding-box;
+}
+
+.markdown-source-view.mod-cm6.is-live-preview :not(.HyperMD-quote) + .HyperMD-quote {
+  border-block-start-width: 16px;
+  border-start-start-radius: var(--still-content-radius);
+  border-start-end-radius: var(--still-content-radius);
+}
+
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(:has(+ .HyperMD-quote)) {
+  border-block-end-width: 16px;
+  border-end-start-radius: var(--still-content-radius);
+  border-end-end-radius: var(--still-content-radius);
+}
+
+.markdown-source-view.mod-cm6.is-live-preview :not(.HyperMD-quote) + .HyperMD-quote::before {
+  border-start-start-radius: 99px;
+  border-start-end-radius: 99px;
+}
+
+.markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote:not(:has(+ .HyperMD-quote))::before {
+  border-end-start-radius: 99px;
+  border-end-end-radius: 99px;
 }
 
 /* Tables: hairline rows, tabular numbers. */
@@ -2261,27 +2306,60 @@ body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, 
   margin-inline: auto;
 }
 
-/* table-wide: tables take the wide line while the text keeps its width,
-   capped at the pane; a table wider still scrolls on its own. The block
-   is widened around its centre with a relative offset, since core pins
-   the editor widget's margins. Only notes with the class become size
-   containers. */
-.markdown-preview-view.is-readable-line-width.table-wide,
-.markdown-source-view.mod-cm6.is-readable-line-width.table-wide {
+/* table-wide and img-wide: tables (Bases embeds too) or images take the
+   wide line while the text keeps its width, capped at the pane; a table
+   wider still scrolls on its own. Blocks are widened around their centre
+   with a relative offset, since core pins the editor table widget's
+   margins. Only notes with a class become size containers. */
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width:is(.table-wide, .img-wide) {
   container-type: inline-size;
+  --still-wide-width: min(max(var(--file-line-width), calc(var(--still-line-width, 700px) * 1.35)), var(--still-pane-width));
+}
+
+.markdown-preview-view.is-readable-line-width:is(.table-wide, .img-wide) {
+  --still-pane-width: 100cqi;
+}
+
+.markdown-source-view.mod-cm6.is-readable-line-width:is(.table-wide, .img-wide) {
+  --still-pane-width: calc(100cqi - 2 * var(--file-margins));
 }
 
 .markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > .el-table,
-.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget {
-  --still-table-width: min(max(var(--file-line-width), calc(var(--still-line-width, 700px) * 1.35)), var(--still-pane-width));
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget,
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.table-wide :is(.markdown-preview-sizer > div > p, .cm-content) > .bases-embed,
+.markdown-preview-view.is-readable-line-width.img-wide:not(.img-grid) .markdown-preview-sizer > div > p > .image-embed:not([width]),
+.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]) {
   position: relative;
-  inset-inline-start: calc((100% - var(--still-table-width)) / 2);
+  inset-inline-start: calc((100% - var(--still-wide-width)) / 2);
+  max-width: none;
 }
 
 .markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > .el-table {
-  --still-pane-width: 100cqi;
-  width: var(--still-table-width);
+  width: var(--still-wide-width);
   overflow-x: auto;
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.table-wide :is(.markdown-preview-sizer > div > p, .cm-content) > .bases-embed {
+  width: var(--still-wide-width);
+}
+
+/* Images without a set width fill the wide line, as with the "Images fill
+   the line width" option; tall ones stay within the window. img-grid wins
+   where both classes are set. */
+.markdown-preview-view.is-readable-line-width.img-wide:not(.img-grid) .markdown-preview-sizer > div > p > .image-embed:not([width]),
+.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]) {
+  display: block;
+  width: var(--still-wide-width);
+}
+
+.markdown-preview-view.is-readable-line-width.img-wide:not(.img-grid) .markdown-preview-sizer > div > p > .image-embed:not([width]) img:not([width]),
+.markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]) :is(.image-wrapper, img:not([width])) {
+  width: 100%;
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.img-wide .image-embed:not([width]) img:not([width]) {
+  max-height: 75vh;
+  object-fit: contain;
 }
 
 /* Inside the wide block a table is at least the text width and centred,
@@ -2303,9 +2381,20 @@ body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, 
 
 /* The editor widget keeps core's drag-handle gutter on both sides. */
 .markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget {
-  --still-pane-width: calc(100cqi - 2 * var(--file-margins));
   box-sizing: border-box;
-  width: calc(var(--still-table-width) + 2 * var(--size-4-4));
+  width: calc(var(--still-wide-width) + 2 * var(--size-4-4));
+}
+
+/* embed-strict: note embeds read as part of the text, with no ground, bar,
+   padding or title. The link to the source still shows on hover. */
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).embed-strict {
+  --embed-background: transparent;
+  --embed-border-start: 0;
+  --embed-padding: 0;
+}
+
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).embed-strict .markdown-embed-title {
+  display: none;
 }
 
 /* row-alt: a faint wash on every other row, Bases tables included. */

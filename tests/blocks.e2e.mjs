@@ -3,7 +3,10 @@
 // off) on probe elements shaped like Obsidian 1.14's own DOM, then restores
 // classes, styles and emulated media. No note or config writes.
 // Breaks caught: indentation guides hidden although Obsidian's setting is
-// on, table-wide moving the text or pushing tables past the pane, alternate task characters ([>], [-], [/] …) drawn as done
+// on, table-wide or img-wide moving the text or pushing blocks past the
+// pane, Live Preview quotes and code blocks that drift from reading view,
+// stacked tab spines with no separator, embed-strict leaving the embed
+// frame, alternate task characters ([>], [-], [/] …) drawn as done
 // (core fills the box and checks it for any character), state marks missing
 // in either view (reading view tags the list item, the editor tags the
 // checkbox), unknown characters or [x] losing core's check, cancelled tasks
@@ -68,21 +71,51 @@ const code=String.raw`(async()=>{
   // the pane; the text keeps its width; a narrow table lines up with it.
   stage='table-wide';
   popLeaf=app.workspace.openPopoutLeaf();const view=app.viewRegistry.viewByType.markdown(popLeaf);await popLeaf.open(view);
-  const ew=view.containerEl.win.electronWindow;ew.setBounds({width:1100,height:700});ew.show();ew.focus();await pause(500);
+  const ew=view.containerEl.win.electronWindow;ew.setBounds({width:1100,height:1600});ew.show();ew.focus();await pause(500);
   const row=n=>'| '+Array.from({length:n},(_,i)=>'Column '+i).join(' | ')+' |\n|'+'---|'.repeat(n)+'\n| '+Array.from({length:n},(_,i)=>'value '+i).join(' | ')+' |\n';
-  view.setViewData('A paragraph long enough to fill the text column from one edge to the other, so its box shows the line.\n\n'+row(2)+'\ntext\n\n'+row(14)+'\ntext\n',true);
+  // An attachment image and a .base file, when the vault has them, cover
+  // img-wide and Bases embeds under table-wide.
+  const png=app.vault.getFiles().find(f=>/^(png|jpe?g|webp)$/.test(f.extension)),baseFile=app.vault.getFiles().find(f=>f.extension==='base');
+  view.setViewData('A paragraph long enough to fill the text column from one edge to the other, so its box shows the line.\n\n'+row(2)+'\ntext\n\n'+row(14)+'\ntext\n'+(png?'\n![['+png.path+']]\n':'')+(baseFile?'\n![['+baseFile.path+']]\n':''),true);
   const R=e=>{const b=e.getBoundingClientRect();return [Math.round(b.left),Math.round(b.right)]};
   const measure=async(mode,cls)=>{await view.setMode(mode==='read'?view.previewMode:view.editMode);if(mode==='read')view.previewMode.rerender(true);await pause(700);
    const root=mode==='read'?view.previewMode.containerEl.querySelector('.markdown-preview-view'):view.editMode.editorEl.closest('.markdown-source-view');
-   for(let i=0;i<30&&root.querySelectorAll('table').length<2;i++)await pause(100);root.classList.toggle('table-wide',cls);await pause(300);
+   for(let i=0;i<30&&root.querySelectorAll('table').length<2;i++)await pause(100);for(let i=0;i<30&&((png&&!root.querySelector('.image-embed img'))||(baseFile&&!root.querySelector('.bases-embed')));i++)await pause(100);root.classList.toggle('table-wide',cls);root.classList.toggle('img-wide',cls);await pause(300);
    const sc=mode==='read'?root:root.querySelector('.cm-scroller'),pad=parseFloat(cs(sc).paddingLeft),b=sc.getBoundingClientRect();
-   const r={pane:[Math.round(b.left+pad),Math.round(b.right-pad)],text:R(root.querySelector(mode==='read'?'p':'.cm-line')),tables:[...root.querySelectorAll('table')].map(R),blocks:[...root.querySelectorAll(mode==='read'?'.el-table':'.cm-table-widget')].map(e=>{const[l,r]=R(e),g=mode==='read'?0:parseFloat(cs(e).paddingLeft);return [l+g,r-g]}),pageScroll:sc.scrollWidth>sc.clientWidth+1};root.classList.remove('table-wide');return r};
+   const r={pane:[Math.round(b.left+pad),Math.round(b.right-pad)],text:R(root.querySelector(mode==='read'?'p':'.cm-line')),tables:[...root.querySelectorAll('table')].map(R),blocks:[...root.querySelectorAll(mode==='read'?'.el-table':'.cm-table-widget')].map(e=>{const[l,r]=R(e),g=mode==='read'?0:parseFloat(cs(e).paddingLeft);return [l+g,r-g]}),image:png?R(root.querySelector('.image-embed')):null,base:baseFile?R(root.querySelector('.bases-embed')):null,pageScroll:sc.scrollWidth>sc.clientWidth+1};root.classList.remove('table-wide','img-wide');return r};
   const wOff={read:await measure('read',false),edit:await measure('edit',false)},wOn={read:await measure('read',true),edit:await measure('edit',true)};
   popLeaf.detach();popLeaf=null;
   const inPane=(t,p)=>t[0]>=p[0]-1&&t[1]<=p[1]+1;
   check('table-wide keeps the text column where it was',['read','edit'].every(k=>JSON.stringify(wOn[k].text)===JSON.stringify(wOff[k].text)),{off:wOff,on:wOn});
   check('table-wide lines a narrow table up with the text',Object.values(wOn).every(o=>Math.abs(o.tables[0][0]-o.text[0])<=1&&Math.abs(o.tables[0][1]-o.text[1])<=1),wOn);
   check('table-wide widens a wide table to both sides, within the pane',Object.values(wOn).every(o=>o.blocks[1][0]<o.text[0]-10&&o.blocks[1][1]>o.text[1]+10&&inPane(o.blocks[1],o.pane)&&!o.pageScroll&&Math.abs((o.blocks[1][0]+o.blocks[1][1])-(o.text[0]+o.text[1]))<=2),wOn);
+  const spans=(o,k)=>o[k][0]<o.text[0]-10&&o[k][1]>o.text[1]+10&&inPane(o[k],o.pane)&&Math.abs((o[k][0]+o[k][1])-(o.text[0]+o.text[1]))<=2;
+  if(png){check('Images keep the text width without img-wide',Object.values(wOff).every(o=>o.image[0]>=o.text[0]-1&&o.image[1]<=o.text[1]+1),wOff);
+   check('img-wide widens images to both sides, within the pane',Object.values(wOn).every(o=>spans(o,'image')&&!o.pageScroll),wOn)}
+  if(baseFile)check('table-wide widens embedded Bases to both sides, within the pane',Object.values(wOn).every(o=>spans(o,'base')),wOn);
+  // Live Preview quotes and code blocks match reading view. Obsidian writes
+  // a hanging indent inline on quote lines, so the inset must not be padding.
+  stage='live preview blocks';
+  host.insertAdjacentHTML('beforeend','<div class="markdown-source-view cm-s-obsidian mod-cm6 is-live-preview lp"><div class="cm-content"><div class="cm-line">text</div>'+
+   ['one','two','three'].map(t=>'<div class="cm-line HyperMD-quote HyperMD-quote-1" style="text-indent:-17px;padding-inline-start:17px"><span class="cm-quote">'+t+'</span></div>').join('')+
+   '<div class="cm-line">text</div><div class="HyperMD-codeblock HyperMD-codeblock-begin HyperMD-codeblock-begin-bg HyperMD-codeblock-bg cm-line">~~~</div><div class="HyperMD-codeblock HyperMD-codeblock-bg cm-line">x</div><div class="HyperMD-codeblock HyperMD-codeblock-end HyperMD-codeblock-end-bg HyperMD-codeblock-bg cm-line">~~~</div>'+
+   '<div class="cm-line"><span class="cm-inline-code">x</span></div></div></div>');
+  const q=[...host.querySelectorAll('.lp .HyperMD-quote')].map(l=>{const c=cs(l);return {top:parseFloat(c.borderTopWidth),bottom:parseFloat(c.borderBottomWidth),start:parseFloat(c.borderLeftWidth),end:parseFloat(c.borderRightWidth),radiusTop:c.borderTopLeftRadius,radiusBottom:c.borderBottomLeftRadius,clip:c.backgroundClip}});
+  check('Live Preview quotes inset like reading view, with rounded first and last lines',q.every(l=>l.start===16&&l.end===16&&l.clip==='padding-box')&&q[0].top===16&&q[0].radiusTop!=='0px'&&q[2].bottom===16&&q[2].radiusBottom!=='0px'&&q[1].top===0&&q[1].bottom===0&&q[0].bottom===0&&q[2].top===0,q);
+  const code=[...host.querySelectorAll('.lp .HyperMD-codeblock')].map(l=>[cs(l).borderTopWidth,cs(l).borderLeftWidth,cs(l).borderBottomWidth].map(parseFloat));
+  check('Live Preview code blocks carry the reading-view hairline frame; inline code does not',code[0][0]===1&&code.every(c=>c[1]===1)&&code[2][2]===1&&code[1][0]===0&&parseFloat(cs(host.querySelector('.lp .cm-inline-code')).borderTopWidth)===0,code);
+  // Stacked tabs keep core's 1px spine separator; other tab strips keep none.
+  stage='stacked tabs';
+  host.insertAdjacentHTML('beforeend','<div class="workspace"><div class="mod-root"><div class="workspace-tabs mod-stacked st"><div class="workspace-tab-container"><div class="workspace-tab-header"></div></div></div></div><div class="workspace-tabs ns"><div class="workspace-tab-header-container"></div></div></div>');
+  const spine=cs(host.querySelector('.st .workspace-tab-header')).boxShadow,strip=cs(host.querySelector('.ns .workspace-tab-header-container')).borderBottomWidth;
+  check('Stacked tab spines are separated by a hairline',/^rgba?\(/.test(spine)&&!spine.startsWith('rgba(0, 0, 0, 0)'),spine);
+  check('Unstacked tab strips keep no outline',strip==='0px',strip);
+  // embed-strict: note embeds lose their ground, bar, padding and title.
+  stage='embed-strict';
+  const emb=c=>{const d=document.createElement('div');d.innerHTML='<div class="markdown-preview-view markdown-rendered '+c+'"><div class="internal-embed markdown-embed inline-embed"><div class="markdown-embed-title">T</div><div class="markdown-embed-content"></div></div></div>';host.append(d);const e=d.querySelector('.markdown-embed'),c2=cs(e),r={bg:c2.backgroundColor,bar:c2.borderInlineStartWidth,pad:c2.paddingInlineStart,title:cs(e.querySelector('.markdown-embed-title')).display};d.remove();return r};
+  const eOff=emb(''),eOn=emb('embed-strict');
+  check('Embeds keep their ground and bar without embed-strict',eOff.bg!=='rgba(0, 0, 0, 0)'&&eOff.bar!=='0px',eOff);
+  check('embed-strict drops the embed ground, bar, padding and title',eOn.bg==='rgba(0, 0, 0, 0)'&&eOn.bar==='0px'&&eOn.pad==='0px'&&eOn.title==='none',eOn);
   // Indentation guides follow Obsidian's own setting: core only renders
   // them (the reading class, the editor's indent spans) when it is on.
   stage='indentation guides';

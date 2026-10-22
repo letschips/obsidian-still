@@ -1,8 +1,9 @@
 ---
 cssclasses:
   - table-wide
-  # Try more: wide, max, img-grid, table-small, table-tiny, table-nowrap,
-  # table-numbers, row-alt, col-lines, table-lines, table-center
+  # Try more: wide, max, img-wide, img-grid, embed-strict, table-small,
+  # table-tiny, table-nowrap, table-numbers, row-alt, col-lines,
+  # table-lines, table-center
 ---
 
 # Still example
@@ -43,7 +44,7 @@ Nested lists show indentation guides when **Settings → Editor → Indentation 
 
 ## Tables
 
-This note has `table-wide` in its `cssclasses`, so wide tables spread past the text and narrow ones line up with it. Without readable line length the class has nothing to widen.
+This note has `table-wide` in its `cssclasses`, so wide tables (and embedded Bases) spread past the text and narrow ones line up with it. `img-wide` does the same for images. Without readable line length these classes have nothing to widen.
 
 | Plan | Notes | Sync | Publish | Price |
 | --- | --- | --- | --- | --- |
@@ -60,7 +61,7 @@ This note has `table-wide` in its `cssclasses`, so wide tables spread past the t
 - Accent color, fonts and text size: **Settings → Appearance**.
 - Line width, line height and spacing: Style Settings → Still → Reading.
 - Chinese typography: Style Settings → Still → Reading → CJK typography.
-- Per-note layout: add a class from the list at the top to `cssclasses`. `img-grid` works in reading view only.
+- Per-note layout: add a class from the list at the top to `cssclasses`. `img-grid` works in reading view only. `embed-strict` suits notes stitched together from `![[note#section]]` embeds.
 - Back to defaults: reset Still's options in Style Settings and remove the classes from `cssclasses`.
 
 [^1]: Footnotes read as quiet end matter.
