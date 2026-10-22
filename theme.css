@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.6.8 · MIT License · https://github.com/letschips
+  Version 0.6.9 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -605,6 +605,9 @@ body:not(.is-mobile) {
   --color-blue: #62afef;
   --color-purple: #a626a4;
   --color-pink: #e45749;
+  /* The softened orange and yellow blur together as 30% highlight washes. */
+  --highlight-background-orange: color-mix(in oklch, #e8780e var(--highlight-opacity), transparent);
+  --highlight-background-yellow: color-mix(in oklch, #e0b000 var(--highlight-opacity), transparent);
 
   --still-hairline: rgb(0 0 0 / 0.08);
   --still-hairline-strong: rgb(0 0 0 / 0.12);

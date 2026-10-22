@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.9 · 2026-10-22
+
+### Fixed
+- **Colored highlights are easier to tell apart in light mode.** Obsidian 1.14's orange and yellow highlights (`==🟠text==`, `==🟡text==`) used Still's softened hues and looked the same; their washes are now brighter and further apart.
+
+### 中文
+- 浅色模式下的彩色高亮更好分辨：Obsidian 1.14 的橙色、黄色高亮原来沿用 Still 柔化后的色相，看起来几乎一样，现在两者更亮、色相拉开。
+
 ## 0.6.8 · 2026-10-20
 
 ### Changed
