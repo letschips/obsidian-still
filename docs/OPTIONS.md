@@ -18,7 +18,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Auto-hide ribbon, revealed from the left edge together with the sidebar | Off |
 | Interface | Soft sidebar peek: the peeking sidebar sits on the page color and fades into the page, with no shadowed edge | Off |
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
-| Interface | Quiet sidebar toolbar: buttons rest as dots | Off |
+| Interface | Quiet sidebar toolbar: buttons rest as dots; hover opens them, or a tap on touch screens | Off |
 | Interface | Quiet status bar: hidden until the pointer nears the bottom center | Off |
 | Interface | Outline guides: a hairline per heading level in the outline view; the branch under the pointer darkens | Off |
 | Interface | Disable entrance motion | Off |

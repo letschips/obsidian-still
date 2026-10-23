@@ -266,8 +266,8 @@ settings:
     id: still-quiet-nav
     title: Quiet sidebar toolbar
     title.zh: 安静的侧栏工具栏
-    description: Sidebar toolbar buttons rest as dots until hovered.
-    description.zh: 侧栏工具栏按钮平时显示为小圆点，悬停时展开。
+    description: Sidebar toolbar buttons rest as dots until hovered. On phones and tablets, tap the dots to open them.
+    description.zh: 侧栏工具栏按钮平时显示为小圆点，悬停时展开；手机和平板上点一下圆点展开。
     type: class-toggle
     default: false
   -
@@ -1287,6 +1287,76 @@ body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child:not(:
 }
 
 body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child:not(:hover):not(:focus-within) .nav-action-button svg {
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 90ms var(--still-ease-out), transform 120ms var(--still-ease-out);
+}
+
+/* The same toolbar on touch screens. At rest the buttons are hidden and
+   only their dots show, so a tap lands on the row itself. The row counts as
+   clickable (cursor), and the tap's hover reveals the buttons; WebKit holds
+   back the click of a tap that reveals clickable content and keeps :hover
+   until the next tap elsewhere, which folds the row again. */
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container {
+  height: var(--still-touch-target);
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-action-button {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--still-touch-target);
+  min-width: 0;
+  height: var(--still-touch-target);
+  padding: 0;
+  background-color: transparent;
+  transition: margin 240ms var(--still-glide);
+}
+
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-action-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 4px;
+  height: 4px;
+  margin: auto;
+  border-radius: 999px;
+  background-color: var(--background-modifier-border);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms var(--still-ease-out);
+}
+
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-action-button.is-active::after {
+  background-color: var(--text-faint);
+}
+
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-action-button svg {
+  flex: none;
+  transition: opacity 180ms var(--still-ease-out) 60ms, transform 240ms var(--still-glide) 60ms;
+}
+
+/* At rest: dots 8px apart. Closing runs the other way round, icons first. */
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container:not(:hover):not(:has(:focus-visible)) {
+  cursor: pointer;
+}
+
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container:not(:hover):not(:has(:focus-visible)) .nav-action-button {
+  visibility: hidden;
+  margin-inline: -20px;
+  transition: margin 200ms var(--still-glide) 40ms, visibility 0s linear 240ms;
+}
+
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container:not(:hover):not(:has(:focus-visible)) .nav-action-button::after {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 160ms var(--still-ease-out) 80ms;
+}
+
+body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container:not(:hover):not(:has(:focus-visible)) .nav-action-button svg {
   opacity: 0;
   transform: scale(0.6);
   transition: opacity 90ms var(--still-ease-out), transform 120ms var(--still-ease-out);
@@ -3029,6 +3099,7 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
   .checkbox-container,
   .checkbox-container::after,
   body.still-quiet-nav .nav-header .nav-action-button,
+  body.still-quiet-nav .nav-header .nav-action-button::after,
   body.still-quiet-nav .nav-header .nav-action-button svg {
     transition: none !important;
   }

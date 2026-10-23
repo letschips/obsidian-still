@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.4 · 2026-10-23
+
+### Added
+- **Quiet sidebar toolbar works on phones and tablets.** The buttons rest as dots; tap the dots to open them, then tap a button. Tapping elsewhere folds them back. The first tap only opens the row and never runs a button, the row keeps one height, and every button keeps a 44px touch target.
+
+### 中文
+- 新增：安静的侧栏工具栏支持手机和平板。按钮平时是小圆点，点一下展开，再点按钮执行；点别处收起。第一下只展开、不会误触按钮，行高不变，每个按钮保持 44px 点击区。
+
 ## 0.7.3 · 2026-10-22
 
 ### Fixed
