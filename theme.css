@@ -97,6 +97,22 @@ settings:
     type: class-toggle
     default: false
   -
+    id: still-active-line
+    title: Active line highlight
+    title.zh: 当前编辑行提示
+    description: A faint wash behind the current text line while the editor has focus. Quotes and code keep their own backgrounds.
+    description.zh: 编辑器获得焦点时，为当前正文行加一层淡底色。引用和代码保留原有背景。
+    type: class-toggle
+    default: false
+  -
+    id: still-link-underline
+    title: Underline links
+    title.zh: 链接常显下划线
+    description: Keep note and web links underlined in reading and editing views, so they are recognizable without relying on color.
+    description.zh: 在阅读和编辑视图中，为笔记链接和网页链接保留下划线，不只靠颜色辨认。
+    type: class-toggle
+    default: false
+  -
     id: still-heading-colors
     title: Colors
     title.zh: 颜色
@@ -835,6 +851,24 @@ body {
 
 body.still-centered-title .inline-title {
   text-align: center;
+}
+
+/* Opt-in reading cues use core's link tokens in both Markdown views. */
+body.still-link-underline {
+  --link-decoration: underline;
+  --link-external-decoration: underline;
+}
+
+/* Source mode and links being edited use bare syntax spans instead of
+   core's .cm-underline child. Leave delimiters and fenced code untouched. */
+body.still-link-underline .markdown-source-view.mod-cm6 .cm-line:not(.HyperMD-codeblock) :is(.cm-link, .cm-url, .cm-hmd-internal-link):not(.cm-formatting):not(:has(.cm-underline)) {
+  text-decoration-line: underline;
+}
+
+/* Only the focused editor's current text line gets a wash. Blocks with
+   their own ground keep it, and changing focus never changes geometry. */
+body.still-active-line .markdown-source-view.mod-cm6 .cm-editor.cm-focused .cm-line.cm-active:not(.HyperMD-codeblock):not(.HyperMD-quote):not(.HyperMD-frontmatter) {
+  background-color: var(--still-wash);
 }
 
 /* Option: CJK typography. Han text set against Latin words and digits gets
@@ -1681,6 +1715,14 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
 }
 
 :where(button, .clickable-icon, [role="button"]):focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+/* Core removes the browser outline on anchors. Keep keyboard navigation
+   visible inside rendered notes, including embeds and HTML in the editor.
+   The low specificity leaves plugin-owned link controls in charge. */
+:where(.markdown-rendered a[href]):focus-visible {
   outline: 2px solid var(--interactive-accent);
   outline-offset: 2px;
 }

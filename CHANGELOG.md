@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.5 · 2026-10-24
+
+### Added
+- **Active line highlight**, an optional faint wash on the focused editor's current text line. Quotes and code keep their backgrounds; moving the cursor or changing focus does not shift text.
+- **Underline links**, an option for keeping note and web links underlined in reading and editing views. Both new options live under Reading and are off by default.
+
+### Fixed
+- **Keyboard focus on links in rendered notes is visible.** Tabbing to a link now draws an accent outline; mouse focus keeps the quiet appearance.
+
+### 中文
+- 新增「当前编辑行提示」：编辑器获得焦点时，当前正文行显示淡底色；引用和代码保留原有背景，切换光标和焦点不会挤动文字。
+- 新增「链接常显下划线」：阅读和编辑视图中的笔记、网页链接可常显下划线。两项都位于「阅读」分组，默认关闭。
+- 修复：渲染后的正文链接获得键盘焦点时显示强调色轮廓，鼠标操作保持安静外观。
+
 ## 0.7.4 · 2026-10-23
 
 ### Added

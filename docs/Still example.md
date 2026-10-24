@@ -61,6 +61,8 @@ This note has `table-wide` in its `cssclasses`, so wide tables (and embedded Bas
 - Accent color, fonts and text size: **Settings → Appearance**.
 - Line width, line height and spacing: Style Settings → Still → Reading.
 - Chinese typography: Style Settings → Still → Reading → CJK typography.
+- Editing position: Style Settings → Still → Reading → Active line highlight (当前编辑行提示). The wash follows the cursor and disappears when the editor loses focus.
+- Link visibility: Style Settings → Still → Reading → Underline links (链接常显下划线). Both options are off by default. In reading view, use Tab to reach a web link and see its focus outline.
 - Per-note layout: add a class from the list at the top to `cssclasses`. `img-grid` works in reading view only. `embed-strict` suits notes stitched together from `![[note#section]]` embeds.
 - Back to defaults: reset Still's options in Style Settings and remove the classes from `cssclasses`.
 

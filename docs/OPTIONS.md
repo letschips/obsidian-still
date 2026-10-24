@@ -8,6 +8,8 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | Centered note title | Off |
 | Reading | CJK typography: a gap where Han meets Latin or digits, improved paragraph endings in reading view (normal paragraph wrapping on iOS), line height 1.75 unless set | Off |
 | Reading | Justified paragraphs: body text lines up on both edges in reading and editing views; headings, code and tables keep their alignment | Off |
+| Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
+| Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
 | Colors | Page, sidebar, text, secondary text, link, list marker and checkbox colors, for light and dark | Theme palette; links and checkboxes use the accent |
 | Colors | Graphite ink: buttons, toggles and links use the text color | Off |
 | Interface | Roundness: scales every corner radius | 1.25 |
@@ -31,5 +33,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Content | Plain tags, don't strike completed tasks, dark PDFs, dim PDFs or images in dark mode | Off |
 
 Still also respects the system "reduce motion" setting.
+
+Keyboard focus on links in rendered notes always has a visible outline; this does not require Style Settings.
 
 Back to the [README](../README.md).
