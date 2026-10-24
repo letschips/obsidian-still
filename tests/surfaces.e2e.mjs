@@ -67,6 +67,18 @@ const code=String.raw`(async()=>{
   // Ribbon tiles: 32px hit areas, 4px apart, centred in the ribbon.
   stage='ribbon tiles';const tiles=[...host.querySelectorAll('.side-dock-ribbon-action')],box=tiles.map(t=>t.getBoundingClientRect()),actions=view.getComputedStyle(host.querySelector('.side-dock-actions')),ribbonStyle=view.getComputedStyle(ribbon);
   check('Ribbon tiles are 32px with a 4px gap, centred',box.every(b=>b.width===32&&b.height===32)&&actions.rowGap==='4px'&&ribbonStyle.paddingLeft==='6px'&&ribbonStyle.paddingRight==='6px',{sizes:box.map(b=>[b.width,b.height]),gap:actions.rowGap,paddingLeft:ribbonStyle.paddingLeft,paddingRight:ribbonStyle.paddingRight});
+  // Without a hidden title bar core puts the left sidebar toggle inside the
+  // ribbon at top 0, meant for the corner above it. The auto-hide ribbon is
+  // positioned, so that top lands on the first tile unless the ribbon makes
+  // room. A ribbon without the toggle (macOS hidden frame) keeps its top.
+  stage='ribbon toggle';const hadToggle=['still-peek-ribbon','show-ribbon'].filter(c=>doc.body.classList.contains(c));
+  const frame=doc.createElement('div');frame.style.cssText='position:relative;height:240px';
+  frame.innerHTML='<div class="workspace-ribbon side-dock-ribbon mod-primary"><div class="sidebar-toggle-button mod-left"><div class="clickable-icon"></div></div><div class="side-dock-actions"><div class="side-dock-ribbon-action clickable-icon"></div></div></div>';host.append(frame);
+  doc.body.classList.add('still-peek-ribbon','show-ribbon');
+  const tg=frame.querySelector('.sidebar-toggle-button').getBoundingClientRect(),tile=frame.querySelector('.side-dock-ribbon-action').getBoundingClientRect(),bare=view.getComputedStyle(ribbon).paddingTop;
+  frame.remove();doc.body.classList.remove('still-peek-ribbon','show-ribbon');doc.body.classList.add(...hadToggle);
+  check('Auto-hide ribbon keeps the sidebar toggle above its first tile',tg.height>0&&tg.bottom<=tile.top,{toggle:[tg.top,tg.bottom],tile:tile.top});
+  check('Auto-hide ribbon without the toggle keeps its top',bare==='0px',{paddingTop:bare});
   // A leaf in a collapsed sidebar stays active after the pointer leaves; the
   // peek panel must still park, and stay open only while focus is inside.
   stage='peek focus';const dock=doc.createElement('div');dock.className='workspace-split mod-sidedock mod-right-split is-sidedock-collapsed';dock.style.cssText='display:none;width:0';

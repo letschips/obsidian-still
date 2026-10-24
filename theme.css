@@ -1596,6 +1596,14 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
     opacity var(--still-moderate) var(--still-glide);
 }
 
+/* Without a hidden title bar, core moves the left sidebar toggle into the
+   ribbon at top 0, meant for the corner above it. The positioned ribbon
+   becomes its containing block, so the toggle would land on the first icon:
+   give it a header-high row at the top, where it slides in with the ribbon. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:has(> .sidebar-toggle-button) {
+  padding-top: var(--header-height);
+}
+
 /* A translucency snippet repaints .workspace-ribbon with a near-clear tint
    (!important), so the background above never survives. Revealed beside a
    collapsed sidebar, the ribbon floats over the page, so it needs a surface.

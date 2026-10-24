@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.6 · 2026-10-24
+
+### Fixed
+- **The left sidebar toggle no longer covers the first ribbon icon with Auto-hide ribbon on.** Without a hidden title bar (such as the native or Obsidian frame on Windows and Linux), Obsidian puts the toggle inside the ribbon; it now sits in its own row above the icons and slides in with the ribbon.
+
+### 中文
+- 修复：开启「自动隐藏功能区」时，左侧栏折叠按钮不再压住功能区第一个图标。窗口框架不是「隐藏」样式时（如 Windows、Linux 的原生框架或 Obsidian 框架），Obsidian 会把折叠按钮放进功能区；现在它单独占一行、位于图标上方，随功能区一起滑出。
+
 ## 0.7.5 · 2026-10-24
 
 ### Added
