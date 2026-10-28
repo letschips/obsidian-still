@@ -1,7 +1,8 @@
 // Obsidian renderer E2E for Still's opt-in content options. Isolates Still
 // (snippets off, opaque window) and restores classes, styles and the Bases
 // tab it opens. No note or config writes.
-// Breaks caught: images that ignore "fill the line width" (or stretch with it
+// Breaks caught: images (bare Markdown ones in reading view too) that ignore
+// "fill the line width" (or stretch with it
 // off), explicit widths overridden, colored headings that skip H4/H6 (Still
 // keeps their --hN-color muted), a soft sidebar peek that still draws its shadow, tall images overflowing the window, list
 // spacing slider ignored, CJK typography that leaks into code or overrides
@@ -37,20 +38,20 @@ const code=String.raw`(async()=>{
   for(const c of [...opts,'is-translucent'])toggle(c,false);
   stage='media';
   host=document.createElement('div');host.style.cssText='position:fixed;left:0;top:0;width:600px;z-index:-1';
-  host.innerHTML='<div class="markdown-rendered"><span class="internal-embed image-embed"><img class="p-small"></span><span class="internal-embed image-embed" width="50"><img class="p-fixed" width="50"></span><span class="internal-embed image-embed"><img class="p-tall"></span><ul><li>one</li><li>two</li></ul></div>'+
+  host.innerHTML='<div class="markdown-rendered"><span class="internal-embed image-embed"><img class="p-small"></span><span class="internal-embed image-embed" width="50"><img class="p-fixed" width="50"></span><span class="internal-embed image-embed"><img class="p-tall"></span><p><img class="p-bare"><img class="p-bare-fixed" width="50"></p><ul><li>one</li><li>two</li></ul></div>'+
    '<div class="markdown-source-view mod-cm6"><div class="cm-content" style="width:600px"><div class="internal-embed image-embed"><div class="image-wrapper"><img class="s-small"></div></div></div></div>'+
    '<div class="pdf-container"><div class="pdfViewer"><div class="page"></div></div></div>';
   document.body.append(host);
   const small=image(40,40),tall=image(40,4000);
-  for(const[c,src]of [['.p-small',small],['.p-fixed',small],['.p-tall',tall],['.s-small',small]]){const i=host.querySelector(c);i.src=src;await i.decode()}
+  for(const[c,src]of [['.p-small',small],['.p-fixed',small],['.p-tall',tall],['.s-small',small],['.p-bare',small],['.p-bare-fixed',small]]){const i=host.querySelector(c);i.src=src;await i.decode()}
   const w=c=>Math.round(host.querySelector(c).getBoundingClientRect().width),h=c=>Math.round(host.querySelector(c).getBoundingClientRect().height);
-  const off={reading:w('.p-small'),editing:w('.s-small'),fixed:w('.p-fixed')};
+  const off={reading:w('.p-small'),bare:w('.p-bare'),editing:w('.s-small'),fixed:w('.p-fixed')};
   toggle('still-media-fill',true);await pause(30);
-  const on={reading:w('.p-small'),editing:w('.s-small'),fixed:w('.p-fixed'),tall:h('.p-tall'),limit:Math.round(innerHeight*.75)};
+  const on={reading:w('.p-small'),bare:w('.p-bare'),bareFixed:w('.p-bare-fixed'),editing:w('.s-small'),fixed:w('.p-fixed'),tall:h('.p-tall'),limit:Math.round(innerHeight*.75)};
   toggle('still-media-fill',false);
-  check('Images keep their size by default',off.reading===40&&off.editing===40,off);
-  check('Fill option stretches images to the line width in both views',on.reading>=590&&on.editing>=590,on);
-  check('Images with an explicit width keep it',on.fixed===50,on);
+  check('Images keep their size by default',off.reading===40&&off.bare===40&&off.editing===40,off);
+  check('Fill option stretches images to the line width in both views',on.reading>=590&&on.bare>=590&&on.editing>=590,on);
+  check('Images with an explicit width keep it',on.fixed===50&&on.bareFixed===50,on);
   check('Tall images stay within the window',on.tall<=on.limit+1,on);
   stage='headings';
   host.insertAdjacentHTML('beforeend','<div class="markdown-rendered">'+[1,2,3,4,5,6].map(n=>'<h'+n+' class="t'+n+'">x</h'+n+'>').join('')+'</div>');

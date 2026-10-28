@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.7 · 2026-10-28
+
+### Fixed
+- **`table-wide` and `img-wide` widen in Live Preview on phones and tablets.** The editor's wide line was computed from both mobile margin values and came out invalid, so blocks stayed at the text width; it now matches reading view.
+- **"Images fill the line width" reaches standard Markdown and external images in reading view.** They stayed at their natural size there while Live Preview stretched them. Images with a set width keep it.
+
+### 中文
+- 修复：手机和平板的实时预览里，`table-wide`、`img-wide` 现在能正常加宽，与阅读视图一致。
+- 修复：开启「图片填满行宽」后，阅读视图里的标准 Markdown 图片和外链图片也会填满行宽；指定了宽度的图片保持原宽。
+
 ## 0.7.6 · 2026-10-24
 
 ### Fixed

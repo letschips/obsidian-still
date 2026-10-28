@@ -1,6 +1,7 @@
 // Actual Obsidian mobile emulation; run after `dev:mobile on` and selecting Still.
 // Breaks caught: small touch targets, squeezed drawer names, clipped sheets,
-// keyboard overlap, short tablet tabs, and pinned drawers with wasted margins.
+// keyboard overlap, short tablet tabs, pinned drawers with wasted margins, and
+// an img-wide editor line computed from both values of the mobile margins.
 // No note writes. Geometry checks plus screenshot artifacts; device gestures
 // are attempted through Chrome touch input and remain distinct from real hardware.
 // Usage: node tests/mobile.e2e.mjs <vault> <report.json> [targeted|all]
@@ -76,6 +77,14 @@ const code=String.raw`(async()=>{
   if(was){item.setCollapsed(true);await pause(150)}
   return r;
  }
+ function wideEditor(){
+  // Mobile --file-margins holds two values; the editor's wide line must use the horizontal one.
+  const host=document.createElement('div');host.className='markdown-source-view mod-cm6 is-readable-line-width img-wide';host.style.cssText='position:fixed;left:0;top:0;width:600px;z-index:-1';
+  host.innerHTML='<div class="cm-content"><div class="cm-line"><div class="internal-embed image-embed"></div></div></div>';
+  document.body.append(host);const x=parseFloat(getComputedStyle(host).getPropertyValue('--file-margins-x'));
+  const out={width:Math.round(host.querySelector('.image-embed').getBoundingClientRect().width),expected:600-2*x,margins:getComputedStyle(host).getPropertyValue('--file-margins')};
+  host.remove();return out;
+ }
  function contentRadius(){
   // Touch chrome is rounder on mobile; reading content keeps the desktop corners.
   const host=document.createElement('div');host.className='markdown-rendered';host.style.cssText='position:fixed;left:0;top:0;width:300px;z-index:-1';
@@ -117,6 +126,7 @@ const code=String.raw`(async()=>{
    const n=rect(name),i=rect(info);check(stage+' name has its own readable row',(name.scrollWidth<=name.clientWidth+1||n.width>=rect(drawer).width*.55)&&i.top>=n.bottom-1,{name:n,info:i,drawer:rect(drawer)});
    const tree=await treeStep(drawer);check(stage+' nested rows keep the drawer width',tree.step<=12,tree);
    if(w===390){const b=blackMobile(drawer),k='rgb(0, 0, 0)';check('pure black option is black in dark mode only, code keeps a lift',b.black.page==='#000000'&&b.black.drawer===k&&b.black.code!==k&&b.dark.page!=='#000000'&&b.light.page!=='#000000',b)}
+   if(w===390){const wide=wideEditor();check(stage+' img-wide editor line fits the horizontal margins',wide.width===wide.expected,wide)}
    if(w===390){const radius=contentRadius();check('reading content keeps desktop corners',Object.keys(radius.expected).every(k=>radius.actual[k]===radius.expected[k]),radius)}
    if(w===390)await shot('phone-drawer-390');
    app.workspace.leftSplit.collapse();await pause(300);
@@ -143,6 +153,7 @@ const code=String.raw`(async()=>{
    document.body.style.setProperty('--safe-area-inset-top','24px');document.body.style.setProperty('--safe-area-inset-bottom','20px');
    const tabs=[...document.querySelectorAll('.mod-root .workspace-tab-header')].filter(e=>e.offsetWidth&&e.offsetHeight).map(rect);
    check(stage+' tab touch height',tabs.length>0&&tabs.every(b=>b.height>=44),tabs);
+   const wide=wideEditor();check(stage+' img-wide editor line fits the horizontal margins',wide.width===wide.expected,wide);
    app.workspace.leftSplit.setPinned(true);app.workspace.rightSplit.setPinned(true);await pause(300);
    const left=rect(document.querySelector('.workspace-drawer.mod-left')),right=rect(document.querySelector('.workspace-drawer.mod-right')),root=rect(app.workspace.rootSplit.containerEl);
    check(stage+' pinned drawers have no overlay margins',left.top<=25&&right.top<=25&&left.height>=h-30&&right.height>=h-30,{left,right,root});
