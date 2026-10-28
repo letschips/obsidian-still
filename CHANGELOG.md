@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 · 2026-10-28
+
+### Added
+- **Per-note typography.** Add `cjk` / `no-cjk`, `justify` / `no-justify` or `link-underline` / `no-link-underline` to a note's `cssclasses` to turn CJK typography, justified paragraphs or link underlines on or off for that note, in reading view and Live Preview. The note's class wins over the global option. An embedded note follows its own classes; inside a note that turns an option off, it stays off. Graphite ink keeps its link underlines.
+
+### 中文
+- 新增逐篇排版：在笔记 `cssclasses` 里写 `cjk` / `no-cjk`、`justify` / `no-justify`、`link-underline` / `no-link-underline`，可让这篇笔记单独开关中文排版、两端对齐和链接下划线，阅读视图和实时预览都生效，优先于全局设置。嵌入的笔记按自己的类显示；所在笔记关掉的选项，嵌入内容也保持关闭。「石墨」配色下链接仍保留下划线。
+
 ## 0.7.7 · 2026-10-28
 
 ### Fixed

@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.7.7 · MIT License · https://github.com/letschips
+  Version 0.8.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -84,16 +84,16 @@ settings:
     id: still-cjk
     title: CJK typography
     title.zh: 中文排版
-    description: For Chinese and Japanese writing. A small gap where Han characters meet Latin letters or digits with no space typed, improved paragraph endings in reading view, and a roomier default line height (1.75). iOS keeps normal paragraph wrapping. Code is left exactly as typed.
-    description.zh: 适合中文和日文写作。中文与英文、数字相邻且没打空格时自动留出小间隙；优化阅读视图的段落断行，iOS 正文保留普通换行；默认行高放宽到 1.75。代码保持原样。
+    description: For Chinese and Japanese writing. A small gap where Han characters meet Latin letters or digits with no space typed, improved paragraph endings in reading view, and a roomier default line height (1.75). iOS keeps normal paragraph wrapping. Code is left exactly as typed. A note can turn it on or off with cjk / no-cjk in cssclasses.
+    description.zh: 适合中文和日文写作。中文与英文、数字相邻且没打空格时自动留出小间隙；优化阅读视图的段落断行，iOS 正文保留普通换行；默认行高放宽到 1.75。代码保持原样。单篇笔记可在 cssclasses 写 cjk / no-cjk 单独开关。
     type: class-toggle
     default: false
   -
     id: still-justify
     title: Justified paragraphs
     title.zh: 两端对齐
-    description: Body text lines up on both edges in reading and editing views, as Chinese typesetting expects. Headings, code and tables keep their own alignment. Paragraphs with long English runs may get wider word gaps.
-    description.zh: 正文在阅读和编辑视图中两端对齐，符合中文排版习惯。标题、代码和表格不受影响。英文较多的段落词距可能被拉大。
+    description: Body text lines up on both edges in reading and editing views, as Chinese typesetting expects. Headings, code and tables keep their own alignment. Paragraphs with long English runs may get wider word gaps. A note can turn it on or off with justify / no-justify in cssclasses.
+    description.zh: 正文在阅读和编辑视图中两端对齐，符合中文排版习惯。标题、代码和表格不受影响。英文较多的段落词距可能被拉大。单篇笔记可在 cssclasses 写 justify / no-justify 单独开关。
     type: class-toggle
     default: false
   -
@@ -108,8 +108,8 @@ settings:
     id: still-link-underline
     title: Underline links
     title.zh: 链接常显下划线
-    description: Keep note and web links underlined in reading and editing views, so they are recognizable without relying on color.
-    description.zh: 在阅读和编辑视图中，为笔记链接和网页链接保留下划线，不只靠颜色辨认。
+    description: Keep note and web links underlined in reading and editing views, so they are recognizable without relying on color. A note can turn it on or off with link-underline / no-link-underline in cssclasses.
+    description.zh: 在阅读和编辑视图中，为笔记链接和网页链接保留下划线，不只靠颜色辨认。单篇笔记可在 cssclasses 写 link-underline / no-link-underline 单独开关。
     type: class-toggle
     default: false
   -
@@ -853,15 +853,28 @@ body.still-centered-title .inline-title {
   text-align: center;
 }
 
-/* Opt-in reading cues use core's link tokens in both Markdown views. */
-body.still-link-underline {
+/* Opt-in reading cues use core's link tokens in both Markdown views.
+
+   Per note: cssclasses link-underline / no-link-underline, cjk / no-cjk and
+   justify / no-justify turn these options on or off for one note, whatever
+   the global switch says. An embedded note carries its own classes; inside
+   a note that opts out, the opt-out wins. Graphite keeps its underlines,
+   since without colour they are what marks a link. */
+body.still-link-underline,
+.link-underline:not(.no-link-underline *) {
   --link-decoration: underline;
   --link-external-decoration: underline;
 }
 
+body:not(.still-graphite) .no-link-underline {
+  --link-decoration: none;
+  --link-external-decoration: none;
+}
+
 /* Source mode and links being edited use bare syntax spans instead of
    core's .cm-underline child. Leave delimiters and fenced code untouched. */
-body.still-link-underline .markdown-source-view.mod-cm6 .cm-line:not(.HyperMD-codeblock) :is(.cm-link, .cm-url, .cm-hmd-internal-link):not(.cm-formatting):not(:has(.cm-underline)) {
+body.still-link-underline .markdown-source-view.mod-cm6:not(.no-link-underline) .cm-line:not(.HyperMD-codeblock) :is(.cm-link, .cm-url, .cm-hmd-internal-link):not(.cm-formatting):not(:has(.cm-underline)),
+.markdown-source-view.mod-cm6.link-underline .cm-line:not(.HyperMD-codeblock) :is(.cm-link, .cm-url, .cm-hmd-internal-link):not(.cm-formatting):not(:has(.cm-underline)) {
   text-decoration-line: underline;
 }
 
@@ -880,27 +893,44 @@ body.still-active-line .markdown-source-view.mod-cm6 .cm-editor.cm-focused .cm-l
    so lines never reflow behind the caret while typing. The line height
    opens to 1.75 for denser Han glyphs, and the Line height slider still
    wins. */
-body.still-cjk {
+body.still-cjk,
+.cjk:not(.no-cjk *) {
   --line-height-normal: var(--still-line-height, 1.75);
 }
 
-body.still-cjk :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content, .inline-title) {
+body.still-cjk :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content, .inline-title):not(.no-cjk, .no-cjk *),
+:is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content, .inline-title):is(.cjk, .cjk *):not(.no-cjk, .no-cjk *) {
   text-autospace: normal;
   text-spacing-trim: trim-start;
 }
 
-body.still-cjk :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) :is(code, pre, kbd, .cm-inline-code, .HyperMD-codeblock) {
+/* These properties inherit: a note that opts out starts from the defaults
+   again, even when it is embedded in one that opts in. */
+.no-cjk {
+  --line-height-normal: var(--still-line-height, 1.625);
+}
+
+.no-cjk:is(.markdown-rendered, .markdown-source-view) {
+  text-autospace: initial;
+  text-spacing-trim: initial;
+  text-wrap-style: initial;
+}
+
+/* The default spacing, so this holds with the option off. */
+:is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) :is(code, pre, kbd, .cm-inline-code, .HyperMD-codeblock) {
   text-autospace: no-autospace;
 }
 
 /* WebKit on iOS rebalances every line of a short paragraph under pretty,
    leaving a ragged column well short of the line width, so iOS keeps
    normal wrapping. */
-body.still-cjk:not(.is-ios) .markdown-rendered :is(p, li, td, th, .callout-content) {
+body.still-cjk:not(.is-ios) .markdown-rendered :is(p, li, td, th, .callout-content):not(.no-cjk *),
+body:not(.is-ios) .markdown-rendered:is(.cjk, .cjk *) :is(p, li, td, th, .callout-content):not(.no-cjk *) {
   text-wrap-style: pretty;
 }
 
-body.still-cjk .markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+body.still-cjk .markdown-rendered :is(h1, h2, h3, h4, h5, h6):not(.no-cjk *),
+.markdown-rendered:is(.cjk, .cjk *) :is(h1, h2, h3, h4, h5, h6):not(.no-cjk *) {
   text-wrap-style: balance;
 }
 
@@ -908,9 +938,16 @@ body.still-cjk .markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
    spreads Han text between characters and Latin text between words, and
    the last line of a paragraph stays at the start. Headings, code and table
    rows keep their own alignment. */
-body.still-justify .markdown-rendered :is(p, li),
-body.still-justify .markdown-source-view.mod-cm6 .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row) {
+body.still-justify .markdown-rendered :is(p, li):not(.no-justify *),
+.markdown-rendered:is(.justify, .justify *) :is(p, li):not(.no-justify *),
+body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row),
+.markdown-source-view.mod-cm6.justify .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row) {
   text-align: justify;
+}
+
+/* An embed that opts out inside a justified list item. */
+.no-justify.markdown-rendered {
+  text-align: initial;
 }
 
 /* ========================================================================== */

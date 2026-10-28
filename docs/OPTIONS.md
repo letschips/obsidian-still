@@ -36,4 +36,6 @@ Still also respects the system "reduce motion" setting.
 
 Keyboard focus on links in rendered notes always has a visible outline; this does not require Style Settings.
 
+CJK typography, Justified paragraphs and Underline links can also be set per note: add `cjk` / `no-cjk`, `justify` / `no-justify` or `link-underline` / `no-link-underline` to the note's `cssclasses`. The note's class wins over the global option. An embedded note follows its own classes; inside a note that turns an option off, it stays off.
+
 Back to the [README](../README.md).
