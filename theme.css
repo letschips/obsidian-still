@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.8.0 · MIT License · https://github.com/letschips
+  Version 0.8.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1633,11 +1633,12 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
     opacity var(--still-moderate) var(--still-glide);
 }
 
-/* Without a hidden title bar, core moves the left sidebar toggle into the
-   ribbon at top 0, meant for the corner above it. The positioned ribbon
-   becomes its containing block, so the toggle would land on the first icon:
-   give it a header-high row at the top, where it slides in with the ribbon. */
+/* A ribbon-owned toggle belongs in the header row. Positioning the auto-hide
+   ribbon makes it the toggle's containing block: remove core's header gap
+   so top 0 still meets the header, and reserve that row above the icons.
+   Header-owned toggles (macOS hidden frame) keep core's ribbon gap. */
 body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:has(> .sidebar-toggle-button) {
+  margin-top: 0;
   padding-top: var(--header-height);
 }
 

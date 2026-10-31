@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1 · 2026-10-31
+
+### Fixed
+- **The left sidebar toggle stays at header height with Auto-hide ribbon on.** On Windows and Linux, and on macOS with a visible window frame, the ribbon's inherited top margin pushed the toggle down into the ribbon. The toggle now aligns with the header while keeping its own row above the ribbon icons.
+
+### 中文
+- 修复：开启「自动隐藏功能区」后，Windows、Linux 及使用可见窗口框架的 macOS 上，左侧栏收起按钮下移到功能区的问题。按钮现在与标题栏对齐，并保留与功能区图标的间距。
+
 ## 0.8.0 · 2026-10-28
 
 ### Added
