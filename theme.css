@@ -1949,6 +1949,20 @@ body.is-frameless.is-popout-modal:not(.is-mobile) .titlebar-text {
   display: none;
 }
 
+/* Core marks every modal no-drag. With the bar floating over a full-height
+   modal that cancels the window's only drag region, so clear it; controls
+   keep their own no-drag. Content stops below the bar: it can't take clicks
+   there, and the bar stays draggable at any scroll position. */
+body.is-frameless.is-popout-modal:not(.is-mobile) > .modal {
+  app-region: initial;
+}
+
+body.is-frameless.is-popout-modal:not(.is-mobile) .modal.mod-settings .vertical-tab-content:not(.setting-page) {
+  height: calc(100% - var(--titlebar-height));
+  margin-top: var(--titlebar-height);
+  padding-top: calc(var(--size-4-12) - var(--titlebar-height));
+}
+
 body.is-frameless.is-popout-modal.mod-macos:not(.is-mobile) .vertical-tab-header {
   padding-top: var(--titlebar-height);
 }

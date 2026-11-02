@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.2 · 2026-11-02
+
+### Fixed
+- **The Settings window can be dragged again.** Dragging its top edge did nothing because the settings dialog covered the window's drag region. Settings content now stops below that bar, so dragging works at any scroll position.
+
+### 中文
+- 修复：设置窗口无法拖动的问题。现在按住顶部即可移动窗口，内容滚动后也一样。
+
 ## 0.8.1 · 2026-10-31
 
 ### Fixed
