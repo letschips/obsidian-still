@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.4 · 2026-11-02
+
+### Fixed
+- **Auto-hide ribbon on Windows and Linux.** The ribbon no longer closes before you can click the sidebar toggle. The window's drag area at the top no longer covers the revealed ribbon, and the top-left corner opens it too.
+
+### 中文
+- 修复：Windows、Linux 上开启「自动隐藏功能区」后，还没点到侧栏收起按钮功能区就先收回的问题。窗口顶部的拖动区域不再盖住展开的功能区，从左上角移入也能唤出。
+
 ## 0.8.3 · 2026-11-02
 
 ### Fixed

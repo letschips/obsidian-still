@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.8.3 · MIT License · https://github.com/letschips
+  Version 0.8.4 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1685,6 +1685,30 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspa
   opacity: 1;
   transform: none;
   transition-delay: var(--still-peek-delay);
+}
+
+/* Windows and Linux treat a window drag region as title bar, so the page
+   loses hover the moment the pointer enters one and the ribbon closes under
+   it. Electron applies regions in DOM order, so the headers after the ribbon
+   win over its toggle whatever the stacking. While the ribbon is out those
+   headers stop dragging, as in Baseline; the parked ribbon's corner and the
+   trigger strip in front of it never drag. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary::before {
+  app-region: no-drag;
+}
+
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) ~ :is(.mod-left-split, .mod-root) :is(.workspace-tab-header-container, .workspace-tab-header-container-inner, .workspace-tab-header-spacer) {
+  app-region: no-drag;
+}
+
+/* Core's own no-drag corner sits before the tab strip, which outranks it. */
+body.still-peek-ribbon.show-ribbon.is-hidden-frameless:not(.is-fullscreen):not(.mod-macos):not(.is-mobile) .workspace-tabs.mod-top-left-space .workspace-tab-header-container-inner::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: calc(var(--frame-left-space) + var(--still-peek-trigger));
+  app-region: no-drag;
 }
 
 body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .mod-sidedock.mod-left-split.is-sidedock-collapsed[style*="display"] {
