@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.8.3 · 2026-11-02
+
+### Fixed
+- **Settings and Community windows on Windows and Linux.** Content no longer slides under the hidden titlebar, and the plugin search box loses its extra left gap.
+- **Dialogs on phones and tablets** use the mobile dialog background again; Settings keeps its own.
+- **Quiet sidebar toolbar** no longer clips its first button in a narrow sidebar.
+- **Graphite ink** underlines links being edited in source mode.
+- **Images with a set width** keep that width when Images fill the line width is on.
+- **Keyboard focus** keeps a peeking sidebar, the auto-hidden ribbon and the hidden vault name open, the same as hover.
+- **Sidebar peek** no longer opens from the window buttons at the top edge.
+- **Crowded tabs** give up the centering space before shortening their titles.
+- **The hidden vault name** has a solid background, so the file tree no longer shows through it.
+- **Justified text** leaves YAML frontmatter aligned to the start in source mode.
+
+### 中文
+- 修复：Windows、Linux 上设置与社区市场窗口内容被标题栏遮住，市场搜索框左侧多出空白。
+- 修复：手机和平板上的弹窗背景；设置窗口保持自身配色。
+- 修复：安静的侧栏工具栏在窄侧栏中首个按钮被裁切。
+- 修复：「石墨墨色」下源码模式编辑中的链接没有下划线。
+- 修复：开启「图片铺满行宽」时，指定宽度的图片被拉宽。
+- 修复：键盘聚焦时，侧栏预览、自动隐藏的功能区和库名称会收起。
+- 修复：鼠标移到窗口顶部按钮时误触发侧栏预览。
+- 修复：标签较多时先收起居中留白，再缩短标题。
+- 修复：隐藏的库名称浮现时，文件列表文字透出。
+- 修复：开启两端对齐后，源码模式下 YAML 属性被两端对齐。
+
 ## 0.8.2 · 2026-11-02
 
 ### Fixed

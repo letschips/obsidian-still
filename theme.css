@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.8.1 · MIT License · https://github.com/letschips
+  Version 0.8.3 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -541,6 +541,7 @@ body {
    outranks `body`. Desktop gets the theme's scale here; mobile keeps core's
    touch sizes. */
 body:not(.is-mobile) {
+  --modal-background: var(--still-raised);
   --input-radius: var(--radius-s);
   --clickable-icon-radius: var(--radius-s);
   --modal-radius: var(--radius-l);
@@ -873,6 +874,7 @@ body:not(.still-graphite) .no-link-underline {
 
 /* Source mode and links being edited use bare syntax spans instead of
    core's .cm-underline child. Leave delimiters and fenced code untouched. */
+body.still-graphite .markdown-source-view.mod-cm6 .cm-line:not(.HyperMD-codeblock) :is(.cm-link, .cm-url, .cm-hmd-internal-link):not(.cm-formatting):not(:has(.cm-underline)),
 body.still-link-underline .markdown-source-view.mod-cm6:not(.no-link-underline) .cm-line:not(.HyperMD-codeblock) :is(.cm-link, .cm-url, .cm-hmd-internal-link):not(.cm-formatting):not(:has(.cm-underline)),
 .markdown-source-view.mod-cm6.link-underline .cm-line:not(.HyperMD-codeblock) :is(.cm-link, .cm-url, .cm-hmd-internal-link):not(.cm-formatting):not(:has(.cm-underline)) {
   text-decoration-line: underline;
@@ -940,8 +942,8 @@ body.still-cjk .markdown-rendered :is(h1, h2, h3, h4, h5, h6):not(.no-cjk *),
    rows keep their own alignment. */
 body.still-justify .markdown-rendered :is(p, li):not(.no-justify *),
 .markdown-rendered:is(.justify, .justify *) :is(p, li):not(.no-justify *),
-body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row),
-.markdown-source-view.mod-cm6.justify .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row) {
+body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row):not(.HyperMD-frontmatter):not(:has(.cm-hmd-frontmatter)),
+.markdown-source-view.mod-cm6.justify .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row):not(.HyperMD-frontmatter):not(:has(.cm-hmd-frontmatter)) {
   text-align: justify;
 }
 
@@ -1126,13 +1128,22 @@ body:not(.still-tabs-left):not(.is-phone) .mod-root .workspace-tabs:not(.mod-sta
 }
 
 /* Balance the actions on the right (new tab, tab list and, when the right
-   sidebar is closed, its toggle) so the tabs center on the page. */
-body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space):not(.mod-top-right-space) .workspace-tab-header-container-inner {
-  padding-inline-start: 64px;
+   sidebar is closed, its toggle) so the tabs center on the page. The spacer
+   gives up its width before crowded tabs have to shorten their titles. */
+body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space) .workspace-tab-header-container-inner {
+  padding-inline-start: 0;
 }
 
-body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space).mod-top-right-space .workspace-tab-header-container-inner {
-  padding-inline-start: 96px;
+body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space) .workspace-tab-header-container-inner::before {
+  content: "";
+  flex: 0 9999 64px;
+  min-width: 0;
+  /* Cancel the extra gap introduced by this flex item. */
+  margin-inline-end: -4px;
+}
+
+body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space).mod-top-right-space .workspace-tab-header-container-inner::before {
+  flex-basis: 96px;
 }
 
 /* Stacked tabs: core separates the spines with a 1px line drawn in the tab
@@ -1303,7 +1314,7 @@ body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .sear
 body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-buttons-container {
   height: var(--still-nav-tile);
   flex-wrap: nowrap;
-  justify-content: center;
+  justify-content: safe center;
   align-items: center;
   gap: 4px;
 }
@@ -1370,7 +1381,7 @@ body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child:not(:
    until the next tap elsewhere, which folds the row again. */
 body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container {
   height: var(--still-touch-target);
-  justify-content: center;
+  justify-content: safe center;
   align-items: center;
   gap: 4px;
   -webkit-tap-highlight-color: transparent;
@@ -1462,18 +1473,20 @@ body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-leaf-content > 
 
 /* Once the pointer is in, the whole foot holds the hover, so the gap between
    Settings and the name (and a slightly off line) does not drop it. */
-body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:hover {
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:is(:hover, :focus-within) {
   pointer-events: auto;
 }
 
 /* The name stays clickable while it lingers; visibility, not pointer-events,
    takes it away, because only visibility can wait. */
 body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile .workspace-drawer-vault-switcher {
+  /* The name floats over the tree, including during its closing delay. */
+  background-color: var(--background-secondary);
   pointer-events: auto;
   transition: opacity var(--still-fast) var(--still-ease-out), visibility 0s;
 }
 
-body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:not(:hover) .workspace-drawer-vault-switcher:not(.has-active-menu) {
+body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:not(:hover):not(:focus-within) .workspace-drawer-vault-switcher:not(.has-active-menu) {
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--still-fast) var(--still-ease-out) var(--still-vault-linger),
@@ -1569,11 +1582,12 @@ body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sided
     transparent);
 }
 
-/* The trigger strip, on the panel edge that faces the page. */
+/* The trigger strip starts below the header, clear of window controls. */
 body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]::after {
   content: "";
   position: absolute;
-  inset-block: 0;
+  top: var(--header-height);
+  bottom: 0;
   width: var(--still-peek-trigger);
   pointer-events: auto;
 }
@@ -1592,7 +1606,7 @@ body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[st
    sidebar stays active after the pointer leaves, which held the panel open. */
 body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]:hover,
 body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]:focus-within,
-body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:hover + .mod-sidedock.is-sidedock-collapsed[style*="display"] {
+body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.is-sidedock-collapsed[style*="display"] {
   transform: translateX(var(--still-peek-offset));
   opacity: 1;
   pointer-events: auto;
@@ -1600,7 +1614,7 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspa
 }
 
 body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]:is(:hover, :focus-within)::after,
-body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:hover + .mod-sidedock.is-sidedock-collapsed[style*="display"]::after {
+body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.is-sidedock-collapsed[style*="display"]::after {
   pointer-events: none;
 }
 
@@ -1666,8 +1680,8 @@ body.still-peek-soft.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ri
 /* Revealed by its own edge, or alongside a peeking left sidebar. The
    sibling check is a direct-sibling :has() on one element, so it stays
    cheap to match. */
-body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:hover,
-body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:has(+ .mod-sidedock.is-sidedock-collapsed[style*="display"]:hover) {
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within),
+body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:has(+ .mod-sidedock.is-sidedock-collapsed[style*="display"]:is(:hover, :focus-within)) {
   opacity: 1;
   transform: none;
   transition-delay: var(--still-peek-delay);
@@ -1684,7 +1698,7 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .mod-sidedock.mod-left-split:
   transition: padding-left var(--still-moderate) var(--still-glide);
 }
 
-body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:hover + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
   padding-left: calc(var(--ribbon-width) - 8px);
   transition-delay: var(--still-peek-delay);
 }
@@ -1707,7 +1721,7 @@ body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscr
   transition: inherit;
 }
 
-body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .workspace-ribbon.mod-primary:hover + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
   padding-left: calc(var(--size-4-2) + var(--frame-left-space) + 8px);
   transition-delay: var(--still-peek-delay);
 }
@@ -1842,7 +1856,7 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
 .modal,
 .modal-container.mod-dim .modal,
 .prompt {
-  background-color: var(--still-raised);
+  background-color: var(--modal-background);
   border: 0;
   border-radius: var(--modal-radius);
   box-shadow: var(--still-dialog-shadow);
@@ -1957,23 +1971,19 @@ body.is-frameless.is-popout-modal:not(.is-mobile) > .modal {
   app-region: initial;
 }
 
-body.is-frameless.is-popout-modal:not(.is-mobile) .modal.mod-settings .vertical-tab-content:not(.setting-page) {
+body.is-frameless.is-hidden-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) .modal.mod-settings .vertical-tab-content:not(.setting-page) {
   height: calc(100% - var(--titlebar-height));
   margin-top: var(--titlebar-height);
   padding-top: calc(var(--size-4-12) - var(--titlebar-height));
 }
 
-body.is-frameless.is-popout-modal.mod-macos:not(.is-mobile) .vertical-tab-header {
+body.is-frameless.is-hidden-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) .vertical-tab-header {
   padding-top: var(--titlebar-height);
-}
-
-body.is-frameless.is-popout-modal:not(.is-mobile) .community-modal-search {
-  margin-left: var(--frame-left-space);
 }
 
 /* Browse windows use the same floating titlebar as Settings, but their
    search and sort controls must sit below its native drag region. */
-body.is-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) > .modal.mod-community-modal {
+body.is-frameless.is-hidden-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) > .modal.mod-community-modal {
   padding-top: var(--titlebar-height);
 }
 
@@ -2737,8 +2747,8 @@ body.theme-dark.still-img-dim :is(.markdown-rendered, .markdown-source-view.mod-
    media without a width of its own; tall ones are letterboxed so they stay
    within the window. Reading view renders Markdown and external images as a
    bare img, without the .image-embed wrapper the editor gives them. */
-body.still-media-fill :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) .image-embed:not([width]),
-body.still-media-fill :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) .image-embed:not([width]) > .image-wrapper {
+body.still-media-fill :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) .image-embed:not([width]):not(:has(img[width])),
+body.still-media-fill :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) .image-embed:not([width]):not(:has(img[width])) > .image-wrapper {
   width: 100%;
 }
 
@@ -2911,6 +2921,11 @@ body.is-mobile {
   --prompt-backdrop-filter: none;
   --suggestion-backdrop-filter: none;
   --blur-opacity-m: 100%;
+}
+
+/* Settings keeps core's own surface, even inside a dimmed modal container. */
+body.is-mobile .modal.mod-settings {
+  background-color: var(--settings-background);
 }
 
 /* Core's mobile palettes reset a few base steps and the tag tint; keep
