@@ -69,6 +69,25 @@ const code = `(${async function(screenshot) {
     side.classList.remove('is-sidedock-collapsed'); side.style.cssText = 'width:240px';
     header.prepend(toggle);
     results.push({name: 'macOS hidden frame keeps header toggle and ribbon gap', pass: Math.abs(rect(toggle).top - rect(frame).top) < 1 && view.getComputedStyle(ribbon).paddingTop === '0px' && parseFloat(view.getComputedStyle(ribbon).marginTop) > 0});
+    // One open sidebar: the gutter on the far edge of the floating page is the
+    // frame tone (the root), not the body showing through a margin.
+    const page = host.querySelector('.mod-root'), pageTabs = page.querySelector('.workspace-tabs');
+    pageTabs.insertAdjacentHTML('beforeend', '<div class="workspace-tab-container">Note</div>');
+    const card = pageTabs.querySelector('.workspace-tab-container');
+    page.style.flex = '1'; pageTabs.style.flex = '1';
+    for (const palette of ['theme-light', 'theme-dark']) {
+      for (const open of ['left', 'right']) {
+        doc.body.className = ['mod-macos', palette, 'is-frameless', 'is-hidden-frameless', 'show-ribbon', 'still-motion-off'].join(' ');
+        frame.className = 'workspace is-' + open + '-sidedock-open';
+        frame.style.display = 'flex';
+        side.style.cssText = open === 'left' ? 'width:240px' : 'display:none';
+        await pause(50);
+        const f = rect(frame), p = rect(page), c = rect(card), edge = open === 'left' ? f.right : rect(ribbon).right;
+        const hit = doc.elementFromPoint(open === 'left' ? edge - 2 : edge + 2, (c.top + c.bottom) / 2);
+        const inset = open === 'left' ? edge - c.right : c.left - edge;
+        results.push({name: `${palette} / only ${open} sidebar open: page gutter is the frame tone`, pass: page.contains(hit) && !card.contains(hit) && inset >= 6, evidence: {frame: f, page: p, card: c, inset, hit: hit?.className, pageBg: view.getComputedStyle(page).backgroundColor}});
+      }
+    }
     host.remove();
   } catch (error) {
     results.push({name: 'Harness', pass: false, error: String(error)});

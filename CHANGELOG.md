@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.1 · 2026-11-03
+
+### Fixed
+- **Floating page edge with one sidebar open.** The gap between the page and the window edge on the closed side now uses the frame color instead of a light strip, so the page's corner no longer looks chipped.
+
+### 中文
+- 修复：只开一侧侧栏时，页面卡片与另一侧窗口边之间露出一条浅色竖条，卡片圆角看起来缺了一块。现在空隙使用框架颜色。
+
 ## 0.10.0 · 2026-11-03
 
 ### Added

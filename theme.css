@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.10.0 · MIT License · https://github.com/letschips
+  Version 0.10.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1036,12 +1036,14 @@ body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open,
   background-color: var(--background-secondary);
 }
 
+/* The gutter on the far side is padding, so it shows the frame tone rather
+   than the body behind a margin. */
 body:not(.is-mobile):not(.still-flat-page) .workspace.is-left-sidedock-open:not(.is-right-sidedock-open) .mod-root {
-  margin-right: var(--still-gutter);
+  padding-right: var(--still-gutter);
 }
 
 body:not(.is-mobile):not(.still-flat-page) .workspace.is-right-sidedock-open:not(.is-left-sidedock-open) .mod-root {
-  margin-left: var(--still-gutter);
+  padding-left: var(--still-gutter);
 }
 
 body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-split {
