@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.13.0 · 2026-11-03
+
+### Added
+- **Tables fill the line width.** A new option makes every table as wide as the text, lining up with it on both sides. Notes with table-wide keep their own width.
+- **Column lines in tables.** A new option draws hairlines between columns in every table, as col-lines does for one note.
+- **Table header colors.** Colors has pickers for the table header text and background, for light and dark. They apply with framed and hairline tables.
+
+### 中文
+- 新增：「表格铺满行宽」选项，表格和正文一样宽、左右对齐；用了 table-wide 的笔记保持自己的宽度。
+- 新增：「表格显示列线」选项，所有表格的列与列之间加细线，相当于每篇笔记都写上 col-lines。
+- 新增：「颜色」里可以设置表头文字和表头底色，浅色、深色分开，两种表格样式都生效。
+
 ## 0.12.0 · 2026-11-03
 
 ### Changed

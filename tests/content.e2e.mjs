@@ -147,6 +147,22 @@ const code=String.raw`(async()=>{
   const plainLook=tableLook('.tbl-read'),plainEdges=edges('.tbl-read');
   toggle('still-table-plain',false);
   check('Hairline tables option: no frame or header wash, a line under every row',plainLook.frame===0&&clear(plainLook.head)&&plainEdges.every(([,,b])=>b>0),{look:plainLook,edges:plainEdges});
+  // Border-style options: tables fill the line (reading view and the
+  // editor's widget), column lines on every table, and picked header text
+  // and background colors on every header cell, framed or hairline.
+  toggle('still-table-full',true);
+  const fullW=[['.tbl-read','.tbl-read table'],['.tbl-edit','.tbl-edit .table-wrapper']].map(([o,i])=>{const box=host.querySelector(o),cs=getComputedStyle(box);return [Math.round(host.querySelector(i).getBoundingClientRect().width),Math.round(box.getBoundingClientRect().width-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight))]});
+  toggle('still-table-full',false);
+  check('Tables fill the line width option in both views',fullW.every(([t,b])=>Math.abs(t-b)<=1),fullW);
+  toggle('still-table-cols',true);
+  const colW=['.tbl-read','.tbl-edit'].map(s=>[...host.querySelectorAll(s+' tbody > tr:first-child > td')].map(c=>parseFloat(getComputedStyle(c).borderRightWidth)));
+  toggle('still-table-cols',false);
+  check('Column lines option: lines between columns, none at the edge',colW.every(r=>r[0]>0&&r[1]>0&&r[2]===0),colW);
+  document.body.style.setProperty('--still-table-head-color','rgb(10, 20, 30)');document.body.style.setProperty('--still-table-head-bg','rgb(200, 100, 50)');
+  const headPick=()=>['.tbl-read','.tbl-edit'].flatMap(s=>[1,2].map(n=>{const c=getComputedStyle(host.querySelector(s+' th:nth-child('+n+')'));return [c.color,c.backgroundColor]}));
+  const pickFramed=headPick();toggle('still-table-plain',true);const pickPlain=headPick();toggle('still-table-plain',false);
+  document.body.style.removeProperty('--still-table-head-color');document.body.style.removeProperty('--still-table-head-bg');
+  check('Picked header colors reach every header cell, framed or hairline',[...pickFramed,...pickPlain].every(([c,b])=>c==='rgb(10, 20, 30)'&&b==='rgb(200, 100, 50)'),{framed:pickFramed,plain:pickPlain});
   // Cell padding follows --table-cell-padding-x/y in both views (the editor
   // pads an inner wrapper).
   host.querySelector('.tbl-edit td').innerHTML='<div class="table-cell-wrapper">1</div>';

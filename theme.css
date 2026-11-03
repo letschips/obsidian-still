@@ -245,6 +245,26 @@ settings:
     default-light: '#'
     default-dark: '#'
   -
+    id: still-table-head-color
+    title: Table header text
+    title.zh: 表头文字
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-table-head-bg
+    title: Table header background
+    title.zh: 表头底色
+    description: Also applies with Hairline tables.
+    description.zh: 开启「表格只留横线」时同样生效。
+    type: variable-themed-color
+    format: hex
+    opacity: true
+    default-light: '#'
+    default-dark: '#'
+  -
     id: still-graphite
     title: Graphite ink
     title.zh: 石墨墨色
@@ -441,6 +461,22 @@ settings:
     title.zh: 表格只留横线
     description: Tables drop the frame and header wash, leaving lines between rows.
     description.zh: 表格去掉外框和表头底色，只保留行与行之间的横线。
+    type: class-toggle
+    default: false
+  -
+    id: still-table-full
+    title: Tables fill the line width
+    title.zh: 表格铺满行宽
+    description: Every table is as wide as the text, lining up with it on both sides. Notes with table-wide keep their own width.
+    description.zh: 表格和正文一样宽，左右与正文对齐。用了 table-wide 的笔记保持自己的宽度。
+    type: class-toggle
+    default: false
+  -
+    id: still-table-cols
+    title: Column lines in tables
+    title.zh: 表格显示列线
+    description: Hairlines between columns in every table, as the col-lines class does for one note.
+    description.zh: 所有表格的列与列之间加细线，相当于给每篇笔记都写上 col-lines。
     type: class-toggle
     default: false
   -
@@ -2242,7 +2278,13 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
 }
 
 .markdown-rendered th {
-  color: var(--text-normal);
+  color: var(--still-table-head-color, var(--text-normal));
+}
+
+/* A picked header background applies in either table style; nth-child(n)
+   matches core's alternate-column rule so even columns take it too. */
+.markdown-rendered thead > tr > th:nth-child(n) {
+  background-color: var(--still-table-head-bg, transparent);
 }
 
 .markdown-rendered :is(th, td) {
@@ -2279,7 +2321,7 @@ body:not(.still-table-plain) .markdown-rendered :is(th, td) {
 /* On the cells, so each corner clips it; thead tr > th outranks core's
    alternate-column background. */
 body:not(.still-table-plain) .markdown-rendered thead > tr > th {
-  background-color: var(--still-wash);
+  background-color: var(--still-table-head-bg, var(--still-wash));
 }
 
 body:not(.still-table-plain) .markdown-rendered tbody > tr:not(:last-child) > :is(th, td) {
@@ -2671,6 +2713,14 @@ body.still-media-fill .markdown-preview-view.img-grid p:has(> :is(.image-embed, 
   --table-white-space: nowrap;
 }
 
+/* Option: tables fill the line width, lining up with the text. table-wide
+   notes keep their own sizing. */
+body.still-table-full .markdown-preview-view:not(.table-wide) .markdown-rendered table,
+body.still-table-full .markdown-preview-view:not(.table-wide).markdown-rendered table,
+body.still-table-full .markdown-source-view.mod-cm6:not(.table-wide) .cm-table-widget :is(.table-wrapper, table) {
+  width: 100%;
+}
+
 /* table-center: tables narrower than the line sit in the middle. */
 .markdown-preview-view.table-center table,
 .markdown-source-view.mod-cm6.table-center .cm-table-widget .table-wrapper {
@@ -2790,7 +2840,8 @@ body.is-mobile .markdown-source-view.mod-cm6.is-readable-line-width:is(.table-wi
 /* col-lines: hairlines between columns. table-lines: a full grid with an
    outer frame. */
 :is(.markdown-preview-view, .markdown-source-view.mod-cm6).col-lines .markdown-rendered :is(th, td):not(:last-child),
-.markdown-preview-view.col-lines :is(th, td):not(:last-child) {
+.markdown-preview-view.col-lines :is(th, td):not(:last-child),
+body.still-table-cols .markdown-rendered :is(th, td):not(:last-child) {
   border-inline-end-width: var(--table-border-width);
 }
 

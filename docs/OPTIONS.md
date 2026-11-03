@@ -10,7 +10,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | Justified paragraphs: body text lines up on both edges in reading and editing views; headings, code and tables keep their alignment | Off |
 | Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
 | Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
-| Colors | Page, sidebar, text, secondary text, link, list marker, checkbox and H1–H6 heading colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text |
+| Colors | Page, sidebar, text, secondary text, link, list marker, checkbox, H1–H6 heading, table header text and table header background colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text; table headers use the text color on a faint wash |
 | Colors | Graphite ink: buttons, toggles and links use the text color | Off |
 | Interface | Roundness: scales every corner radius | 1.25 |
 | Interface | Flat page: no floating card beside the sidebars | Off |
@@ -27,6 +27,9 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Pure black on phones and tablets in dark mode, for OLED screens | Off |
 | Content | Card callouts: tinted frame with an inner content card | Off |
 | Content | Images fill the line width (only media without a set width; tall ones stay within the window) | Off |
+| Content | Hairline tables: no frame or header wash, lines between rows only | Off |
+| Content | Tables fill the line width, lining up with the text; notes with `table-wide` keep their own width | Off |
+| Content | Column lines in tables: hairlines between columns in every table, like `col-lines` | Off |
 | Content | Striped Bases tables: stripes follow row position, so they stay put while long tables scroll | Off |
 | Content | Plain Canvas background: no dot grid | Off |
 | Content | Colored headings: one hue per level, red at H1 to purple at H6 | Off |
