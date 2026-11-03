@@ -101,6 +101,23 @@ const code=String.raw`(async()=>{
   set(true,true);const black=read();set(true,false);const dark=read();set(false,true);const light=read();
   document.body.className=saved;return{black,dark,light};
  }
+ async function fullDrawers(width,full){
+  // Option: overlay drawers cover the page; without it core's narrower drawer stays.
+  const had=document.body.classList.contains('still-full-drawers'),out={};
+  try{
+   for(const on of [true,false]){
+    document.body.classList.toggle('still-full-drawers',on);
+    for(const side of ['left','right']){
+     const split=app.workspace[side+'Split'];split.expand();await pause(350);
+     const r=rect(document.querySelector('.workspace-drawer.mod-'+side));out[(on?'on-':'off-')+side]={left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width)};
+     split.collapse();await pause(250);
+    }
+   }
+  }finally{document.body.classList.toggle('still-full-drawers',had)}
+  const covers=k=>out[k].left<=0&&out[k].right>=width;
+  out.pass=full?covers('on-left')&&covers('on-right'):out['on-left'].width===out['off-left'].width&&out['on-right'].width===out['off-right'].width;
+  return out;
+ }
  async function shot(name){
   const im=await Promise.race([debug.sendCommand('Page.captureScreenshot',{format:'png',captureBeyondViewport:true}),pause(8000).then(()=>{throw Error('Screenshot timed out')})]);
   require('fs').writeFileSync(ARTIFACT_DIR+'/'+name+'-'+PALETTE+'.png',Buffer.from(im.data,'base64'));
@@ -130,6 +147,7 @@ const code=String.raw`(async()=>{
    if(w===390){const radius=contentRadius();check('reading content keeps desktop corners',Object.keys(radius.expected).every(k=>radius.actual[k]===radius.expected[k]),radius)}
    if(w===390)await shot('phone-drawer-390');
    app.workspace.leftSplit.collapse();await pause(300);
+   {const f=await fullDrawers(w,true);check(stage+' full-screen drawers option covers the page',f.pass,f)}
    for(const keyboard of [0,Math.min(280,Math.floor(h*.35))]){
     document.body.style.setProperty('--keyboard-height',keyboard+'px');
     menu=new Menu();for(let n=0;n<16;n++){if(n===8)menu.addSeparator();menu.addItem(item=>item.setTitle('Action '+(n+1)).setIcon('check'))}
@@ -167,6 +185,8 @@ const code=String.raw`(async()=>{
    const floatingDrawer=document.querySelector('.workspace-drawer.mod-left'),fname=rect(floatingDrawer.querySelector('.workspace-drawer-header-name-text')),finfo=floatingDrawer.querySelector('.workspace-drawer-header-info'),fi=rect(finfo),fline=parseFloat(getComputedStyle(finfo).lineHeight);
    check(stage+' floating drawer counts keep one line of their own',fi.height<=fline+1&&fi.top>=fname.bottom-1,{name:fname,info:fi,line:fline});
    if(w===820)await shot('tablet-drawer-820');
+   app.workspace.leftSplit.collapse();await pause(300);
+   {const full=w<=640,f=await fullDrawers(w,full);check(stage+' full-screen drawers option '+(full?'covers a narrow window':'keeps a wide window\'s drawer'),f.pass,f)}
   }
   return JSON.stringify({vault:app.vault.getName(),theme:app.customCss.theme,scope:SCOPE,palette:PALETTE,profiles,results,passed:results.filter(r=>r.pass).length,total:results.length});
  }catch(e){return JSON.stringify({stage,error:String(e),stack:e.stack,profiles,results,passed:results.filter(r=>r.pass).length,total:results.length})}

@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.8.4 · MIT License · https://github.com/letschips
+  Version 0.9.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -316,6 +316,14 @@ settings:
     title.zh: 手机和平板纯黑
     description: Dark mode uses black page and sidebar surfaces on mobile, for OLED screens.
     description.zh: 移动端深色模式下页面和侧栏使用纯黑，适合 OLED 屏幕。
+    type: class-toggle
+    default: false
+  -
+    id: still-full-drawers
+    title: Full-screen sidebars on phones
+    title.zh: 手机侧栏全屏
+    description: Swiped-in sidebars cover the whole screen instead of leaving a strip of the note beside them. Also applies to narrow iPad windows (Split View, Slide Over).
+    description.zh: 滑出的侧栏铺满整屏，旁边不再露出一截笔记。iPad 分屏等窄窗口同样生效。
     type: class-toggle
     default: false
   -
@@ -3137,6 +3145,33 @@ body.is-mobile .workspace-drawer .workspace-drawer-tab-options-list {
 
 body.is-mobile .workspace-drawer .workspace-drawer-tab-select .workspace-tab-header-inner {
   background-color: transparent;
+}
+
+/* Option: overlay drawers cover the screen, as core already does on the
+   smallest phones, so no sliver of the note shows beside the file list.
+   Narrow tablet windows (Split View, Slide Over) get the same; wide ones
+   keep the floating card. Swipe gestures still come from core. */
+body.is-phone.still-full-drawers {
+  --mobile-sidebar-width: 100vw;
+  --mobile-sidebar-max-width: 100vw;
+  --mobile-sidebar-min-width: 0px;
+}
+
+@media (max-width: 640px) {
+  body.is-tablet.still-full-drawers {
+    --mobile-sidebar-max-width: 100vw;
+    --mobile-sidebar-min-width: 0px;
+  }
+
+  body.is-tablet.still-full-drawers .workspace-drawer:not(.is-pinned) {
+    width: 100vw;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  body.is-tablet.still-full-drawers .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
+    padding-top: max(var(--size-4-2), var(--safe-area-inset-top));
+  }
 }
 
 /* Phones keep Obsidian's bottom navigation, keyboard toolbar and swipe

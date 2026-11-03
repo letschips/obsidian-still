@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 · 2026-11-03
+
+### Added
+- **Full-screen sidebars on phones.** A new option lets swiped-in sidebars cover the whole screen, with no strip of the note beside them. Narrow iPad windows (Split View, Slide Over) get the same; wide iPad windows keep the floating sidebar.
+
+### 中文
+- 新增「手机侧栏全屏」选项：滑出的侧栏铺满整屏，旁边不再露出一截笔记。iPad 分屏等窄窗口同样生效，宽窗口仍是浮动侧栏。
+
 ## 0.8.4 · 2026-11-02
 
 ### Fixed
