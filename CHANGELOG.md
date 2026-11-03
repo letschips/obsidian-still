@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.2 · 2026-11-03
+
+### Fixed
+- **No line above the vault switcher.** Obsidian's divider above the vault name at the bottom of the left sidebar is gone, as Still intended; before, it only disappeared with the quiet vault switcher option.
+
+### 中文
+- 修复：左侧栏底部库名上方的分隔线现在默认隐藏；以前只有开启「安静库切换器」时才会去掉。
+
 ## 0.10.1 · 2026-11-03
 
 ### Fixed

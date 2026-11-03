@@ -13,6 +13,8 @@ const code=String.raw`(async()=>{
  try{
   const profile=document.querySelector('.mod-left-split .workspace-sidedock-vault-profile');
   if(!profile||!profile.offsetWidth)throw Error('Open the left sidebar first');
+  // Core draws a rule above the vault foot with a stronger selector; Still has none, option or not.
+  for(const on of [false,true]){document.body.classList.toggle('still-hide-vault',on);const s=getComputedStyle(profile);check('No rule above the vault foot ('+(on?'quiet':'default')+')',parseFloat(s.borderTopWidth)===0||s.borderTopStyle==='none',{border:s.borderTop})}
   document.body.classList.add('still-hide-vault');
   if(!dbg.isAttached()){dbg.attach('1.3');attached=true}
   const switcher=profile.querySelector('.workspace-drawer-vault-switcher'),gearBox=profile.querySelector('.workspace-drawer-vault-actions .clickable-icon:last-child').getBoundingClientRect(),nameBox=switcher.getBoundingClientRect();

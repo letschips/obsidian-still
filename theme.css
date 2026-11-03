@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.10.1 · MIT License · https://github.com/letschips
+  Version 0.10.2 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -975,6 +975,11 @@ body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > 
 .workspace-ribbon,
 .workspace-sidedock-vault-profile {
   border: 0;
+}
+
+/* Core rules off the desktop vault foot with a more specific selector. */
+body:not(.is-mobile) .workspace-split.mod-primary-split .workspace-sidedock-vault-profile {
+  border-top: 0;
 }
 
 /* A divider is a drag affordance, not a permanent rule. */
