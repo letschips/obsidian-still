@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.0 · 2026-11-03
+
+### Added
+- **Sidebars stay put on phones.** A new option for Obsidian's Sliding sidebar: the sidebar stays underneath and the note slides off it as a rounded card.
+- **Pull gestures as pills.** The pull-down command hint and the two-finger back/forward hint are rounded pills that fill with the accent color when releasing will act. The pull distance is unchanged.
+
+### 中文
+- 新增「手机侧栏推开笔记」选项：配合 Obsidian 的「滑动侧栏」，侧栏留在底层，笔记像圆角卡片一样被推开。
+- 下拉执行命令、双指前进后退的提示改为圆角胶囊，松手即执行时变为强调色；下拉距离不变。
+
 ## 0.9.0 · 2026-11-03
 
 ### Added

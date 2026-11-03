@@ -118,6 +118,35 @@ const code=String.raw`(async()=>{
   out.pass=full?covers('on-left')&&covers('on-right'):out['on-left'].width===out['off-left'].width&&out['on-right'].width===out['off-right'].width;
   return out;
  }
+ async function pullPill(){
+  // Pull-down hint as a pill; its height is core's pull distance, so it must not change.
+  const make=()=>document.body.createDiv({cls:'pull-action pull-down-action',text:'Open command palette'});
+  const theme=app.customCss.styleEl.sheet;theme.disabled=true;const core=make(),coreHeight=core.offsetHeight;core.detach();theme.disabled=false;
+  const u=make(),pill=()=>{const s=getComputedStyle(u,'::before');return{bg:s.backgroundColor,radius:parseFloat(s.borderTopLeftRadius),width:Math.round(u.offsetWidth)}};
+  const out={coreHeight,height:u.offsetHeight,own:getComputedStyle(u).backgroundImage,idle:pill()};
+  u.addClass('mod-activated');await pause(250);out.active=pill();
+  const probe=document.body.createDiv();probe.style.color='var(--interactive-accent)';out.accent=getComputedStyle(probe).color;probe.detach();u.detach();
+  out.pass=Math.abs(out.height-out.coreHeight)<=1&&out.own==='none'&&out.idle.radius>=12&&out.idle.bg!=='rgba(0, 0, 0, 0)'&&out.idle.width<innerWidth-32&&out.active.bg===out.accent;
+  return out;
+ }
+ async function pushDrawers(){
+  // Option: with core's sliding sidebar, the drawer stays put and the note slides off it as a card.
+  const sliding=app.vault.getConfig('slidingSidebar'),had=document.body.classList.contains('still-push-drawers'),out={};
+  const root=app.workspace.rootSplit.containerEl,drawer=document.querySelector('.workspace-drawer.mod-left');
+  const swipe=async()=>{app.workspace.leftSplit.expand();await pause(500);root.style.transform='translateX(150px)';drawer.style.transform='translateX(-178px)';const r={drawer:Math.round(rect(drawer).left),root:Math.round(rect(root).left),radius:parseFloat(getComputedStyle(root).borderTopLeftRadius),z:[getComputedStyle(drawer).zIndex,getComputedStyle(root).zIndex]};
+   root.style.transform='translateX('+Math.round(rect(drawer).width)+'px)';drawer.style.transform='';const bd=document.querySelector('.workspace-drawer-backdrop');r.backdrop=bd&&{left:Math.round(rect(bd).left),opacity:getComputedStyle(bd).opacity};r.drawerRight=Math.round(rect(drawer).right);
+   const hit=document.elementFromPoint(40,innerHeight/2);r.tapDrawer=drawer.contains(hit);app.workspace.leftSplit.collapse();await pause(500);root.style.transform='';return r};
+  try{
+   app.vault.setConfig('slidingSidebar',true);
+   document.body.classList.add('still-push-drawers');out.on=await swipe();
+   document.body.classList.remove('still-push-drawers');out.off=await swipe();
+   document.body.classList.add('still-push-drawers');app.vault.setConfig('slidingSidebar',false);app.workspace.leftSplit.expand();await pause(500);
+   const hit=document.elementFromPoint(40,innerHeight/2);out.notSliding={tapDrawer:drawer.contains(hit),root:Math.round(rect(root).left)};app.workspace.leftSplit.collapse();await pause(400);
+  }finally{app.vault.setConfig('slidingSidebar',sliding);document.body.classList.toggle('still-push-drawers',had)}
+  out.pass=out.on.drawer===0&&out.on.root===150&&out.on.radius>0&&Number(out.on.z[1])>Number(out.on.z[0])&&out.on.backdrop?.opacity==='0'&&out.on.backdrop.left>=out.on.drawerRight-1&&out.on.tapDrawer
+   &&out.off.drawer===-178&&out.off.radius===0&&out.notSliding.tapDrawer&&out.notSliding.root===0;
+  return out;
+ }
  async function shot(name){
   const im=await Promise.race([debug.sendCommand('Page.captureScreenshot',{format:'png',captureBeyondViewport:true}),pause(8000).then(()=>{throw Error('Screenshot timed out')})]);
   require('fs').writeFileSync(ARTIFACT_DIR+'/'+name+'-'+PALETTE+'.png',Buffer.from(im.data,'base64'));
@@ -148,6 +177,8 @@ const code=String.raw`(async()=>{
    if(w===390)await shot('phone-drawer-390');
    app.workspace.leftSplit.collapse();await pause(300);
    {const f=await fullDrawers(w,true);check(stage+' full-screen drawers option covers the page',f.pass,f)}
+   if(w===390){const p=await pullPill();check('pull-down hint is a pill with core\'s pull distance',p.pass,p)}
+   if(w===390){const p=await pushDrawers();check('push option keeps the drawer still under a sliding note',p.pass,p)}
    for(const keyboard of [0,Math.min(280,Math.floor(h*.35))]){
     document.body.style.setProperty('--keyboard-height',keyboard+'px');
     menu=new Menu();for(let n=0;n<16;n++){if(n===8)menu.addSeparator();menu.addItem(item=>item.setTitle('Action '+(n+1)).setIcon('check'))}

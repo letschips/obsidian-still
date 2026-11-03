@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.9.0 · MIT License · https://github.com/letschips
+  Version 0.10.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -324,6 +324,14 @@ settings:
     title.zh: 手机侧栏全屏
     description: Swiped-in sidebars cover the whole screen instead of leaving a strip of the note beside them. Also applies to narrow iPad windows (Split View, Slide Over).
     description.zh: 滑出的侧栏铺满整屏，旁边不再露出一截笔记。iPad 分屏等窄窗口同样生效。
+    type: class-toggle
+    default: false
+  -
+    id: still-push-drawers
+    title: Sidebars stay put on phones
+    title.zh: 手机侧栏推开笔记
+    description: With Obsidian's Sliding sidebar setting on, the sidebar stays in place underneath and the note slides off it like a card.
+    description.zh: 配合 Obsidian 的「滑动侧栏」设置：侧栏留在底层不动，笔记像一张卡片被推开。
     type: class-toggle
     default: false
   -
@@ -3172,6 +3180,78 @@ body.is-phone.still-full-drawers {
   body.is-tablet.still-full-drawers .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
     padding-top: max(var(--size-4-2), var(--safe-area-inset-top));
   }
+}
+
+/* Option: with core's Sliding sidebar, the note moves aside as a card and
+   the drawer waits underneath. Core writes the note's offset inline while
+   a swipe or close is under way; without that offset (Sliding sidebar off,
+   or the opening tap's animation) everything stays as core draws it.
+   !important beats the drawer's inline and animated transforms. The
+   corner follows the screen's, which the top safe area approximates. */
+body.is-phone.still-push-drawers .workspace-drawer.mod-primary:has(+ .mod-root[style*="translateX"]),
+body.is-phone.still-push-drawers .mod-root[style*="translateX"] + .workspace-drawer.mod-secondary {
+  z-index: 0;
+  transform: none !important;
+}
+
+body.is-phone.still-push-drawers .mod-root[style*="translateX"] {
+  z-index: 1;
+  overflow: hidden;
+  border-radius: max(var(--radius-l), var(--safe-area-inset-top));
+  box-shadow: 0 0 0 1px var(--still-hairline), 0 8px 32px rgb(0 0 0 / 0.16);
+}
+
+/* The dimming cover would sit over the waiting drawer; keep it invisible
+   and only over the note, where a tap still closes the drawer. */
+body.is-phone.still-push-drawers .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
+  opacity: 0 !important;
+}
+
+body.is-phone.still-push-drawers .is-left-sidedock-open > .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
+  inset-inline-start: clamp(var(--mobile-sidebar-min-width), var(--mobile-sidebar-width), var(--mobile-sidebar-max-width));
+}
+
+body.is-phone.still-push-drawers .is-right-sidedock-open > .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
+  inset-inline-start: 0;
+  inset-inline-end: clamp(var(--mobile-sidebar-min-width), var(--mobile-sidebar-width), var(--mobile-sidebar-max-width));
+  width: auto;
+}
+
+/* Pull gestures (pull down for the chosen command, two-finger swipe for
+   back and forward): a pill on the raised tone that fills with the accent
+   once releasing will act. The pull-down box keeps core's padding, since
+   its height is the distance to pull; the pill is drawn behind the text. */
+body.is-mobile .pull-down-action {
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  padding-inline: 20px;
+  background: none;
+  color: var(--text-muted);
+}
+
+body.is-mobile .pull-down-action::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: calc(var(--safe-area-inset-top) + var(--size-4-3) - 10px) 0 calc(var(--size-4-16) - 10px);
+  border-radius: 999px;
+  background-color: var(--raised-background);
+  box-shadow: var(--raised-shadow);
+  transition: background-color 150ms ease-out;
+}
+
+body.is-mobile .pull-out-action {
+  background-color: var(--raised-background);
+  box-shadow: var(--raised-shadow);
+}
+
+body.is-mobile .pull-action.mod-activated {
+  color: var(--text-on-accent);
+}
+
+body.is-mobile .pull-down-action.mod-activated::before,
+body.is-mobile .pull-out-action.mod-activated {
+  background-color: var(--interactive-accent);
 }
 
 /* Phones keep Obsidian's bottom navigation, keyboard toolbar and swipe
