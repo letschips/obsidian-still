@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.0 · 2026-11-03
+
+### Added
+- **Heading colors.** Colors now has a picker for each heading level, H1 to H6, for light and dark. A picked color also wins over Colored headings; levels left empty keep their current look.
+
+### 中文
+- 新增：「颜色」里可以分别设置一到六级标题的颜色，浅色和深色分开设。设了的级别在开启「彩色标题」时也优先使用；没设的保持原样。
+
 ## 0.10.2 · 2026-11-03
 
 ### Fixed

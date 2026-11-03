@@ -10,7 +10,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | Justified paragraphs: body text lines up on both edges in reading and editing views; headings, code and tables keep their alignment | Off |
 | Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
 | Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
-| Colors | Page, sidebar, text, secondary text, link, list marker and checkbox colors, for light and dark | Theme palette; links and checkboxes use the accent |
+| Colors | Page, sidebar, text, secondary text, link, list marker, checkbox and H1–H6 heading colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text |
 | Colors | Graphite ink: buttons, toggles and links use the text color | Off |
 | Interface | Roundness: scales every corner radius | 1.25 |
 | Interface | Flat page: no floating card beside the sidebars | Off |

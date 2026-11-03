@@ -189,6 +189,62 @@ settings:
     default-light: '#'
     default-dark: '#'
   -
+    id: still-h1-color
+    title: Heading 1
+    title.zh: 一级标题
+    description: Applies with or without Colored headings. The note title keeps the text color.
+    description.zh: 开不开「彩色标题」都生效。笔记标题仍用正文颜色。
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-h2-color
+    title: Heading 2
+    title.zh: 二级标题
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-h3-color
+    title: Heading 3
+    title.zh: 三级标题
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-h4-color
+    title: Heading 4
+    title.zh: 四级标题
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-h5-color
+    title: Heading 5
+    title.zh: 五级标题
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-h6-color
+    title: Heading 6
+    title.zh: 六级标题
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
     id: still-graphite
     title: Graphite ink
     title.zh: 石墨墨色
@@ -808,8 +864,14 @@ body {
   --indentation-guide-color: var(--still-hairline-strong);
   --indentation-guide-color-active: var(--background-modifier-border-hover);
   --code-background: var(--background-secondary);
-  --h4-color: var(--text-muted);
-  --h6-color: var(--text-muted);
+  --h1-color: var(--still-h1-color, inherit);
+  --h2-color: var(--still-h2-color, inherit);
+  --h3-color: var(--still-h3-color, inherit);
+  --h4-color: var(--still-h4-color, var(--text-muted));
+  --h5-color: var(--still-h5-color, inherit);
+  --h6-color: var(--still-h6-color, var(--text-muted));
+  /* Core ties the note title to --h1-color; keep it on the text color. */
+  --inline-title-color: inherit;
 
   --scrollbar-bg: transparent;
   --scrollbar-thumb-bg: var(--still-hairline-strong);
@@ -2754,24 +2816,25 @@ body.still-keep-done-tasks {
 
 /* Option: heading text takes one hue per level. Each hue is mixed 75/25 with
    the text color so it stays readable in light and dark. The hues are set
-   here rather than through --hN-color, which Still keeps muted for H4/H6. */
+   here rather than through --hN-color, which Still keeps muted for H4/H6.
+   A heading color picked in the settings wins over the hue. */
 body.still-colored-headings :is(.markdown-rendered h1, .HyperMD-header-1) {
-  color: color-mix(in srgb, var(--color-red) 75%, var(--text-normal));
+  color: var(--still-h1-color, color-mix(in srgb, var(--color-red) 75%, var(--text-normal)));
 }
 body.still-colored-headings :is(.markdown-rendered h2, .HyperMD-header-2) {
-  color: color-mix(in srgb, var(--color-orange) 75%, var(--text-normal));
+  color: var(--still-h2-color, color-mix(in srgb, var(--color-orange) 75%, var(--text-normal)));
 }
 body.still-colored-headings :is(.markdown-rendered h3, .HyperMD-header-3) {
-  color: color-mix(in srgb, var(--color-yellow) 75%, var(--text-normal));
+  color: var(--still-h3-color, color-mix(in srgb, var(--color-yellow) 75%, var(--text-normal)));
 }
 body.still-colored-headings :is(.markdown-rendered h4, .HyperMD-header-4) {
-  color: color-mix(in srgb, var(--color-green) 75%, var(--text-normal));
+  color: var(--still-h4-color, color-mix(in srgb, var(--color-green) 75%, var(--text-normal)));
 }
 body.still-colored-headings :is(.markdown-rendered h5, .HyperMD-header-5) {
-  color: color-mix(in srgb, var(--color-blue) 75%, var(--text-normal));
+  color: var(--still-h5-color, color-mix(in srgb, var(--color-blue) 75%, var(--text-normal)));
 }
 body.still-colored-headings :is(.markdown-rendered h6, .HyperMD-header-6) {
-  color: color-mix(in srgb, var(--color-purple) 75%, var(--text-normal));
+  color: var(--still-h6-color, color-mix(in srgb, var(--color-purple) 75%, var(--text-normal)));
 }
 
 body.theme-dark.still-pdf-dark .pdf-container .pdfViewer .page {
