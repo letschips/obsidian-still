@@ -436,6 +436,14 @@ settings:
     type: class-toggle
     default: false
   -
+    id: still-table-plain
+    title: Hairline tables
+    title.zh: 表格只留横线
+    description: Tables drop the frame and header wash, leaving lines between rows.
+    description.zh: 表格去掉外框和表头底色，只保留行与行之间的横线。
+    type: class-toggle
+    default: false
+  -
     id: still-bases-stripes
     title: Striped Bases tables
     title.zh: Bases 表格隔行条纹
@@ -581,6 +589,10 @@ body {
   --table-header-weight: 600;
   --table-cell-padding-x: 12px;
   --table-cell-padding-y: 7px;
+  --table-line-height: 1.5;
+  --still-table-radius: var(--radius-s);
+  /* Cells sit inside the frame, so they round by its inner edge. */
+  --still-table-inner-radius: max(0px, calc(var(--still-table-radius) - var(--table-border-width)));
   /* Hairline rows only: core draws the outer columns' edges through these. */
   --table-column-first-border-width: 0px;
   --table-column-last-border-width: 0px;
@@ -2243,6 +2255,66 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
   padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
 }
 
+/* Framed tables (default): a hairline frame with round corners, a washed
+   header row and fainter lines between body rows. Core collapses borders,
+   which cannot round, so cells keep only their bottom edge and the table
+   draws the frame. Corner cells round with it, so header and row washes
+   stay inside. The "Hairline tables" option keeps rows only. */
+body:not(.still-table-plain) {
+  --table-header-border-width: 0px;
+  --table-row-last-border-width: 0px;
+}
+
+body:not(.still-table-plain) .markdown-rendered table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: var(--table-border-width) solid var(--table-border-color);
+  border-radius: var(--still-table-radius);
+}
+
+body:not(.still-table-plain) .markdown-rendered :is(th, td) {
+  border-top-width: 0;
+}
+
+/* On the cells, so each corner clips it; thead tr > th outranks core's
+   alternate-column background. */
+body:not(.still-table-plain) .markdown-rendered thead > tr > th {
+  background-color: var(--still-wash);
+}
+
+body:not(.still-table-plain) .markdown-rendered tbody > tr:not(:last-child) > :is(th, td) {
+  border-bottom-color: var(--still-hairline);
+}
+
+body:not(.still-table-plain) .markdown-rendered tr:first-child > :is(th, td):first-child:is(thead *, table > tbody:first-child *) {
+  border-start-start-radius: var(--still-table-inner-radius);
+}
+
+body:not(.still-table-plain) .markdown-rendered tr:first-child > :is(th, td):last-child:is(thead *, table > tbody:first-child *) {
+  border-start-end-radius: var(--still-table-inner-radius);
+}
+
+body:not(.still-table-plain) .markdown-rendered tr:last-child > :is(th, td):first-child:is(tbody *, thead:only-child *) {
+  border-end-start-radius: var(--still-table-inner-radius);
+}
+
+body:not(.still-table-plain) .markdown-rendered tr:last-child > :is(th, td):last-child:is(tbody *, thead:only-child *) {
+  border-end-end-radius: var(--still-table-inner-radius);
+}
+
+/* A table wider than the reading line scrolls inside its own block instead
+   of running off the page. Reading view never collapses a table's margins
+   with the text around it, so spacing stays as it was. */
+.markdown-preview-view .markdown-preview-sizer > .el-table {
+  overflow-x: auto;
+}
+
+@media print {
+  .markdown-preview-view .markdown-preview-sizer > .el-table {
+    overflow-x: visible;
+  }
+}
+
 /* Callouts: a wash of the callout hue, no frame. Since Obsidian 1.13 the
    callout color is a full color value, so color-mix is used. */
 .callout {
@@ -2732,6 +2804,16 @@ body.is-mobile .markdown-source-view.mod-cm6.is-readable-line-width:is(.table-wi
   border-inline-width: var(--table-border-width);
 }
 
+/* A framed table already has its outer edges: table-lines adds the inner
+   column lines only. */
+body:not(.still-table-plain) :is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-lines :is(th, td):first-child {
+  border-inline-start-width: 0;
+}
+
+body:not(.still-table-plain) :is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-lines :is(th, td):last-child {
+  border-inline-end-width: 0;
+}
+
 /* table-numbers: rows are numbered in a slot at the start of the first
    column. In reading view the slot is inline, so it holds whatever padding
    a plugin gives the cell; in the editor the cell holds an editor block,
@@ -3082,6 +3164,12 @@ body.is-mobile.theme-dark.still-black-mobile {
   --background-modifier-form-field: var(--color-base-05);
   --code-background: var(--color-base-10);
   --embed-background: var(--color-base-05);
+}
+
+/* Phones: a table too wide for the screen scrolls rather than squeezing a
+   column of Chinese text to one or two characters a line. */
+body.is-phone {
+  --table-column-min-width: 7em;
 }
 
 /* Bottom sheet menus: a tinted sheet with the grabber floating at the top,

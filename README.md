@@ -7,7 +7,7 @@ Still is a quiet, monochrome theme for Obsidian. Neutral greys carry the structu
 - **Floating page.** With a sidebar open, the page lifts off the frame as a rounded card.
 - **Floating tabs.** Equal-width tabs with centered titles, centered above the page.
 - **Sidebar peek.** Collapse a sidebar and rest the pointer on the window edge: it slides in, and slides away when you leave.
-- **Calm reading.** A readable line length, light headings, block quotes, washed callouts and hairline tables.
+- **Calm reading.** A readable line length, light headings, block quotes, washed callouts and framed tables that scroll when wide.
 - **Reading and editing cues.** Visible keyboard focus on note links; optional active-line highlighting and always-underlined links.
 - **Task states.** `[>]` `[<]` `[?]` `[!]` `[*]` `[-]` `[/]` each get their own mark instead of reading as done.
 - **CJK typography** (optional). A gap where Chinese meets Latin letters or digits, and improved paragraph endings. iOS keeps normal paragraph wrapping.

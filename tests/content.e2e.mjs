@@ -121,15 +121,32 @@ const code=String.raw`(async()=>{
   const guideOff=guides();toggle('still-outline-guides',true);const guideOn=guides();toggle('still-outline-guides',false);
   check('Outline has no guides by default',guideOff[0].startsWith('0px'),guideOff);
   check('Outline guides option draws one hairline per level in the outline only',guideOn[0]==='1px solid'&&guideOn[1].startsWith('0px'),guideOn);
-  // Tables are hairline rows: no vertical rules, the outer edges included, in
-  // reading view and in the editor's table widget.
+  // Tables, in reading view and the editor's table widget: no vertical rules
+  // between cells. By default a framed card: the table draws the frame and
+  // rounds it, cells keep only a bottom line (none under the last row, the
+  // frame closes it), no cell top lines that would double up, the header
+  // row washed and the corner cells rounded inside the frame. The "Hairline
+  // tables" option is rows only: no frame, a line under every row.
   stage='table rules';
   const tbl='<table><thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>3</td></tr><tr><td>4</td><td>5</td><td>6</td></tr></tbody></table>';
   host.insertAdjacentHTML('beforeend','<div class="markdown-preview-view markdown-rendered tbl-read">'+tbl+'</div><div class="markdown-source-view mod-cm6"><div class="cm-content"><div class="cm-embed-block cm-table-widget markdown-rendered tbl-edit"><div class="table-wrapper">'+tbl.replace('<table>','<table class="table-editor">')+'</div></div></div></div>');
-  const edges=s=>[...host.querySelectorAll(s+' :is(th, td)')].map(c=>{const cs=getComputedStyle(c);return [cs.borderLeftWidth,cs.borderRightWidth,cs.borderBottomWidth].map(parseFloat)});
+  const edges=s=>[...host.querySelectorAll(s+' :is(th, td)')].map(c=>{const cs=getComputedStyle(c);return [cs.borderLeftWidth,cs.borderRightWidth,cs.borderBottomWidth,cs.borderTopWidth].map(parseFloat)});
+  const lastRow=s=>[...host.querySelectorAll(s+' tbody > tr:last-child > td')];
+  const clear=c=>c==='transparent'||/^rgba\(.*,\s*0\)$/.test(c);
+  const tableLook=s=>{const cs=getComputedStyle(host.querySelector(s+' table')),th=getComputedStyle(host.querySelector(s+' th:nth-child(2)')),corner=getComputedStyle(host.querySelector(s+' tbody > tr:last-child > td:last-child'));return {frame:parseFloat(cs.borderTopWidth),radius:parseFloat(cs.borderTopLeftRadius),collapse:cs.borderCollapse,head:th.backgroundColor,corner:parseFloat(corner.borderBottomRightRadius)}};
   const tblRead=edges('.tbl-read'),tblEdit=edges('.tbl-edit');
   check('Tables have no vertical rules in reading view or the editor',[...tblRead,...tblEdit].every(([l,r])=>l===0&&r===0),{read:tblRead,edit:tblEdit});
-  check('Tables keep a hairline under every row',[...tblRead,...tblEdit].every(([,,b])=>b>0),{read:tblRead,edit:tblEdit});
+  check('Table cells draw no top line, so rows never double up',[...tblRead,...tblEdit].every(([,,,t])=>t===0),{read:tblRead,edit:tblEdit});
+  const inner=s=>[...host.querySelectorAll(s+' :is(th, td)')].filter(c=>!lastRow(s).includes(c)).map(c=>parseFloat(getComputedStyle(c).borderBottomWidth));
+  const lastLines=s=>lastRow(s).map(c=>parseFloat(getComputedStyle(c).borderBottomWidth));
+  check('Framed tables keep a hairline under every row but the last',['.tbl-read','.tbl-edit'].every(s=>inner(s).every(b=>b>0)&&lastLines(s).every(b=>b===0)),{read:[inner('.tbl-read'),lastLines('.tbl-read')],edit:[inner('.tbl-edit'),lastLines('.tbl-edit')]});
+  const lookRead=tableLook('.tbl-read'),lookEdit=tableLook('.tbl-edit');
+  const framed=l=>l.frame>0&&l.radius>0&&l.collapse==='separate'&&!clear(l.head)&&l.corner>0&&l.corner<l.radius;
+  check('Tables are framed with round corners, a washed header on every column and rounded corner cells',framed(lookRead)&&framed(lookEdit),{read:lookRead,edit:lookEdit});
+  toggle('still-table-plain',true);
+  const plainLook=tableLook('.tbl-read'),plainEdges=edges('.tbl-read');
+  toggle('still-table-plain',false);
+  check('Hairline tables option: no frame or header wash, a line under every row',plainLook.frame===0&&clear(plainLook.head)&&plainEdges.every(([,,b])=>b>0),{look:plainLook,edges:plainEdges});
   // Cell padding follows --table-cell-padding-x/y in both views (the editor
   // pads an inner wrapper).
   host.querySelector('.tbl-edit td').innerHTML='<div class="table-cell-wrapper">1</div>';

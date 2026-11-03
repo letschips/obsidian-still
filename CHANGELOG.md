@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.12.0 · 2026-11-03
+
+### Changed
+- **Framed tables.** Tables now sit in a hairline frame with round corners, with a washed header row and fainter lines between rows, in reading view and Live Preview. Cells read a little more loosely. The new "Hairline tables" option keeps the previous rows-only look.
+
+### Added
+- **Wide tables scroll.** In reading view a table wider than the line scrolls sideways in place instead of running off the page.
+- **Readable tables on phones.** Columns keep a minimum width on phones, so a wide table scrolls instead of squeezing Chinese text to one or two characters a line.
+
+### Fixed
+- **table-lines with the frame.** The full-grid class no longer doubles the outer edges.
+
+### 中文
+- 调整：表格默认加上细外框和圆角，表头有浅色底，行与行之间的分隔线更淡，阅读视图和实时预览一致；单元格行距稍放松。想要原来只有横线的样子，可在设置里打开「表格只留横线」。
+- 新增：阅读视图里比正文宽的表格可以左右滑动，不再撑出页面。
+- 新增：手机上表格列有最小宽度，宽表格改为左右滑动，中文不会被挤成一行一两个字。
+- 修复：开了外框后，table-lines 不再出现双层外边线。
+
 ## 0.11.1 · 2026-11-03
 
 ### Fixed
