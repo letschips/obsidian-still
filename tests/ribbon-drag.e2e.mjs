@@ -106,6 +106,14 @@ const code = `(${async function(css) {
         const cx = t.left + t.width / 2, cy = t.top + t.height / 2;
         check(`${platform} / ${state} / toggle clear once revealed`, [[cx, cy], [t.left + 2, t.top + 2], [t.right - 2, t.top + 2], [t.left + 2, t.bottom - 2], [t.right - 2, t.bottom - 2]]);
         check(`${platform} / ${state} / ribbon header row clear`, [[r.left + 2, hh / 2], [r.right - 2, hh / 2], [r.left + 2, 2], [r.right - 2, 2]]);
+        if (!collapsed) {
+          // The open sidebar shifts by less than the ribbon's width; without
+          // translucency an opaque ribbon hid the file tree's left edge.
+          const s = side.getBoundingClientRect(), contentLeft = s.left + parseFloat(view.getComputedStyle(side).paddingLeft);
+          const bg = view.getComputedStyle(ribbon).backgroundColor;
+          const clear = bg === 'transparent' || /^rgba\(.*,\s*0\)$/.test(bg);
+          results.push({name: `${platform} / open / sidebar edge shows through the ribbon`, pass: r.right <= contentLeft || clear, evidence: {bg, ribbonRight: r.right, contentLeft}});
+        }
         await dbg.sendCommand('CSS.forcePseudoState', {nodeId, forcedPseudoClasses: []});
       }
     }

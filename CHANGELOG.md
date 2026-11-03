@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.1 · 2026-11-03
+
+### Fixed
+- **Sidebar edge stays visible beside the auto-hide ribbon.** With the left sidebar open, the revealed ribbon no longer covers the first few pixels of the sidebar on Windows and Linux, so markers on the file tree's left edge are no longer cut off.
+
+### 中文
+- 修复：Windows / Linux 下开启自动隐藏功能区时，展开的功能区不再盖住左侧栏最左边几像素，文件树左侧的小球等标记不再被裁掉。
+
 ## 0.11.0 · 2026-11-03
 
 ### Added

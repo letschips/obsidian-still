@@ -1812,6 +1812,13 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
   transition-delay: var(--still-peek-delay);
 }
 
+/* Over that overlap the ribbon stays clear, so the sidebar's own edge, such
+   as a marker on the file tree's left rail, shows through. macOS
+   translucency already clears it; without it (Windows) the ribbon is opaque. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:not(.is-collapsed) {
+  background-color: transparent;
+}
+
 /* macOS: core sizes the traffic-light gap assuming the ribbon fills the
    corner. A parked ribbon leaves the corner empty, so add its width back.
    While an open sidebar is shifted for the ribbon, the header gives back the
