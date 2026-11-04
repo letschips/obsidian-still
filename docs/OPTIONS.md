@@ -29,6 +29,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Content | Images fill the line width (only media without a set width; tall ones stay within the window) | Off |
 | Content | Hairline tables: no frame or header wash, lines between rows only | Off |
 | Content | Tables fill the line width, lining up with the text; notes with `table-wide` keep their own width | Off |
+| Content | Wide tables grow: a table wider than the text spreads to both sides only as far as it needs, up to the pane, then scrolls; narrower tables stay as they are (needs readable line length; `table-wide` notes keep their own width) | Off |
 | Content | Column lines in tables: hairlines between columns in every table, like `col-lines` | Off |
 | Content | Striped Bases tables: stripes follow row position, so they stay put while long tables scroll | Off |
 | Content | Plain Canvas background: no dot grid | Off |

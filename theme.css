@@ -472,6 +472,14 @@ settings:
     type: class-toggle
     default: false
   -
+    id: still-table-auto
+    title: Wide tables grow
+    title.zh: 宽表格自动加宽
+    description: A table wider than the text spreads to both sides only as far as it needs, up to the pane, then scrolls. Narrower tables stay as they are. Needs readable line length; notes with table-wide keep their own width.
+    description.zh: 比正文宽的表格按需向两侧展开，最宽到页面宽度，再宽就左右滑动；比正文窄的表格不变。需要开启「缩减栏宽」；用了 table-wide 的笔记保持自己的宽度。
+    type: class-toggle
+    default: false
+  -
     id: still-table-cols
     title: Column lines in tables
     title.zh: 表格显示列线
@@ -2719,6 +2727,70 @@ body.still-table-full .markdown-preview-view:not(.table-wide) .markdown-rendered
 body.still-table-full .markdown-preview-view:not(.table-wide).markdown-rendered table,
 body.still-table-full .markdown-source-view.mod-cm6:not(.table-wide) .cm-table-widget :is(.table-wrapper, table) {
   width: 100%;
+}
+
+/* Option: wide tables grow. A table wider than the line spreads to both
+   sides only as far as it needs, up to the pane; wider still, it scrolls in
+   place. Narrower tables stay where they are. The block spans the pane with
+   a spacer on each side as wide as the gap between line and pane: a narrow
+   table leaves both whole, so it starts with the text; a wider one shrinks
+   them equally, so it grows around the text's centre, until they reach zero
+   at the pane. table-wide notes keep their own sizing. */
+body.still-table-auto :is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width:not(.table-wide) {
+  container-type: inline-size;
+  --still-auto-line: min(var(--file-line-width), var(--still-pane-width));
+  --still-auto-gap: calc((var(--still-pane-width) - var(--still-auto-line)) / 2);
+}
+
+body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-wide) {
+  --still-pane-width: 100cqi;
+}
+
+body.still-table-auto .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) {
+  --still-pane-width: calc(100cqi - 2 * var(--file-margins));
+}
+
+body.still-table-auto.is-mobile .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) {
+  --still-pane-width: calc(100cqi - 2 * var(--file-margins-x));
+}
+
+body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-wide) .markdown-preview-sizer > .el-table,
+body.still-table-auto .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) .cm-content > .cm-table-widget {
+  position: relative;
+  inset-inline-start: calc(-1 * var(--still-auto-gap));
+  display: flex;
+  max-width: none;
+}
+
+body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-wide) .markdown-preview-sizer > .el-table {
+  width: var(--still-pane-width);
+}
+
+/* The editor widget keeps core's drag-handle gutter on both sides. */
+body.still-table-auto .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) .cm-content > .cm-table-widget {
+  box-sizing: border-box;
+  width: calc(var(--still-pane-width) + 2 * var(--size-4-4));
+}
+
+body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-wide) .markdown-preview-sizer > .el-table::before,
+body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-wide) .markdown-preview-sizer > .el-table::after,
+body.still-table-auto .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) .cm-content > .cm-table-widget::before,
+body.still-table-auto .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) .cm-content > .cm-table-widget::after {
+  content: "";
+  flex: 0 1 var(--still-auto-gap);
+}
+
+body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-wide) .markdown-preview-sizer > .el-table > table,
+body.still-table-auto .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) .cm-content > .cm-table-widget > .table-wrapper {
+  flex: none;
+  width: auto;
+  max-width: 100%;
+}
+
+/* With "Tables fill the line width" too, a narrow table still fills the line. */
+body.still-table-auto.still-table-full .markdown-preview-view.is-readable-line-width:not(.table-wide) .markdown-preview-sizer > .el-table > table,
+body.still-table-auto.still-table-full .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) .cm-content > .cm-table-widget > .table-wrapper {
+  min-width: var(--still-auto-line);
 }
 
 /* table-center: tables narrower than the line sit in the middle. */

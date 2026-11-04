@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.0 · 2026-11-04
+
+### Added
+- **Wide tables grow.** A new option lets a table wider than the text spread to both sides only as far as it needs, up to the pane; wider still, it scrolls in place. Narrower tables stay as they are. Works in reading view and Live Preview with readable line length on; notes with table-wide keep their own width.
+
+### 中文
+- 新增：「宽表格自动加宽」选项。比正文宽的表格按需向两侧展开，最宽到页面宽度，再宽就在原地左右滑动；比正文窄的表格不变。阅读视图和实时预览都生效，需要开启「缩减栏宽」；用了 table-wide 的笔记保持自己的宽度。
+
 ## 0.13.0 · 2026-11-03
 
 ### Added

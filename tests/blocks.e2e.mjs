@@ -95,8 +95,16 @@ const code=String.raw`(async()=>{
    if(baseFile){let e=root.querySelector('.bases-embed');if(!e&&mode==='edit'){sc.scrollTop=sc.scrollHeight;for(let i=0;i<20&&!(e=root.querySelector('.bases-embed'));i++)await pause(100);sc.scrollTop=0;for(let i=0;i<20&&![...root.querySelectorAll('.cm-line')].some(l=>l.textContent.startsWith('A paragraph long'));i++)await pause(100);if(e)r.base=R(e);}else r.base=R(e);}
    root.classList.remove('table-wide','img-wide');return r};
   const wOff={read:await measure('read',false),edit:await measure('edit',false)},wOn={read:await measure('read',true),edit:await measure('edit',true)};
+  // "Wide tables grow" (still-table-auto) in the same note, without
+  // table-wide: a narrow table stays exactly where it was; a wide one's
+  // block grows around the text's centre to the pane and the table starts
+  // inside it; nothing scrolls the page.
+  const pb=view.containerEl.ownerDocument.body,hadAuto=pb.classList.contains('still-table-auto');let wAuto;
+  pb.classList.add('still-table-auto');try{wAuto={read:await measure('read',false),edit:await measure('edit',false)}}finally{pb.classList.toggle('still-table-auto',hadAuto)}
   popLeaf.detach();popLeaf=null;
   const inPane=(t,p)=>t[0]>=p[0]-1&&t[1]<=p[1]+1;
+  check('Wide tables grow: a narrow table stays where it was in both views',['read','edit'].every(k=>JSON.stringify(wAuto[k].tables[0])===JSON.stringify(wOff[k].tables[0])&&JSON.stringify(wAuto[k].text)===JSON.stringify(wOff[k].text)),{off:wOff,auto:wAuto});
+  check('Wide tables grow: a wide table spreads to both sides around the text, within the pane',Object.values(wAuto).every(o=>o.blocks[1][0]<o.text[0]-10&&o.blocks[1][1]>o.text[1]+10&&inPane(o.blocks[1],o.pane)&&o.tables[1][0]>=o.blocks[1][0]-1&&!o.pageScroll&&Math.abs((o.blocks[1][0]+o.blocks[1][1])-(o.text[0]+o.text[1]))<=2),wAuto);
   check('table-wide keeps the text column where it was',['read','edit'].every(k=>JSON.stringify(wOn[k].text)===JSON.stringify(wOff[k].text)),{off:wOff,on:wOn});
   check('table-wide lines a narrow table up with the text',Object.values(wOn).every(o=>Math.abs(o.tables[0][0]-o.text[0])<=1&&Math.abs(o.tables[0][1]-o.text[1])<=1),wOn);
   check('table-wide widens a wide table to both sides, within the pane',Object.values(wOn).every(o=>o.blocks[1][0]<o.text[0]-10&&o.blocks[1][1]>o.text[1]+10&&inPane(o.blocks[1],o.pane)&&!o.pageScroll&&Math.abs((o.blocks[1][0]+o.blocks[1][1])-(o.text[0]+o.text[1]))<=2),wOn);
