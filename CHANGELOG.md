@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.0 · 2026-11-05
+
+### Added
+- **Window background.** A new option paints one background behind the whole window and clears the frame to show it, like Border's underlying background. Frame keeps the page on its own color; Whole window lets the page show it too. Pick a color for light and dark (lower its opacity to let a translucent window through), and optionally a CSS background on top, such as a gradient or a paper texture. Desktop only.
+
+### 中文
+- 新增：「窗口背景」选项，在整个窗口底下铺一层背景，边框区域变透明来透出它，类似 Border 的底层背景。「边框」时页面保留自己的底色，「整窗」时页面也透出背景。浅色、深色可分别选背景色（调低不透明度可透出半透明窗口），还可以叠一层 CSS background，比如渐变或纸纹纹理。仅电脑端。
+
 ## 0.14.0 · 2026-11-04
 
 ### Added

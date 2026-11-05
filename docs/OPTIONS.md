@@ -11,6 +11,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
 | Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
 | Colors | Page, sidebar, text, secondary text, link, list marker, checkbox, H1–H6 heading, table header text and table header background colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text; table headers use the text color on a faint wash |
+| Colors | Window background: one background behind the whole window, showing through a clear frame (Frame) or through the page too (Whole window); a color per light and dark, with optional CSS backgrounds such as a paper texture drawn over it. Desktop only | Off; the color defaults to the sidebar color |
 | Colors | Graphite ink: buttons, toggles and links use the text color | Off |
 | Interface | Roundness: scales every corner radius | 1.25 |
 | Interface | Flat page: no floating card beside the sidebars | Off |

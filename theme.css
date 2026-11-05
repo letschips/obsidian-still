@@ -138,6 +138,52 @@ settings:
     default-light: '#'
     default-dark: '#'
   -
+    id: still-backdrop
+    title: Window background
+    title.zh: 窗口背景
+    description: One background behind the whole window, showing through a clear frame. Frame keeps the page on its own color; Whole window clears the page too. Desktop only.
+    description.zh: 在整个窗口底下铺一层背景，边框区域变透明来透出它。「边框」时页面保留自己的底色，「整窗」时页面也透出背景。仅电脑端。
+    type: class-select
+    allowEmpty: false
+    default: still-backdrop-off
+    options:
+      -
+        label: Off · 关闭
+        value: still-backdrop-off
+      -
+        label: Frame · 边框
+        value: still-backdrop-frame
+      -
+        label: Whole window · 整窗
+        value: still-backdrop-window
+  -
+    id: still-backdrop-color
+    title: Window background color
+    title.zh: 窗口背景色
+    description: Defaults to the sidebar color. Lower the opacity to let a translucent window show through.
+    description.zh: 默认用侧栏背景色。调低不透明度，半透明窗口会透出来。
+    type: variable-themed-color
+    format: hex
+    opacity: true
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-backdrop-css-light
+    title: Window background CSS (light)
+    title.zh: 窗口背景 CSS（浅色）
+    description: 'Optional. Any CSS background value, drawn over the color: a gradient, or a texture such as #fffcf0 url("data:image/png;base64,…").'
+    description.zh: '可选。任意 CSS background 值，叠在背景色上面：渐变，或纹理，例如 #fffcf0 url("data:image/png;base64,…")。'
+    type: variable-text
+    default: ''
+  -
+    id: still-backdrop-css-dark
+    title: Window background CSS (dark)
+    title.zh: 窗口背景 CSS（深色）
+    description: Optional. The same for dark mode.
+    description.zh: 可选。深色模式用的背景。
+    type: variable-text
+    default: ''
+  -
     id: still-text-color
     title: Text
     title.zh: 正文文字
@@ -1156,7 +1202,7 @@ body:not(.still-header-title):not(.is-mobile) .view-header-title-container:focus
 body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root {
   gap: var(--still-gutter);
   padding-bottom: var(--still-gutter);
-  background-color: var(--background-secondary);
+  background-color: var(--still-frame-ground, var(--background-secondary));
 }
 
 /* The gutter on the far side is padding, so it shows the frame tone rather
@@ -1180,6 +1226,67 @@ body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open,
 
 body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-leaf-resize-handle {
   border-color: transparent;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Option: window background. One ground behind the whole window, a color    */
+/* with an optional CSS background (a gradient, a paper texture) over it,     */
+/* and a clear frame on top. Surfaces that float over the page (sidebar and   */
+/* ribbon peek, the vault name, menus) keep their own color. Desktop only:    */
+/* phone drawers slide over the page.                                         */
+/* -------------------------------------------------------------------------- */
+
+body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window) {
+  --still-backdrop-css: var(--still-backdrop-css-light);
+  --still-frame-ground: transparent;
+  --titlebar-background: transparent;
+  --titlebar-background-focused: transparent;
+  --ribbon-background: transparent;
+  --ribbon-background-collapsed: transparent;
+  --tab-container-background: transparent;
+  --status-bar-background: transparent;
+  /* Outranks core's transparent body in a translucent window; a color with
+     some transparency lets the glass through. */
+  background-color: var(--still-backdrop-color, var(--background-secondary));
+}
+
+body.theme-dark:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window) {
+  --still-backdrop-css: var(--still-backdrop-css-dark);
+}
+
+/* The CSS layer sits under .app-container (positioned, later in the tree).
+   An empty or unset value leaves it clear, so the color shows. */
+body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--still-backdrop-css);
+}
+
+body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile) :is(
+  .mod-sidedock,
+  .mod-sidedock .workspace-tabs .workspace-leaf,
+  .workspace-split.mod-sidedock .workspace-sidedock-vault-profile
+) {
+  background-color: transparent;
+}
+
+/* Whole window: the page shows the ground too. Stacked panes keep core's
+   opaque cards, since they overlap while scrolling. */
+body.still-backdrop-window:not(.is-mobile) :is(
+  .workspace-split.mod-root,
+  .mod-root .workspace-tabs:not(.mod-stacked) .workspace-leaf,
+  .workspace-split.mod-root .view-header,
+  .workspace-split.mod-root .view-content,
+  .workspace-leaf-content.is-read-mode .markdown-preview-view
+) {
+  background-color: transparent;
+}
+
+/* A shadow around a clear card would only draw a rim on the ground. */
+body.still-backdrop-window:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-tab-container {
+  box-shadow: none;
 }
 
 /* ========================================================================== */

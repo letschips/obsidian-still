@@ -9,8 +9,9 @@ const block=css.match(/\/\*\s*@settings\s*\n([\s\S]*?)\*\//)?.[1];
 if(!block)throw Error('No @settings block');
 const items=[];let item=null;
 for(const line of block.split('\n')){
- if(/^\s*-\s*$/.test(line)){item={};items.push(item);continue}
- const m=line.match(/^\s+([\w.-]+):\s*(.*)$/);if(item&&m)item[m[1]]=m[2];
+ // Top-level items only; a class-select's options are nested deeper.
+ if(/^ {0,2}-\s*$/.test(line)){item={};items.push(item);continue}
+ const m=line.match(/^ {4}([\w.-]+):\s*(.*)$/);if(item&&m)item[m[1]]=m[2];
 }
 const failures=[],ids=new Set();
 for(const i of items){
