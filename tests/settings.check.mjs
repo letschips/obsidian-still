@@ -20,6 +20,10 @@ for(const i of items){
  if(i.description&&!i['description.zh'])failures.push(`${i.id}: no description.zh`);
  for(const k of ['title.zh','description.zh'])if(i[k]!==undefined&&!/[一-鿿]/.test(i[k]))failures.push(`${i.id}: ${k} has no Chinese`);
 }
+// The header comment is the version people see in a copied theme.css.
+const manifest=JSON.parse(readFileSync(new URL('../manifest.json',import.meta.url),'utf8'));
+const header=css.match(/Version (\d+\.\d+\.\d+)/)?.[1];
+if(header!==manifest.version)failures.push(`theme.css header says ${header}, manifest.json says ${manifest.version}`);
 console.log(`${items.length} settings, ${failures.length} problems`);
 for(const f of failures)console.log('FAIL '+f);
 process.exitCode=failures.length?1:0;

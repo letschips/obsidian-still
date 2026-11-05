@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.15.1 · 2026-11-05
+
+### Fixed
+- **Window background in popout windows.** With Whole window on, a note moved to its own window keeps its solid page instead of turning the sidebar color. Settings and Browse windows no longer show the background either.
+- **Tab bar with Frame.** With sidebars closed or Flat page on, the tab bar now shows the window background like the rest of the frame.
+- **Stacked tabs with Whole window.** In a translucent window, stacked tabs keep solid pages, so overlapping notes no longer show through.
+- **table-lines inner lines.** Lines between columns are single again in framed tables, matching the rows and frame.
+
+### 中文
+- 修复：「整窗」窗口背景下，拖到新窗口的笔记保持实底页面，不再变成侧栏色；独立的设置、社区浏览窗口也不再带背景。
+- 修复：「边框」窗口背景下，侧栏全收起或开启「平铺页面」时，标签栏也透出窗口背景。
+- 修复：「整窗」配合半透明窗口时，堆叠标签页的页面保持实底，前后笔记不再互相透出。
+- 修复：表格外框样式下 table-lines 的列线变回单线，和行线、外框一样细。
+
 ## 0.15.0 · 2026-11-05
 
 ### Added

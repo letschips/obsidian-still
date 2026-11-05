@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.10.2 · MIT License · https://github.com/letschips
+  Version 0.15.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1236,7 +1236,7 @@ body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open,
 /* phone drawers slide over the page.                                         */
 /* -------------------------------------------------------------------------- */
 
-body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window) {
+body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
   --still-backdrop-css: var(--still-backdrop-css-light);
   --still-frame-ground: transparent;
   --titlebar-background: transparent;
@@ -1250,13 +1250,13 @@ body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-p
   background-color: var(--still-backdrop-color, var(--background-secondary));
 }
 
-body.theme-dark:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window) {
+body.theme-dark:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
   --still-backdrop-css: var(--still-backdrop-css-dark);
 }
 
 /* The CSS layer sits under .app-container (positioned, later in the tree).
    An empty or unset value leaves it clear, so the color shows. */
-body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window)::before {
+body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal)::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -1264,7 +1264,11 @@ body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-p
   background: var(--still-backdrop-css);
 }
 
-body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile) :is(
+/* The page area is clear too, so the tab bar shows the ground whether or
+   not a sidebar is open; the leaves keep the page solid. Popout windows keep
+   their own opaque ground and are left alone. */
+body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) :is(
+  .workspace-split.mod-root,
   .mod-sidedock,
   .mod-sidedock .workspace-tabs .workspace-leaf,
   .workspace-split.mod-sidedock .workspace-sidedock-vault-profile
@@ -1272,13 +1276,13 @@ body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile) :is(
   background-color: transparent;
 }
 
-/* Whole window: the page shows the ground too. Stacked panes keep core's
-   opaque cards, since they overlap while scrolling. */
-body.still-backdrop-window:not(.is-mobile) :is(
-  .workspace-split.mod-root,
-  .mod-root .workspace-tabs:not(.mod-stacked) .workspace-leaf,
-  .workspace-split.mod-root .view-header,
-  .workspace-split.mod-root .view-content,
+/* Whole window: the page shows the ground too. Stacked panes keep opaque
+   cards, since they overlap while scrolling; a translucent window already
+   clears their leaves, so their views stay solid. */
+body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) .workspace-tabs:not(.mod-stacked) :is(
+  .mod-root .workspace-leaf,
+  .mod-root .view-header,
+  .mod-root .view-content,
   .workspace-leaf-content.is-read-mode .markdown-preview-view
 ) {
   background-color: transparent;
@@ -3035,8 +3039,9 @@ body.still-table-cols .markdown-rendered :is(th, td):not(:last-child) {
 }
 
 /* A framed table already has its outer edges: table-lines adds the inner
-   column lines only. */
-body:not(.still-table-plain) :is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-lines :is(th, td):first-child {
+   column lines only. Its borders don't collapse, so each line comes from
+   the cell before it alone; two touching edges would draw it twice. */
+body:not(.still-table-plain) :is(.markdown-preview-view, .markdown-source-view.mod-cm6).table-lines :is(th, td) {
   border-inline-start-width: 0;
 }
 

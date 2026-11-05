@@ -163,6 +163,30 @@ const code=String.raw`(async()=>{
   check('Inline code has the same radius in the editor and reading view',ed.editor===ed.read,ed);
   check('Graphite links keep the hairline underline in the editor',ed.underline!==ocs(oq('.cm-underline'),'color'),ed);
   ov.remove();doc.body.classList.remove(...ovClasses);doc.body.classList.add(...hadOv);
+  // Window background: a popout keeps a solid page, a settings window gets no
+  // backdrop layer, the tab bar shows the ground with sidebars closed or a
+  // flat page, and stacked cards stay solid in a translucent window.
+  stage='window background';
+  const bgClasses=['is-popout-window','is-popout-modal','is-translucent','still-flat-page','still-backdrop-off','still-backdrop-frame','still-backdrop-window'],hadBg=bgClasses.filter(c=>doc.body.classList.contains(c));
+  const bgSet=(...c)=>{doc.body.classList.remove(...bgClasses);doc.body.classList.add(...c)};
+  const paint=e=>{for(let x=e;x;x=x.parentElement){const c=view.getComputedStyle(x).backgroundColor;if(c!=='rgba(0, 0, 0, 0)')return c}return 'none'};
+  const bgTabs=leaf.containerEl.closest('.workspace-tabs'),bgView=leaf.containerEl.querySelector('.view-content'),bgBar=bgTabs.querySelector('.workspace-tab-header-container');
+  for(const k of ['light','dark'])doc.body.style.setProperty('--still-backdrop-css-'+k,'linear-gradient(red, blue)');
+  const bg={};const ground=()=>view.getComputedStyle(doc.body).backgroundColor;
+  bgSet('is-popout-window','still-backdrop-window');bg.popout={view:paint(bgView),page:tone('--background-primary')};
+  bgSet('is-popout-modal','still-backdrop-frame');bg.modal=view.getComputedStyle(doc.body,'::before').backgroundImage;
+  bgSet('still-backdrop-frame');bg.layer=view.getComputedStyle(doc.body,'::before').backgroundImage;bg.closed={bar:paint(bgBar),ground:ground(),view:paint(bgView)};
+  bgSet('still-backdrop-frame','still-flat-page');bg.flat={bar:paint(bgBar),ground:ground(),view:paint(bgView)};
+  bgSet('still-backdrop-window');bg.window={view:paint(bgView),ground:ground()};
+  bgTabs.classList.add('mod-stacked');bgSet('is-translucent','still-backdrop-window');bg.stacked=paint(bgView);bgTabs.classList.remove('mod-stacked');
+  for(const k of ['light','dark'])doc.body.style.removeProperty('--still-backdrop-css-'+k);bgSet(...hadBg);
+  const page=bg.popout.page;
+  check('Whole-window background leaves a popout page solid',bg.popout.view===page,bg.popout);
+  check('Settings windows get no backdrop layer',bg.modal==='none'&&bg.layer.startsWith('linear-gradient'),{modal:bg.modal,main:bg.layer});
+  check('Frame shows the ground behind the tab bar with sidebars closed',bg.closed.bar===bg.closed.ground&&bg.closed.view===page,bg.closed);
+  check('Frame shows the ground behind the tab bar on a flat page',bg.flat.bar===bg.flat.ground&&bg.flat.view===page,bg.flat);
+  check('Whole window still clears the page',bg.window.view===bg.window.ground,bg.window);
+  check('Stacked cards stay solid in a translucent whole-window background',bg.stacked===page,{stacked:bg.stacked,page});
   if(MODE==='all'){stage='full surfaces';
    const normal=state();check('Normal motion keeps Still entrances',normal.menu==='still-pop'&&normal.prompt==='still-rise',normal);
    doc.body.classList.add('still-motion-off');const off=state();check('Entrance option stops Still animation',off.menu!=='still-pop'&&off.prompt!=='still-rise',off);doc.body.classList.remove('still-motion-off');

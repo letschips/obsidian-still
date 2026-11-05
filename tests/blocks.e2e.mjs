@@ -58,7 +58,7 @@ const code=String.raw`(async()=>{
   const rows='<thead><tr><th>a</th><th>b</th><th>c</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>a long cell that would wrap in a narrow table</td></tr><tr><td>4</td><td>5</td><td>6</td></tr></tbody>';
   const wrapCells=html=>html.replace(/<(t[hd])>([^<]*)<\/t[hd]>/g,'<$1><div class="table-cell-wrapper">$2</div></$1>');
   const page=c=>'<div class="markdown-preview-view markdown-rendered tb-read '+c+'" style="width:600px"><table>'+rows+'</table></div><div class="markdown-source-view mod-cm6 is-live-preview tb-edit '+c+'" style="width:600px"><div class="cm-content"><div class="cm-embed-block cm-table-widget markdown-rendered"><div class="table-wrapper"><table class="table-editor">'+wrapCells(rows)+'</table></div></div></div></div>';
-  const tbl=c=>{const d=document.createElement('div');d.innerHTML=page(c);host.append(d);const out={};for(const v of ['tb-read','tb-edit']){const t=d.querySelector('.'+v+' table'),td=t.querySelector('tbody td'),long=t.querySelector('tbody td:nth-child(3)'),first=t.querySelector('tbody tr'),num=cs(td,'::before');const text=v==='tb-read'?td:td.querySelector('.table-cell-wrapper');const r=document.createRange();r.selectNodeContents(text);out[v]={size:parseFloat(cs(td).fontSize),ws:cs(long).whiteSpace,rowBg:cs(first).backgroundColor,mid:parseFloat(cs(td).borderRightWidth),edge:parseFloat(cs(td).borderLeftWidth),frame:parseFloat(cs(t).borderLeftWidth),num:num.content,textLeft:Math.round(r.getBoundingClientRect().left-td.getBoundingClientRect().left)}}d.remove();return out};
+  const tbl=c=>{const d=document.createElement('div');d.innerHTML=page(c);host.append(d);const out={};for(const v of ['tb-read','tb-edit']){const t=d.querySelector('.'+v+' table'),td=t.querySelector('tbody td'),long=t.querySelector('tbody td:nth-child(3)'),first=t.querySelector('tbody tr'),num=cs(td,'::before');const text=v==='tb-read'?td:td.querySelector('.table-cell-wrapper');const r=document.createRange();r.selectNodeContents(text);out[v]={size:parseFloat(cs(td).fontSize),ws:cs(long).whiteSpace,rowBg:cs(first).backgroundColor,mid:parseFloat(cs(td).borderRightWidth),edge:parseFloat(cs(td).borderLeftWidth),frame:parseFloat(cs(t).borderLeftWidth),inner:parseFloat(cs(td).borderRightWidth)+parseFloat(cs(td.nextElementSibling).borderLeftWidth),num:num.content,textLeft:Math.round(r.getBoundingClientRect().left-td.getBoundingClientRect().left)}}d.remove();return out};
   const base=tbl(''),small=tbl('table-small'),tiny=tbl('table-tiny'),nowrap=tbl('table-nowrap'),alt=tbl('row-alt'),cols=tbl('col-lines'),lines=tbl('table-lines'),nums=tbl('table-numbers');
   const both=f=>['tb-read','tb-edit'].every(v=>f(v));
   check('Tables without a class keep Still\'s defaults',both(v=>base[v].ws==='break-spaces'&&base[v].rowBg==='rgba(0, 0, 0, 0)'&&base[v].mid===0&&base[v].edge===0&&base[v].num==='none'),base);
@@ -69,6 +69,9 @@ const code=String.raw`(async()=>{
   // The outer edge comes from the table's frame or from the edge cells, never
   // both (a doubled line).
   check('table-lines draws a full grid with a single outer frame',both(v=>lines[v].mid>0&&(lines[v].edge>0)!==(lines[v].frame>0)),lines);
+  // A framed table's borders don't collapse, so two touching cell edges
+  // would draw the inner line twice.
+  check('table-lines draws single inner lines in a framed table',both(v=>lines[v].frame===0||lines[v].inner===lines[v].mid),lines);
   check('table-numbers numbers rows and moves the cell text clear of them',both(v=>nums[v].num==='counter(still-row)'&&nums[v].textLeft>base[v].textLeft+15),{base,nums});
   // table-wide, in a real popout note (reading view and Live Preview):
   // tables take a wider block than the text, centred on it and capped at
