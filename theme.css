@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.15.1 · MIT License · https://github.com/letschips
+  Version 0.16.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -141,8 +141,8 @@ settings:
     id: still-backdrop
     title: Window background
     title.zh: 窗口背景
-    description: One background behind the whole window, showing through a clear frame. Frame keeps the page on its own color; Whole window clears the page too. Desktop only.
-    description.zh: 在整个窗口底下铺一层背景，边框区域变透明来透出它。「边框」时页面保留自己的底色，「整窗」时页面也透出背景。仅电脑端。
+    description: One background behind the whole window, showing through a clear frame. Frame keeps the page on its own color; Whole window clears the page too. On phones and tablets only the color carries over, to the sidebars, and to the page with Whole window.
+    description.zh: 在整个窗口底下铺一层背景，边框区域变透明来透出它。「边框」时页面保留自己的底色，「整窗」时页面也透出背景。手机和平板上只沿用背景色：侧栏用它，「整窗」时页面也用它。
     type: class-select
     allowEmpty: false
     default: still-backdrop-off
@@ -1232,8 +1232,8 @@ body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open,
 /* Option: window background. One ground behind the whole window, a color    */
 /* with an optional CSS background (a gradient, a paper texture) over it,     */
 /* and a clear frame on top. Surfaces that float over the page (sidebar and   */
-/* ribbon peek, the vault name, menus) keep their own color. Desktop only:    */
-/* phone drawers slide over the page.                                         */
+/* ribbon peek, the vault name, menus) keep their own color. Phones and       */
+/* tablets have no frame to clear, so only the color carries over (below).    */
 /* -------------------------------------------------------------------------- */
 
 body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
@@ -1286,6 +1286,38 @@ body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout
   .workspace-leaf-content.is-read-mode .markdown-preview-view
 ) {
   background-color: transparent;
+}
+
+/* Phones and tablets: no frame and no CSS layer, but the color carries over,
+   so a paper window becomes paper sidebars (and a paper page with Whole
+   window) instead of plain white or black. A page or sidebar color set on its
+   own still wins. Nothing sits behind the app here, so the color drops its
+   opacity where the engine can do that. Pure black for OLED comes later and
+   overrides this. */
+body.is-mobile:is(.still-backdrop-frame, .still-backdrop-window) {
+  --still-mobile-ground: var(--still-backdrop-color);
+}
+
+@supports (color: rgb(from red r g b / 1)) {
+  body.is-mobile:is(.still-backdrop-frame, .still-backdrop-window) {
+    --still-mobile-ground: rgb(from var(--still-backdrop-color) r g b / 1);
+  }
+}
+
+body.is-mobile.theme-light:is(.still-backdrop-frame, .still-backdrop-window) {
+  --background-secondary: var(--still-sidebar-color, var(--still-mobile-ground, #eaeaeb));
+}
+
+body.is-mobile.theme-dark:is(.still-backdrop-frame, .still-backdrop-window) {
+  --background-secondary: var(--still-sidebar-color, var(--still-mobile-ground, #202020));
+}
+
+body.is-mobile.theme-light.still-backdrop-window {
+  --background-primary: var(--still-page-color, var(--still-mobile-ground, #fafafa));
+}
+
+body.is-mobile.theme-dark.still-backdrop-window {
+  --background-primary: var(--still-page-color, var(--still-mobile-ground, #191919));
 }
 
 /* A shadow around a clear card would only draw a rim on the ground. */

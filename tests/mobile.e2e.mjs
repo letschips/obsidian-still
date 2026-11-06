@@ -101,6 +101,18 @@ const code=String.raw`(async()=>{
   set(true,true);const black=read();set(true,false);const dark=read();set(false,true);const light=read();
   document.body.className=saved;return{black,dark,light};
  }
+ function windowGround(drawer){
+  // Window background on phones: its color, made opaque, reaches the drawer,
+  // and the page with Whole window; own page color and pure black still win.
+  const saved=document.body.className,style=document.createElement('style');document.head.append(style);
+  const ctx=document.createElement('canvas').getContext('2d',{willReadFrequently:true});
+  const px=c=>{ctx.clearRect(0,0,1,1);ctx.fillStyle='#00000000';ctx.fillStyle=c;ctx.fillRect(0,0,1,1);return[...ctx.getImageData(0,0,1,1).data].join(',')};
+  const read=(cls,vars)=>{style.textContent='body{'+vars+'}';document.body.className=saved.replace(/\b(theme-(light|dark)|still-backdrop-\w+|still-black-mobile)\b/g,'')+' '+cls;
+   const host=document.createElement('div');host.style.backgroundColor='var(--background-primary)';document.body.append(host);
+   const r={page:px(getComputedStyle(host).backgroundColor),drawer:px(getComputedStyle(drawer).backgroundColor)};host.remove();return r};
+  const r={off:read('theme-light',''),window:read('theme-light still-backdrop-window','--still-backdrop-color:#FFFCF080'),frame:read('theme-light still-backdrop-frame','--still-backdrop-color:#FFFCF0'),own:read('theme-light still-backdrop-window','--still-backdrop-color:#FFFCF0;--still-page-color:#FFFFFF'),black:read('theme-dark still-backdrop-window still-black-mobile','--still-backdrop-color:#121C2A')};
+  style.remove();document.body.className=saved;return r;
+ }
  async function fullDrawers(width,full){
   // Option: overlay drawers cover the page; without it core's narrower drawer stays.
   const had=document.body.classList.contains('still-full-drawers'),out={};
@@ -172,6 +184,7 @@ const code=String.raw`(async()=>{
    const n=rect(name),i=rect(info);check(stage+' name has its own readable row',(name.scrollWidth<=name.clientWidth+1||n.width>=rect(drawer).width*.55)&&i.top>=n.bottom-1,{name:n,info:i,drawer:rect(drawer)});
    const tree=await treeStep(drawer);check(stage+' nested rows keep the drawer width',tree.step<=12,tree);
    if(w===390){const b=blackMobile(drawer),k='rgb(0, 0, 0)';check('pure black option is black in dark mode only, code keeps a lift',b.black.page==='#000000'&&b.black.drawer===k&&b.black.code!==k&&b.dark.page!=='#000000'&&b.light.page!=='#000000',b)}
+   if(w===390){const g=windowGround(drawer),paper='255,252,240,255',page='250,250,250,255';check('window background color carries to phone drawer and Whole-window page, opaque',g.off.page===page&&g.off.drawer!==paper&&g.window.page===paper&&g.window.drawer===paper&&g.frame.page===page&&g.frame.drawer===paper&&g.own.page==='255,255,255,255'&&g.black.page==='0,0,0,255',g)}
    if(w===390){const wide=wideEditor();check(stage+' img-wide editor line fits the horizontal margins',wide.width===wide.expected,wide)}
    if(w===390){const radius=contentRadius();check('reading content keeps desktop corners',Object.keys(radius.expected).every(k=>radius.actual[k]===radius.expected[k]),radius)}
    if(w===390)await shot('phone-drawer-390');

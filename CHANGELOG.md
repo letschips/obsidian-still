@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.0 · 2026-11-06
+
+### Changed
+- **Window background on phones and tablets.** Its color now carries over instead of falling back to plain white or black: the sidebars take it, and with Whole window the page does too. The CSS background stays desktop only, the color is made opaque, and a page or sidebar color you set, or Pure black, still wins.
+
+### 中文
+- 改进：手机和平板上，「窗口背景」的颜色会沿用过来，不再只有白和黑：侧栏用这个颜色，「整窗」时页面也用。CSS 背景仍只在电脑端；颜色在手机上不透明；单独设置的页面色、侧栏色和「纯黑」选项优先。
+
 ## 0.15.1 · 2026-11-05
 
 ### Fixed
