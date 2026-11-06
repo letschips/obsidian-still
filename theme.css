@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.17.0 · MIT License · https://github.com/letschips
+  Version 0.17.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1366,104 +1366,104 @@ body.still-backdrop-window:not(.is-mobile):not(.still-flat-page) .workspace:is(.
 
 /* Paper: warm paper with a fine fibre grain. */
 body.theme-light.still-preset-paper {
-  --still-p-ground: #fffcf0;
-  --still-p-page: #fffcf0;
-  --still-p-sidebar: #f2f0e5;
-  --still-p-text: #100f0f;
+  --still-p-ground: #f2e9cd;
+  --still-p-page: #fdf8e8;
+  --still-p-sidebar: #f2e9cd;
+  --still-p-text: #1f1a10;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .33 0 0 0 0 .2 0 0 0 .10 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 body.theme-dark.still-preset-paper {
-  --still-p-ground: #100f0f;
-  --still-p-page: #1c1b1a;
-  --still-p-sidebar: #171615;
-  --still-p-text: #cecdc3;
+  --still-p-ground: #191710;
+  --still-p-page: #201d16;
+  --still-p-sidebar: #191710;
+  --still-p-text: #d8d0bd;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Mist: cool grey, a soft fall from top to bottom. */
 body.theme-light.still-preset-mist {
-  --still-p-ground: #eef0f3;
-  --still-p-page: #fafafb;
-  --still-p-sidebar: #eceef1;
-  --still-p-text: #232324;
-  --still-p-css: linear-gradient(180deg, #f3f4f6 0%, #e8eaee 100%);
+  --still-p-ground: #e8ebef;
+  --still-p-page: #f7f8fa;
+  --still-p-sidebar: #e8ebef;
+  --still-p-text: #232428;
+  --still-p-css: linear-gradient(180deg, #eff1f4 0%, #e0e3e7 100%);
 }
 
 body.theme-dark.still-preset-mist {
-  --still-p-ground: #17191c;
-  --still-p-page: #1a1b1e;
-  --still-p-sidebar: #1f2124;
-  --still-p-text: #f0efed;
-  --still-p-css: linear-gradient(180deg, #1b1d21 0%, #131417 100%);
+  --still-p-ground: #262b35;
+  --still-p-page: #1e222a;
+  --still-p-sidebar: #262b35;
+  --still-p-text: #e6e9ef;
+  --still-p-css: linear-gradient(180deg, #2d323c 0%, #1f232b 100%);
 }
 
 /* Sand: beige, warmer toward the top left. */
 body.theme-light.still-preset-sand {
-  --still-p-ground: #f1e9da;
-  --still-p-page: #faf6ee;
-  --still-p-sidebar: #f1eadd;
-  --still-p-text: #2b2620;
-  --still-p-css: radial-gradient(120% 90% at 0% 0%, #f7f0e4 0%, #efe6d5 55%, #e8ddc9 100%);
+  --still-p-ground: #e6d2b4;
+  --still-p-page: #f7ecdc;
+  --still-p-sidebar: #e6d2b4;
+  --still-p-text: #2e2419;
+  --still-p-css: radial-gradient(120% 90% at 0% 0%, #eedec6 0%, #e6d2b4 55%, #decbae 100%);
 }
 
 body.theme-dark.still-preset-sand {
-  --still-p-ground: #1f1b16;
-  --still-p-page: #211d18;
-  --still-p-sidebar: #26211b;
-  --still-p-text: #e4dccd;
-  --still-p-css: radial-gradient(120% 90% at 0% 0%, #2a241d 0%, #1f1b16 60%, #1a1713 100%);
+  --still-p-ground: #35291e;
+  --still-p-page: #2b2219;
+  --still-p-sidebar: #35291e;
+  --still-p-text: #e8dac6;
+  --still-p-css: radial-gradient(120% 90% at 0% 0%, #3c3025 0%, #35291e 55%, #2b2219 100%);
 }
 
 /* Sage: a muted green-grey. */
 body.theme-light.still-preset-sage {
-  --still-p-ground: #e9ede4;
-  --still-p-page: #f6f8f3;
-  --still-p-sidebar: #eaeee5;
-  --still-p-text: #1f2620;
-  --still-p-css: linear-gradient(160deg, #eff2eb 0%, #e3e8dd 100%);
+  --still-p-ground: #dbe6d1;
+  --still-p-page: #f2f6ed;
+  --still-p-sidebar: #dbe6d1;
+  --still-p-text: #1d2619;
+  --still-p-css: linear-gradient(160deg, #e5edde 0%, #d3deca 100%);
 }
 
 body.theme-dark.still-preset-sage {
-  --still-p-ground: #161a15;
-  --still-p-page: #181c17;
-  --still-p-sidebar: #1d221c;
-  --still-p-text: #d9ded3;
-  --still-p-css: linear-gradient(160deg, #191d18 0%, #121512 100%);
+  --still-p-ground: #1c2a1e;
+  --still-p-page: #172118;
+  --still-p-sidebar: #1c2a1e;
+  --still-p-text: #d3dfd0;
+  --still-p-css: linear-gradient(160deg, #233125 0%, #172219 100%);
 }
 
 /* Graphite: neutral grey with a fine grain. */
 body.theme-light.still-preset-graphite {
-  --still-p-ground: #ededec;
-  --still-p-page: #f6f6f5;
-  --still-p-sidebar: #ebebea;
-  --still-p-text: #232324;
+  --still-p-ground: #e0ddd6;
+  --still-p-page: #f1f0ec;
+  --still-p-sidebar: #e0ddd6;
+  --still-p-text: #202020;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 body.theme-dark.still-preset-graphite {
-  --still-p-ground: #161616;
+  --still-p-ground: #121212;
   --still-p-page: #1a1a1a;
-  --still-p-sidebar: #1f1f1f;
-  --still-p-text: #f0efed;
+  --still-p-sidebar: #121212;
+  --still-p-text: #ededed;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* Night: pale blue-grey by day, deep navy by night. */
 body.theme-light.still-preset-night {
-  --still-p-ground: #e9eef3;
-  --still-p-page: #f6f8fb;
-  --still-p-sidebar: #e9eef3;
-  --still-p-text: #1a2230;
-  --still-p-css: linear-gradient(180deg, #eef2f6 0%, #e4e9ef 100%);
+  --still-p-ground: #ccdbee;
+  --still-p-page: #edf3fb;
+  --still-p-sidebar: #ccdbee;
+  --still-p-text: #16233a;
+  --still-p-css: linear-gradient(180deg, #dbe6f4 0%, #c5d3e6 100%);
 }
 
 body.theme-dark.still-preset-night {
-  --still-p-ground: #101a28;
+  --still-p-ground: #172233;
   --still-p-page: #121c2a;
   --still-p-sidebar: #172233;
   --still-p-text: #e2e6ec;
-  --still-p-css: linear-gradient(180deg, #132033 0%, #0e1724 100%);
+  --still-p-css: linear-gradient(180deg, #1e293a 0%, #131c2a 100%);
 }
 
 /* ========================================================================== */

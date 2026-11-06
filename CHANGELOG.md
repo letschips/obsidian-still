@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.1 · 2026-11-06
+
+### Changed
+- **Presets are easier to tell apart.** Each one now has its own hue and depth: Paper cream, Sand tan, Sage green, Mist cool grey, Graphite warm grey by day and ink black by night, Night pale blue by day and navy by night. Before, Mist and Night looked the same by day, and most presets read as plain black by night.
+
+### 中文
+- 改进：「配方」之间更容易分辨。每套有了自己的色相和深浅：类纸奶黄、暖砂驼色、苔绿浅绿、雾灰冷灰，石墨日间暖灰、夜间墨黑，夜航日间浅蓝、夜间海军蓝。之前日间的雾灰和夜航几乎一样，夜间多数配方看起来都只是黑色。
+
 ## 0.17.0 · 2026-11-06
 
 ### Added
