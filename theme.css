@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.16.0 · MIT License · https://github.com/letschips
+  Version 0.17.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -119,6 +119,37 @@ settings:
     type: heading
     level: 1
     collapsed: true
+  -
+    id: still-preset
+    title: Preset
+    title.zh: 配方
+    description: A ready-made palette for light and dark. While one is picked, it sets the window background, page, sidebar and text colors below; pick Off to use your own.
+    description.zh: 现成的一套浅色和深色配色。选中时，下方的窗口背景、页面、侧栏和正文颜色由它决定；选「关闭」才用你自己设的。
+    type: class-select
+    allowEmpty: false
+    default: still-preset-off
+    options:
+      -
+        label: Off · 关闭
+        value: still-preset-off
+      -
+        label: Paper · 类纸
+        value: still-preset-paper
+      -
+        label: Mist · 雾灰
+        value: still-preset-mist
+      -
+        label: Sand · 暖砂
+        value: still-preset-sand
+      -
+        label: Sage · 苔绿
+        value: still-preset-sage
+      -
+        label: Graphite · 石墨
+        value: still-preset-graphite
+      -
+        label: Night · 夜航
+        value: still-preset-night
   -
     id: still-page-color
     title: Page background
@@ -772,9 +803,9 @@ body:not(.is-mobile) {
   --color-base-70: #5f5f64;
   --color-base-100: #232324;
 
-  --background-primary: var(--still-page-color, #fafafa);
+  --background-primary: var(--still-p-page, var(--still-page-color, #fafafa));
   --background-primary-alt: #eaeaeb;
-  --background-secondary: var(--still-sidebar-color, #eaeaeb);
+  --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, #eaeaeb));
   --background-secondary-alt: #e3e3e4;
   --background-modifier-hover: rgb(0 0 0 / 0.05);
   --background-modifier-active-hover: rgb(0 0 0 / 0.08);
@@ -786,7 +817,7 @@ body:not(.is-mobile) {
   --background-modifier-form-field: var(--background-primary);
   --background-modifier-cover: rgb(0 0 0 / 0.28);
 
-  --text-normal: var(--still-text-color, #232324);
+  --text-normal: var(--still-p-text, var(--still-text-color, #232324));
   --text-muted: var(--still-muted-color, #4d4d4d);
   --text-faint: #939393;
 
@@ -846,9 +877,9 @@ body:not(.is-mobile) {
   --color-base-70: #b3b3b0;
   --color-base-100: #f0efed;
 
-  --background-primary: var(--still-page-color, #191919);
+  --background-primary: var(--still-p-page, var(--still-page-color, #191919));
   --background-primary-alt: #202020;
-  --background-secondary: var(--still-sidebar-color, #202020);
+  --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, #202020));
   --background-secondary-alt: #282828;
   --background-modifier-hover: rgb(255 255 255 / 0.05);
   --background-modifier-active-hover: rgb(255 255 255 / 0.08);
@@ -858,7 +889,7 @@ body:not(.is-mobile) {
   --background-modifier-form-field: #202020;
   --background-modifier-cover: rgb(0 0 0 / 0.5);
 
-  --text-normal: var(--still-text-color, #f0efed);
+  --text-normal: var(--still-p-text, var(--still-text-color, #f0efed));
   --text-muted: var(--still-muted-color, #ababab);
   --text-faint: #7a7a7a;
 
@@ -1237,7 +1268,7 @@ body:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open,
 /* -------------------------------------------------------------------------- */
 
 body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
-  --still-backdrop-css: var(--still-backdrop-css-light);
+  --still-backdrop-css: var(--still-p-css, var(--still-backdrop-css-light));
   --still-frame-ground: transparent;
   --titlebar-background: transparent;
   --titlebar-background-focused: transparent;
@@ -1247,11 +1278,11 @@ body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-p
   --status-bar-background: transparent;
   /* Outranks core's transparent body in a translucent window; a color with
      some transparency lets the glass through. */
-  background-color: var(--still-backdrop-color, var(--background-secondary));
+  background-color: var(--still-p-ground, var(--still-backdrop-color, var(--background-secondary)));
 }
 
 body.theme-dark:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
-  --still-backdrop-css: var(--still-backdrop-css-dark);
+  --still-backdrop-css: var(--still-p-css, var(--still-backdrop-css-dark));
 }
 
 /* The CSS layer sits under .app-container (positioned, later in the tree).
@@ -1295,34 +1326,144 @@ body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout
    opacity where the engine can do that. Pure black for OLED comes later and
    overrides this. */
 body.is-mobile:is(.still-backdrop-frame, .still-backdrop-window) {
-  --still-mobile-ground: var(--still-backdrop-color);
+  --still-mobile-ground: var(--still-p-ground, var(--still-backdrop-color));
 }
 
 @supports (color: rgb(from red r g b / 1)) {
   body.is-mobile:is(.still-backdrop-frame, .still-backdrop-window) {
-    --still-mobile-ground: rgb(from var(--still-backdrop-color) r g b / 1);
+    --still-mobile-ground: rgb(from var(--still-p-ground, var(--still-backdrop-color)) r g b / 1);
   }
 }
 
 body.is-mobile.theme-light:is(.still-backdrop-frame, .still-backdrop-window) {
-  --background-secondary: var(--still-sidebar-color, var(--still-mobile-ground, #eaeaeb));
+  --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, var(--still-mobile-ground, #eaeaeb)));
 }
 
 body.is-mobile.theme-dark:is(.still-backdrop-frame, .still-backdrop-window) {
-  --background-secondary: var(--still-sidebar-color, var(--still-mobile-ground, #202020));
+  --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, var(--still-mobile-ground, #202020)));
 }
 
 body.is-mobile.theme-light.still-backdrop-window {
-  --background-primary: var(--still-page-color, var(--still-mobile-ground, #fafafa));
+  --background-primary: var(--still-p-page, var(--still-page-color, var(--still-mobile-ground, #fafafa)));
 }
 
 body.is-mobile.theme-dark.still-backdrop-window {
-  --background-primary: var(--still-page-color, var(--still-mobile-ground, #191919));
+  --background-primary: var(--still-p-page, var(--still-page-color, var(--still-mobile-ground, #191919)));
 }
 
 /* A shadow around a clear card would only draw a rim on the ground. */
 body.still-backdrop-window:not(.is-mobile):not(.still-flat-page) .workspace:is(.is-left-sidedock-open, .is-right-sidedock-open) .mod-root .workspace-tab-container {
   box-shadow: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Option: presets. Each one fills the --still-p-* slots for light and dark;  */
+/* the page, sidebar, text and window background read those first, so a      */
+/* preset outranks the single colors in Style Settings and Off brings them   */
+/* back. Textures are SVG noise, a few hundred bytes each. The window        */
+/* background option still decides whether the ground shows.                 */
+/* -------------------------------------------------------------------------- */
+
+/* Paper: warm paper with a fine fibre grain. */
+body.theme-light.still-preset-paper {
+  --still-p-ground: #fffcf0;
+  --still-p-page: #fffcf0;
+  --still-p-sidebar: #f2f0e5;
+  --still-p-text: #100f0f;
+  --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .33 0 0 0 0 .2 0 0 0 .10 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body.theme-dark.still-preset-paper {
+  --still-p-ground: #100f0f;
+  --still-p-page: #1c1b1a;
+  --still-p-sidebar: #171615;
+  --still-p-text: #cecdc3;
+  --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Mist: cool grey, a soft fall from top to bottom. */
+body.theme-light.still-preset-mist {
+  --still-p-ground: #eef0f3;
+  --still-p-page: #fafafb;
+  --still-p-sidebar: #eceef1;
+  --still-p-text: #232324;
+  --still-p-css: linear-gradient(180deg, #f3f4f6 0%, #e8eaee 100%);
+}
+
+body.theme-dark.still-preset-mist {
+  --still-p-ground: #17191c;
+  --still-p-page: #1a1b1e;
+  --still-p-sidebar: #1f2124;
+  --still-p-text: #f0efed;
+  --still-p-css: linear-gradient(180deg, #1b1d21 0%, #131417 100%);
+}
+
+/* Sand: beige, warmer toward the top left. */
+body.theme-light.still-preset-sand {
+  --still-p-ground: #f1e9da;
+  --still-p-page: #faf6ee;
+  --still-p-sidebar: #f1eadd;
+  --still-p-text: #2b2620;
+  --still-p-css: radial-gradient(120% 90% at 0% 0%, #f7f0e4 0%, #efe6d5 55%, #e8ddc9 100%);
+}
+
+body.theme-dark.still-preset-sand {
+  --still-p-ground: #1f1b16;
+  --still-p-page: #211d18;
+  --still-p-sidebar: #26211b;
+  --still-p-text: #e4dccd;
+  --still-p-css: radial-gradient(120% 90% at 0% 0%, #2a241d 0%, #1f1b16 60%, #1a1713 100%);
+}
+
+/* Sage: a muted green-grey. */
+body.theme-light.still-preset-sage {
+  --still-p-ground: #e9ede4;
+  --still-p-page: #f6f8f3;
+  --still-p-sidebar: #eaeee5;
+  --still-p-text: #1f2620;
+  --still-p-css: linear-gradient(160deg, #eff2eb 0%, #e3e8dd 100%);
+}
+
+body.theme-dark.still-preset-sage {
+  --still-p-ground: #161a15;
+  --still-p-page: #181c17;
+  --still-p-sidebar: #1d221c;
+  --still-p-text: #d9ded3;
+  --still-p-css: linear-gradient(160deg, #191d18 0%, #121512 100%);
+}
+
+/* Graphite: neutral grey with a fine grain. */
+body.theme-light.still-preset-graphite {
+  --still-p-ground: #ededec;
+  --still-p-page: #f6f6f5;
+  --still-p-sidebar: #ebebea;
+  --still-p-text: #232324;
+  --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body.theme-dark.still-preset-graphite {
+  --still-p-ground: #161616;
+  --still-p-page: #1a1a1a;
+  --still-p-sidebar: #1f1f1f;
+  --still-p-text: #f0efed;
+  --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Night: pale blue-grey by day, deep navy by night. */
+body.theme-light.still-preset-night {
+  --still-p-ground: #e9eef3;
+  --still-p-page: #f6f8fb;
+  --still-p-sidebar: #e9eef3;
+  --still-p-text: #1a2230;
+  --still-p-css: linear-gradient(180deg, #eef2f6 0%, #e4e9ef 100%);
+}
+
+body.theme-dark.still-preset-night {
+  --still-p-ground: #101a28;
+  --still-p-page: #121c2a;
+  --still-p-sidebar: #172233;
+  --still-p-text: #e2e6ec;
+  --still-p-css: linear-gradient(180deg, #132033 0%, #0e1724 100%);
 }
 
 /* ========================================================================== */

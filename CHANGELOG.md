@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.0 · 2026-11-06
+
+### Added
+- **Preset.** Six ready-made palettes, each with a light and a dark side: Paper, Mist, Sand, Sage, Graphite and Night. While one is picked it sets the window background, page, sidebar and text colors; Off brings back your own. Paper and Graphite carry a fine grain drawn as SVG noise. Turn on Window background to see the ground; on phones and tablets the page and sidebar colors apply.
+
+### 中文
+- 新增：「配方」选项，六套现成配色，各有浅色和深色：类纸、雾灰、暖砂、苔绿、石墨、夜航。选中时由它决定窗口背景、页面、侧栏和正文颜色，选「关闭」恢复你自己的设置。类纸和石墨带一层细纹理（SVG 噪点）。打开「窗口背景」才能看到底层背景；手机和平板上页面色、侧栏色同样生效。
+
 ## 0.16.0 · 2026-11-06
 
 ### Changed
