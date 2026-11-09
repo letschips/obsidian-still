@@ -9,6 +9,7 @@ Still is a quiet, monochrome theme for Obsidian. Neutral greys carry the structu
 - **Sidebar peek.** Collapse a sidebar and rest the pointer on the window edge: it slides in, and slides away when you leave.
 - **Calm reading.** A readable line length, light headings, block quotes, washed callouts and framed tables that scroll when wide.
 - **Reading and editing cues.** Visible keyboard focus on note links; optional active-line highlighting and always-underlined links.
+- **Presets and window background** (optional). Six light and dark palettes (Paper, Mist, Sand, Sage, Graphite, Night), and one background behind the whole window, drawn through a clear frame or through the page too.
 - **Task states.** `[>]` `[<]` `[?]` `[!]` `[*]` `[-]` `[/]` each get their own mark instead of reading as done.
 - **CJK typography** (optional). A gap where Chinese meets Latin letters or digits, and improved paragraph endings. iOS keeps normal paragraph wrapping.
 - **Light to render.** No interface blur, 3D transforms or body-wide `:has()`, so typing and scrolling stay fast.
@@ -75,6 +76,7 @@ Still is an original theme; no code from other themes is bundled. Its direction 
 Still 是一个安静的单色 Obsidian 主题：灰阶构成层次，细线代替粗边框，界面里唯一的颜色是你在 Obsidian 里选的强调色。
 
 - 侧栏展开时页面浮起成卡片；标签等宽居中；收起的侧栏，鼠标停在窗口边缘就会滑出。
+- 可选的**配方**和**窗口背景**：六套浅色和深色配色（类纸、雾灰、暖砂、苔绿、石墨、夜航），以及铺在整个窗口后面的一层背景，从边框透出或连页面一起透出。
 - 可选的**中文排版**：中英文、数字之间自动留空隙，优化段落断行；iOS 正文保留普通换行。
 - 安装 Style Settings 后可调行宽、颜色、圆角、标签、侧栏等；开关类选项默认关闭，界面语言为中文时显示中文名称。
 - 正文链接支持清晰的键盘焦点提示；可在「阅读」中开启「当前编辑行提示」和「链接常显下划线」，两项默认关闭。

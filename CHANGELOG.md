@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.17.2 · 2026-11-09
+
+### Fixed
+- **Presets reach every surface.** Quotes, embedded notes and Bases groups now take the preset's sidebar tone like code blocks do, instead of staying grey. In dark mode, menus, dialogs, buttons and fields follow it too, so they no longer sit darker than a Sand or Night page.
+- **Window color on floating surfaces.** With only a window color set, the peeking sidebar, the auto-hide ribbon and the quiet vault name take that color instead of grey. With Whole window, Soft sidebar peek fades from it.
+- **Whole window on phones and tablets.** With a preset, the page now takes the preset's ground, as on desktop.
+
+### 中文
+- 修复：配方覆盖到所有表面。引用、嵌入笔记和 Bases 分组像代码块一样随配方的侧栏色变化，不再停在灰色；深色模式下菜单、对话框、按钮和输入框也跟着变，不会比暖砂、夜航的页面还暗。
+- 修复：只设了窗口背景色时，滑出的侧栏、自动隐藏的功能区和安静库名使用这个颜色，不再是灰色；「整窗」时柔和滑出也从这个颜色渐隐。
+- 修复：手机和平板上「整窗」配合配方时，页面使用配方的底层颜色，和电脑端一致。
+
 ## 0.17.1 · 2026-11-06
 
 ### Changed

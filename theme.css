@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.17.1 · MIT License · https://github.com/letschips
+  Version 0.17.2 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -40,7 +40,7 @@ settings:
     title: Line width
     title.zh: 行宽
     description: Readable line length when "Readable line length" is on.
-    description.zh: 开启「可读行宽」时的正文宽度。
+    description.zh: 开启「缩减栏宽」时的正文宽度。
     type: variable-number-slider
     default: 700
     min: 480
@@ -123,8 +123,8 @@ settings:
     id: still-preset
     title: Preset
     title.zh: 配方
-    description: A ready-made palette for light and dark. While one is picked, it sets the window background, page, sidebar and text colors below; pick Off to use your own.
-    description.zh: 现成的一套浅色和深色配色。选中时，下方的窗口背景、页面、侧栏和正文颜色由它决定；选「关闭」才用你自己设的。
+    description: A ready-made palette for light and dark. While one is picked, it sets the window background, page, sidebar and text colors below; pick Off to use your own. Its grain or gradient shows on the window background, so turn on Window background to see it.
+    description.zh: 现成的一套浅色和深色配色。选中时，下方的窗口背景、页面、侧栏和正文颜色由它决定；选「关闭」才用你自己设的。纹理和渐变画在窗口背景上，要打开「窗口背景」才看得到。
     type: class-select
     allowEmpty: false
     default: still-preset-off
@@ -804,7 +804,9 @@ body:not(.is-mobile) {
   --color-base-100: #232324;
 
   --background-primary: var(--still-p-page, var(--still-page-color, #fafafa));
-  --background-primary-alt: #eaeaeb;
+  /* Embeds, quotes and Bases groups share the sidebar tone, so a preset or
+     a sidebar color tints them along with code blocks. */
+  --background-primary-alt: var(--background-secondary);
   --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, #eaeaeb));
   --background-secondary-alt: #e3e3e4;
   --background-modifier-hover: rgb(0 0 0 / 0.05);
@@ -841,7 +843,7 @@ body:not(.is-mobile) {
   --still-hairline-strong: rgb(0 0 0 / 0.12);
   --still-wash: rgb(0 0 0 / 0.04);
   --still-raised: #ffffff;
-  --still-quote: #eaeaeb;
+  --still-quote: var(--background-secondary);
   --still-page-shadow: 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 2px -1px rgb(0 0 0 / 0.07), 0 8px 8px -4px rgb(0 0 0 / 0.05), 0 24px 24px -12px rgb(0 0 0 / 0.035);
   --still-float-shadow: 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px rgb(0 0 0 / 0.05), 0 12px 24px rgb(0 0 0 / 0.08);
   --still-dialog-shadow: 0 0 0 1px rgb(0 0 0 / 0.06), 0 24px 64px rgb(0 0 0 / 0.16);
@@ -878,7 +880,7 @@ body:not(.is-mobile) {
   --color-base-100: #f0efed;
 
   --background-primary: var(--still-p-page, var(--still-page-color, #191919));
-  --background-primary-alt: #202020;
+  --background-primary-alt: var(--background-secondary);
   --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, #202020));
   --background-secondary-alt: #282828;
   --background-modifier-hover: rgb(255 255 255 / 0.05);
@@ -886,15 +888,23 @@ body:not(.is-mobile) {
   --background-modifier-border: rgb(255 255 255 / 0.1);
   --background-modifier-border-hover: rgb(255 255 255 / 0.14);
   --background-modifier-border-focus: rgb(255 255 255 / 0.24);
-  --background-modifier-form-field: #202020;
+  --background-modifier-form-field: var(--background-secondary);
   --background-modifier-cover: rgb(0 0 0 / 0.5);
 
   --text-normal: var(--still-p-text, var(--still-text-color, #f0efed));
   --text-muted: var(--still-muted-color, #ababab);
   --text-faint: #7a7a7a;
 
-  --interactive-normal: #292929;
-  --interactive-hover: #313131;
+  /* Buttons, menus and dialogs lift a step above the sidebar tone. With a
+     preset, a sidebar color or a window color they are mixed from it (the
+     same lift as on the default #202020); otherwise --still-lift-src is
+     unset, the mixes are invalid and the fixed greys apply. */
+  --still-lift-src: var(--still-p-sidebar, var(--still-sidebar-color, var(--still-desk-ground, var(--still-mobile-ground))));
+  --still-lift-normal: color-mix(in srgb, var(--still-lift-src) 95.96%, #ffffff);
+  --still-lift-hover: color-mix(in srgb, var(--still-lift-src) 92.38%, #ffffff);
+  --still-lift-raised: color-mix(in srgb, var(--still-lift-src) 97.3%, #ffffff);
+  --interactive-normal: var(--still-lift-normal, #292929);
+  --interactive-hover: var(--still-lift-hover, #313131);
 
   --color-red: #e56458;
   --color-orange: #d5803b;
@@ -908,8 +918,8 @@ body:not(.is-mobile) {
   --still-hairline: rgb(255 255 255 / 0.07);
   --still-hairline-strong: rgb(255 255 255 / 0.11);
   --still-wash: rgb(255 255 255 / 0.045);
-  --still-raised: #262626;
-  --still-quote: #202020;
+  --still-raised: var(--still-lift-raised, #262626);
+  --still-quote: var(--background-secondary);
   /* Drop shadows don't read on dark: lift with a lit edge instead. */
   --still-page-shadow: 0 0 0 1px rgb(255 255 255 / 0.07), 0 2px 2px -1px rgb(0 0 0 / 0.1), 0 8px 8px -4px rgb(0 0 0 / 0.1), 0 24px 24px -12px rgb(0 0 0 / 0.07);
   --still-float-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.08), 0 10px 32px rgb(0 0 0 / 0.4);
@@ -1285,6 +1295,32 @@ body.theme-dark:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile
   --still-backdrop-css: var(--still-p-css, var(--still-backdrop-css-dark));
 }
 
+/* Surfaces that float over the page (sidebar and ribbon peek, the vault
+   name) take the window color when no sidebar color is set, made opaque
+   where the engine can, so they match the frame they slide out of. With
+   Whole window, soft peek fades from that ground rather than the page. */
+body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
+  --still-desk-ground: var(--still-backdrop-color);
+}
+
+@supports (color: rgb(from red r g b / 1)) {
+  body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
+    --still-desk-ground: rgb(from var(--still-backdrop-color) r g b / 1);
+  }
+}
+
+body.theme-light:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
+  --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, var(--still-desk-ground, #eaeaeb)));
+}
+
+body.theme-dark:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
+  --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, var(--still-desk-ground, #202020)));
+}
+
+body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
+  --still-peek-page: var(--still-p-ground, var(--still-desk-ground, var(--background-secondary)));
+}
+
 /* The CSS layer sits under .app-container (positioned, later in the tree).
    An empty or unset value leaves it clear, so the color shows. */
 body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal)::before {
@@ -1343,12 +1379,14 @@ body.is-mobile.theme-dark:is(.still-backdrop-frame, .still-backdrop-window) {
   --background-secondary: var(--still-p-sidebar, var(--still-sidebar-color, var(--still-mobile-ground, #202020)));
 }
 
+/* Whole window puts the page on the ground, as on desktop: a preset's
+   ground, else a page color set on its own, else the window color. */
 body.is-mobile.theme-light.still-backdrop-window {
-  --background-primary: var(--still-p-page, var(--still-page-color, var(--still-mobile-ground, #fafafa)));
+  --background-primary: var(--still-p-ground, var(--still-page-color, var(--still-mobile-ground, #fafafa)));
 }
 
 body.is-mobile.theme-dark.still-backdrop-window {
-  --background-primary: var(--still-p-page, var(--still-page-color, var(--still-mobile-ground, #191919)));
+  --background-primary: var(--still-p-ground, var(--still-page-color, var(--still-mobile-ground, #191919)));
 }
 
 /* A shadow around a clear card would only draw a rim on the ground. */
@@ -1992,18 +2030,18 @@ body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sided
 body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-left-split::before {
   right: calc(-1 * var(--still-peek-fade));
   background: linear-gradient(to right,
-    var(--background-primary) calc(100% - var(--still-peek-fade)),
-    color-mix(in srgb, var(--background-primary) 80%, transparent) calc(100% - var(--still-peek-fade) * 0.7),
-    color-mix(in srgb, var(--background-primary) 35%, transparent) calc(100% - var(--still-peek-fade) * 0.35),
+    var(--still-peek-page, var(--background-primary)) calc(100% - var(--still-peek-fade)),
+    color-mix(in srgb, var(--still-peek-page, var(--background-primary)) 80%, transparent) calc(100% - var(--still-peek-fade) * 0.7),
+    color-mix(in srgb, var(--still-peek-page, var(--background-primary)) 35%, transparent) calc(100% - var(--still-peek-fade) * 0.35),
     transparent);
 }
 
 body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"].mod-right-split::before {
   left: calc(-1 * var(--still-peek-fade));
   background: linear-gradient(to left,
-    var(--background-primary) calc(100% - var(--still-peek-fade)),
-    color-mix(in srgb, var(--background-primary) 80%, transparent) calc(100% - var(--still-peek-fade) * 0.7),
-    color-mix(in srgb, var(--background-primary) 35%, transparent) calc(100% - var(--still-peek-fade) * 0.35),
+    var(--still-peek-page, var(--background-primary)) calc(100% - var(--still-peek-fade)),
+    color-mix(in srgb, var(--still-peek-page, var(--background-primary)) 80%, transparent) calc(100% - var(--still-peek-fade) * 0.7),
+    color-mix(in srgb, var(--still-peek-page, var(--background-primary)) 35%, transparent) calc(100% - var(--still-peek-fade) * 0.35),
     transparent);
 }
 
@@ -2099,7 +2137,7 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
 }
 
 body.still-peek-soft.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary.is-collapsed {
-  --still-ribbon-surface: var(--background-primary);
+  --still-ribbon-surface: var(--still-peek-page, var(--background-primary));
 }
 
 /* Revealed by its own edge, or alongside a peeking left sidebar. The
@@ -3572,6 +3610,10 @@ body.is-mobile.theme-dark.still-black-mobile {
   --background-modifier-form-field: var(--color-base-05);
   --code-background: var(--color-base-10);
   --embed-background: var(--color-base-05);
+  --still-quote: var(--color-base-20);
+  --still-raised: var(--color-base-25);
+  --interactive-normal: #292929;
+  --interactive-hover: var(--color-base-30);
 }
 
 /* Phones: a table too wide for the screen scrolls rather than squeezing a

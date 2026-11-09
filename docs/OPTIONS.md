@@ -10,7 +10,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | Justified paragraphs: body text lines up on both edges in reading and editing views; headings, code and tables keep their alignment | Off |
 | Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
 | Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
-| Colors | Preset: a ready-made light and dark palette (Paper, Mist, Sand, Sage, Graphite, Night). While one is picked it sets the window background, page, sidebar and text colors; Off brings back your own | Off |
+| Colors | Preset: a ready-made light and dark palette (Paper, Mist, Sand, Sage, Graphite, Night). While one is picked it sets the window background, page, sidebar and text colors; Off brings back your own. Its grain or gradient shows with Window background on | Off |
 | Colors | Page, sidebar, text, secondary text, link, list marker, checkbox, H1–H6 heading, table header text and table header background colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text; table headers use the text color on a faint wash |
 | Colors | Window background: one background behind the whole window, showing through a clear frame (Frame) or through the page too (Whole window); a color per light and dark, with optional CSS backgrounds such as a paper texture drawn over it. On phones and tablets only the color carries over: to the sidebars, and to the page with Whole window | Off; the color defaults to the sidebar color |
 | Colors | Graphite ink: buttons, toggles and links use the text color | Off |
@@ -19,15 +19,19 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Left-aligned tabs; tabs fit their titles | Off |
 | Interface | Always show the note title in the header (otherwise it appears on hover) | Off |
 | Interface | Disable sidebar peek | Off |
-| Interface | Auto-hide ribbon, revealed from the left edge together with the sidebar | Off |
 | Interface | Soft sidebar peek: the peeking sidebar sits on the page color and fades into the page, with no shadowed edge | Off |
+| Interface | Auto-hide ribbon, revealed from the left edge together with the sidebar | Off |
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
 | Interface | Quiet sidebar toolbar: buttons rest as dots; hover opens them, or a tap on touch screens | Off |
 | Interface | Quiet status bar: hidden until the pointer nears the bottom center | Off |
 | Interface | Outline guides: a hairline per heading level in the outline view; the branch under the pointer darkens | Off |
 | Interface | Disable entrance motion | Off |
 | Interface | Pure black on phones and tablets in dark mode, for OLED screens | Off |
+| Interface | Full-screen sidebars on phones: a swiped-in sidebar covers the whole screen; also narrow iPad windows | Off |
+| Interface | Sidebars stay put on phones: with Obsidian's Sliding sidebar on, the sidebar stays underneath and the note slides off it | Off |
 | Content | Card callouts: tinted frame with an inner content card | Off |
+| Content | Plain tags, don't strike completed tasks | Off |
+| Content | Colored headings: one hue per level, red at H1 to purple at H6 | Off |
 | Content | Images fill the line width (only media without a set width; tall ones stay within the window) | Off |
 | Content | Hairline tables: no frame or header wash, lines between rows only | Off |
 | Content | Tables fill the line width, lining up with the text; notes with `table-wide` keep their own width | Off |
@@ -35,8 +39,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Content | Column lines in tables: hairlines between columns in every table, like `col-lines` | Off |
 | Content | Striped Bases tables: stripes follow row position, so they stay put while long tables scroll | Off |
 | Content | Plain Canvas background: no dot grid | Off |
-| Content | Colored headings: one hue per level, red at H1 to purple at H6 | Off |
-| Content | Plain tags, don't strike completed tasks, dark PDFs, dim PDFs or images in dark mode | Off |
+| Content | Dark PDFs, dim PDFs in dark mode, dim images in dark mode | Off |
 
 Still also respects the system "reduce motion" setting.
 

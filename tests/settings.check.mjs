@@ -24,6 +24,11 @@ for(const i of items){
 const manifest=JSON.parse(readFileSync(new URL('../manifest.json',import.meta.url),'utf8'));
 const header=css.match(/Version (\d+\.\d+\.\d+)/)?.[1];
 if(header!==manifest.version)failures.push(`theme.css header says ${header}, manifest.json says ${manifest.version}`);
+// Every switch and choice is listed in docs/OPTIONS.md under its English
+// title, so a new option can't ship undocumented. Colors, sliders and text
+// fields are described in groups there and are not checked one by one.
+const options=readFileSync(new URL('../docs/OPTIONS.md',import.meta.url),'utf8').toLowerCase();
+for(const i of items)if(/^class-(toggle|select)$/.test(i.type)&&i.title&&!options.includes(i.title.toLowerCase()))failures.push(`${i.id}: "${i.title}" missing from docs/OPTIONS.md`);
 console.log(`${items.length} settings, ${failures.length} problems`);
 for(const f of failures)console.log('FAIL '+f);
 process.exitCode=failures.length?1:0;
