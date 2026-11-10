@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.18.1 · 2026-11-10
+
+### Fixed
+- **First-line indent in Live Preview.** A line break inside a paragraph no longer starts another indent: only the paragraph's first line indents, as in reading view.
+
+### 中文
+- 修复：实时预览里，段落内换行的后续行不再重复缩进，只有段落第一行缩进，和阅读视图一致。
+
 ## 0.18.0 · 2026-11-10
 
 ### Added

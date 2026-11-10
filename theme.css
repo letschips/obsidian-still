@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.18.0 · MIT License · https://github.com/letschips
+  Version 0.18.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1239,6 +1239,13 @@ body.still-indent .markdown-rendered .el-p > p:not(.no-indent *):not(:has(> :is(
 body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))),
 .markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))) {
   text-indent: 2em;
+}
+
+/* Live Preview draws every source line as its own block. A line right
+   after another line of text continues the same paragraph, so only the
+   first one indents, as in reading view. */
+.markdown-source-view.mod-cm6.is-live-preview:is(.indent, body.still-indent *) .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> br:only-child)) + .cm-line:not([class*="HyperMD-"]) {
+  text-indent: 0;
 }
 
 /* text-indent inherits: inline widgets inside an indented paragraph (math,
