@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.18.0 · 2026-11-10
+
+### Added
+- **Presets set secondary text too.** Each preset now carries its own secondary and faint text colors, mixed from its ink, so labels, icons and list markers sit in the palette instead of staying neutral grey. Secondary text holds 7:1 and faint text about 3:1 on both the page and the sidebar.
+- **Preset accent.** A new option lets buttons, links, tags, checkboxes and the selection take the preset's own hue: amber for Paper, slate blue for Mist, terracotta for Sand, green for Sage, ink for Graphite, blue for Night. Off by default, so the accent from Settings → Appearance stays in charge.
+- **First-line indent.** Body paragraphs start two characters in, in reading view and Live Preview. Lists, quotes, callouts, tables, code and image paragraphs stay flush. Per note: `indent` / `no-indent`.
+- **Chinese font pairing.** Hei pins Simplified Chinese sans faces, so Han glyphs keep their Chinese shapes on systems set to another language. Song sets body text in a Song typeface with a Latin serif, headings in sans and quotes in Kai. System fonts only; a font chosen in Settings → Appearance still comes first.
+- **Compact interface.** A 40px header, shorter tabs and closer rows in the sidebars, menus, prompts and settings, for small screens. Reading sizes, icon targets and the ribbon stay as they are. Desktop only.
+
+### Fixed
+- **Callouts.** The last paragraph in a callout no longer adds its own margin under the text, which left about twice as much room below as above.
+
+### 中文
+- 新增：配方现在连次要文字一起管。每套配方带自己的次要文字和浅色文字颜色（由正文色调出），标签、图标和列表符号不再是中性灰；次要文字在页面和侧栏上都达到 7:1，浅色文字约 3:1。
+- 新增：「配方强调色」选项。打开后按钮、链接、标签、复选框和选中底色改用配方自己的色调：类纸琥珀、雾灰蓝灰、暖砂赤陶、苔绿绿色、石墨墨色、夜航蓝色。默认关闭，仍用「设置 → 外观」里的强调色。
+- 新增：「首行缩进」选项。正文段落首行缩进两个字，阅读视图和实时预览都生效；列表、引用、提示块、表格、代码和图片段落不缩进。单篇笔记用 `indent` / `no-indent`。
+- 新增：「中文字体搭配」选项。「黑体」让系统语言不是中文时也显示中文字形；「宋体」把正文换成宋体配西文衬线体，标题用黑体、引用用楷体。只用系统自带字体；在「设置 → 外观」里选的字体仍然优先。
+- 新增：「紧凑界面」选项。标题栏 40px、标签更矮，侧栏、菜单、命令面板和设置的行距更紧，适合小屏幕；正文排版、图标点击区域和功能区不变。仅电脑端。
+- 修复：提示块里最后一段不再在文字下方多留一段外边距（原来下方空白约为上方的两倍）。
+
 ## 0.17.3 · 2026-11-10
 
 ### Fixed

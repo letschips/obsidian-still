@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.17.3 · MIT License · https://github.com/letschips
+  Version 0.18.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -97,6 +97,33 @@ settings:
     type: class-toggle
     default: false
   -
+    id: still-indent
+    title: First-line indent
+    title.zh: 首行缩进
+    description: Body paragraphs start two characters in, in reading view and Live Preview. Lists, quotes, callouts, tables and code are left alone. A note can turn it on or off with indent / no-indent in cssclasses.
+    description.zh: 正文段落首行缩进两个字，阅读视图和实时预览都生效。列表、引用、提示块、表格和代码不缩进。单篇笔记可在 cssclasses 写 indent / no-indent 单独开关。
+    type: class-toggle
+    default: false
+  -
+    id: still-fonts
+    title: Chinese font pairing
+    title.zh: 中文字体搭配
+    description: Uses fonts already on your system; nothing is downloaded. Hei keeps Chinese sans glyphs on systems set to another language. Song sets body text in a Song typeface with sans headings and Kai quotes. A font chosen in Settings → Appearance still comes first.
+    description.zh: 只用系统自带字体，不下载任何东西。「黑体」让系统语言不是中文时也显示中文字形；「宋体」把正文换成宋体，标题用黑体、引用用楷体。在「设置 → 外观」里选的字体仍然优先。
+    type: class-select
+    allowEmpty: false
+    default: still-fonts-off
+    options:
+      -
+        label: Off · 关闭
+        value: still-fonts-off
+      -
+        label: Hei · 黑体
+        value: still-fonts-hei
+      -
+        label: Song · 宋体
+        value: still-fonts-song
+  -
     id: still-active-line
     title: Active line highlight
     title.zh: 当前编辑行提示
@@ -123,8 +150,8 @@ settings:
     id: still-preset
     title: Preset
     title.zh: 配方
-    description: A ready-made palette for light and dark. While one is picked, it sets the window background, page, sidebar and text colors below; pick Off to use your own. Its grain or gradient shows on the window background, so turn on Window background to see it.
-    description.zh: 现成的一套浅色和深色配色。选中时，下方的窗口背景、页面、侧栏和正文颜色由它决定；选「关闭」才用你自己设的。纹理和渐变画在窗口背景上，要打开「窗口背景」才看得到。
+    description: A ready-made palette for light and dark. While one is picked, it sets the window background, page, sidebar, text and secondary text colors below; pick Off to use your own. Its grain or gradient shows on the window background, so turn on Window background to see it.
+    description.zh: 现成的一套浅色和深色配色。选中时，下方的窗口背景、页面、侧栏、正文和次要文字颜色由它决定；选「关闭」才用你自己设的。纹理和渐变画在窗口背景上，要打开「窗口背景」才看得到。
     type: class-select
     allowEmpty: false
     default: still-preset-off
@@ -150,6 +177,14 @@ settings:
       -
         label: Night · 夜航
         value: still-preset-night
+  -
+    id: still-preset-accent
+    title: Preset accent
+    title.zh: 配方强调色
+    description: With a preset picked, buttons, links, tags and the selection use the preset's own hue instead of the accent color from Settings → Appearance.
+    description.zh: 选了配方时，按钮、链接、标签和选中底色改用这套配方自己的色调，不再用「设置 → 外观」里的强调色。
+    type: class-toggle
+    default: false
   -
     id: still-page-color
     title: Page background
@@ -367,6 +402,14 @@ settings:
     min: 0
     max: 2
     step: 0.05
+  -
+    id: still-compact
+    title: Compact interface
+    title.zh: 紧凑界面
+    description: Shorter header and tabs, and closer rows in the sidebars, menus and settings, for small screens. Reading sizes stay the same. Desktop only.
+    description.zh: 标题栏和标签更矮，侧栏、菜单和设置的行距更紧，适合小屏幕。正文排版不变。仅电脑端。
+    type: class-toggle
+    default: false
   -
     id: still-flat-page
     title: Flat page
@@ -785,6 +828,19 @@ body:not(.is-mobile) {
   --setting-items-border-color: var(--background-modifier-hover);
 }
 
+/* Option: compact interface. The chrome tightens to core's own density:
+   shorter header and tabs, closer rows in the sidebars, menus, prompts and
+   settings. Reading sizes, the 32px icon targets and the ribbon's width
+   stay, so nothing that depends on them moves. Desktop only. */
+body.still-compact:not(.is-mobile) {
+  --header-height: 40px;
+  --input-height: 28px;
+  --prompt-input-height: 48px;
+  --nav-item-padding: 4px 12px 4px 24px;
+  --setting-items-padding-y: 10px;
+  --still-row-y: 3px;
+}
+
 /* -------------------------------------------------------------------------- */
 /* 2. Light — descends from the page                                          */
 /* -------------------------------------------------------------------------- */
@@ -820,8 +876,8 @@ body:not(.is-mobile) {
   --background-modifier-cover: rgb(0 0 0 / 0.28);
 
   --text-normal: var(--still-p-text, var(--still-text-color, #232324));
-  --text-muted: var(--still-muted-color, #4d4d4d);
-  --text-faint: #939393;
+  --text-muted: var(--still-p-muted, var(--still-muted-color, #4d4d4d));
+  --text-faint: var(--still-p-faint, #939393);
 
   --interactive-normal: rgb(0 0 0 / 0.1);
   --interactive-hover: rgb(0 0 0 / 0.15);
@@ -892,8 +948,8 @@ body:not(.is-mobile) {
   --background-modifier-cover: rgb(0 0 0 / 0.5);
 
   --text-normal: var(--still-p-text, var(--still-text-color, #f0efed));
-  --text-muted: var(--still-muted-color, #ababab);
-  --text-faint: #7a7a7a;
+  --text-muted: var(--still-p-muted, var(--still-muted-color, #ababab));
+  --text-faint: var(--still-p-faint, #7a7a7a);
 
   /* Buttons, menus and dialogs lift a step above the sidebar tone. With a
      preset, a sidebar color or a window color they are mixed from it (the
@@ -1173,6 +1229,52 @@ body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > 
   text-align: initial;
 }
 
+/* Option: first-line indent, two characters, as Chinese body text is set.
+   Only plain paragraphs: lists, quotes, callouts, tables and code keep
+   their own edge, and a paragraph that holds an embed or opens with an
+   image stays flush. In Live Preview every plain line is a paragraph.
+   Per note: indent / no-indent. */
+body.still-indent .markdown-rendered .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img:first-child))),
+.markdown-rendered:is(.indent, .indent *) .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img:first-child))),
+body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))),
+.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))) {
+  text-indent: 2em;
+}
+
+/* text-indent inherits: inline widgets inside an indented paragraph (math,
+   pills, inline blocks) start from zero again. */
+:where(.markdown-rendered .el-p > p, .markdown-source-view.mod-cm6.is-live-preview .cm-content > .cm-line:not([class*="HyperMD-"])) > * {
+  text-indent: 0;
+}
+
+/* Option: Chinese font pairing, from fonts the system already has. A text
+   or interface font picked in Settings → Appearance still comes first.
+   Hei pins Simplified Chinese sans faces, so Han glyphs keep their Chinese
+   shapes on systems set to another language. Song sets body text in a
+   Song/Ming face with a Latin serif, headings in the interface sans and
+   quotes in Kai, the classic book pairing. */
+body.still-fonts-hei {
+  --font-interface-theme: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+  --font-text-theme: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+}
+
+body.still-fonts-song {
+  --still-font-latin-serif: "Iowan Old Style", "Charter", "Georgia";
+  --font-text-theme: var(--still-font-latin-serif), "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "STSong", "SimSun", serif;
+  --still-font-quote: var(--still-font-latin-serif), "Kaiti SC", "STKaiti", "KaiTi", "AR PL UKai CN", serif;
+  --h1-font: var(--font-interface);
+  --h2-font: var(--font-interface);
+  --h3-font: var(--font-interface);
+  --h4-font: var(--font-interface);
+  --h5-font: var(--font-interface);
+  --h6-font: var(--font-interface);
+  --inline-title-font: var(--font-interface);
+}
+
+body.still-fonts-song :is(.markdown-rendered blockquote, .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote) {
+  font-family: var(--font-text-override), var(--still-font-quote);
+}
+
 /* ========================================================================== */
 /* 6. Workspace chrome                                                        */
 /* ========================================================================== */
@@ -1396,11 +1498,34 @@ body.still-backdrop-window:not(.is-mobile):not(.still-flat-page) .workspace:is(.
 
 /* -------------------------------------------------------------------------- */
 /* Option: presets. Each one fills the --still-p-* slots for light and dark;  */
-/* the page, sidebar, text and window background read those first, so a      */
-/* preset outranks the single colors in Style Settings and Off brings them   */
-/* back. Textures are SVG noise, a few hundred bytes each. The window        */
-/* background option still decides whether the ground shows.                 */
+/* the page, sidebar, text (normal, secondary, faint) and window background  */
+/* read those first, so a preset outranks the single colors in Style         */
+/* Settings and Off brings them back. Secondary and faint text are the       */
+/* preset's ink mixed toward its sidebar: 7:1 and 3:1 on it in light mode,   */
+/* 7:1 and 3.8:1 on the lighter of page and sidebar in dark. Textures are    */
+/* SVG noise, a few hundred bytes each. The window background option still   */
+/* decides whether the ground shows.                                         */
 /* -------------------------------------------------------------------------- */
+
+/* Option: preset accent. The accent follows Settings → Appearance unless
+   this is on; then buttons, toggles, links, tags and the selection take the
+   preset's own hue. --still-p-accent fills (4.5:1 under its label),
+   --still-p-link is the same hue as text (4.5:1 on page and sidebar).
+   Graphite ink still wins. */
+body.still-preset-accent:not(.still-preset-off):not(.still-graphite) {
+  --color-accent: var(--still-p-accent);
+  --color-accent-1: var(--still-p-accent);
+  --color-accent-2: color-mix(in srgb, var(--still-p-accent) 85%, var(--text-normal));
+  --interactive-accent: var(--still-p-accent);
+  --interactive-accent-hover: var(--color-accent-2);
+  --text-accent: var(--still-p-link);
+  --text-accent-hover: color-mix(in srgb, var(--still-p-link) 80%, var(--text-normal));
+}
+
+/* Dark accents are light enough to carry the page color as their label. */
+body.theme-dark.still-preset-accent:not(.still-preset-off):not(.still-graphite) {
+  --text-on-accent: var(--still-p-page);
+}
 
 /* Paper: warm paper with a fine fibre grain. */
 body.theme-light.still-preset-paper {
@@ -1408,6 +1533,10 @@ body.theme-light.still-preset-paper {
   --still-p-page: #fdf8e8;
   --still-p-sidebar: #f2e9cd;
   --still-p-text: #1f1a10;
+  --still-p-muted: #524c3e;
+  --still-p-faint: #8d8672;
+  --still-p-accent: #8f5a14;
+  --still-p-link: #8f5a14;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .33 0 0 0 0 .2 0 0 0 .10 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -1416,6 +1545,10 @@ body.theme-dark.still-preset-paper {
   --still-p-page: #201d16;
   --still-p-sidebar: #191710;
   --still-p-text: #d8d0bd;
+  --still-p-muted: #aea796;
+  --still-p-faint: #7d786a;
+  --still-p-accent: #b98a3e;
+  --still-p-link: #b98a3e;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -1425,6 +1558,10 @@ body.theme-light.still-preset-mist {
   --still-p-page: #f7f8fa;
   --still-p-sidebar: #e8ebef;
   --still-p-text: #232428;
+  --still-p-muted: #4c4e52;
+  --still-p-faint: #85878b;
+  --still-p-accent: #3f6291;
+  --still-p-link: #3f6291;
   --still-p-css: linear-gradient(180deg, #eff1f4 0%, #e0e3e7 100%);
 }
 
@@ -1433,6 +1570,10 @@ body.theme-dark.still-preset-mist {
   --still-p-page: #1e222a;
   --still-p-sidebar: #262b35;
   --still-p-text: #e6e9ef;
+  --still-p-muted: #b3b6bd;
+  --still-p-faint: #80848c;
+  --still-p-accent: #6f97cf;
+  --still-p-link: #6f97cf;
   --still-p-css: linear-gradient(180deg, #2d323c 0%, #1f232b 100%);
 }
 
@@ -1442,6 +1583,10 @@ body.theme-light.still-preset-sand {
   --still-p-page: #f7ecdc;
   --still-p-sidebar: #e6d2b4;
   --still-p-text: #2e2419;
+  --still-p-muted: #4a3e31;
+  --still-p-faint: #857662;
+  --still-p-accent: #a04a24;
+  --still-p-link: #924523;
   --still-p-css: radial-gradient(120% 90% at 0% 0%, #eedec6 0%, #e6d2b4 55%, #decbae 100%);
 }
 
@@ -1450,6 +1595,10 @@ body.theme-dark.still-preset-sand {
   --still-p-page: #2b2219;
   --still-p-sidebar: #35291e;
   --still-p-text: #e8dac6;
+  --still-p-muted: #c2b5a3;
+  --still-p-faint: #908373;
+  --still-p-accent: #d08050;
+  --still-p-link: #d08050;
   --still-p-css: radial-gradient(120% 90% at 0% 0%, #3c3025 0%, #35291e 55%, #2b2219 100%);
 }
 
@@ -1459,6 +1608,10 @@ body.theme-light.still-preset-sage {
   --still-p-page: #f2f6ed;
   --still-p-sidebar: #dbe6d1;
   --still-p-text: #1d2619;
+  --still-p-muted: #424c3d;
+  --still-p-faint: #7b8574;
+  --still-p-accent: #356f42;
+  --still-p-link: #356f42;
   --still-p-css: linear-gradient(160deg, #e5edde 0%, #d3deca 100%);
 }
 
@@ -1467,6 +1620,10 @@ body.theme-dark.still-preset-sage {
   --still-p-page: #172118;
   --still-p-sidebar: #1c2a1e;
   --still-p-text: #d3dfd0;
+  --still-p-muted: #a8b5a6;
+  --still-p-faint: #778476;
+  --still-p-accent: #4f9560;
+  --still-p-link: #5a9b69;
   --still-p-css: linear-gradient(160deg, #233125 0%, #172219 100%);
 }
 
@@ -1476,6 +1633,10 @@ body.theme-light.still-preset-graphite {
   --still-p-page: #f1f0ec;
   --still-p-sidebar: #e0ddd6;
   --still-p-text: #202020;
+  --still-p-muted: #464644;
+  --still-p-faint: #7f7e7a;
+  --still-p-accent: #3d3b37;
+  --still-p-link: #3d3b37;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -1484,6 +1645,10 @@ body.theme-dark.still-preset-graphite {
   --still-p-page: #1a1a1a;
   --still-p-sidebar: #121212;
   --still-p-text: #ededed;
+  --still-p-muted: #a4a4a4;
+  --still-p-faint: #757575;
+  --still-p-accent: #8c8a85;
+  --still-p-link: #8c8a85;
   --still-p-css: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -1493,6 +1658,10 @@ body.theme-light.still-preset-night {
   --still-p-page: #edf3fb;
   --still-p-sidebar: #ccdbee;
   --still-p-text: #16233a;
+  --still-p-muted: #37445a;
+  --still-p-faint: #6e7c91;
+  --still-p-accent: #2a5fb8;
+  --still-p-link: #295db3;
   --still-p-css: linear-gradient(180deg, #dbe6f4 0%, #c5d3e6 100%);
 }
 
@@ -1501,6 +1670,10 @@ body.theme-dark.still-preset-night {
   --still-p-page: #121c2a;
   --still-p-sidebar: #172233;
   --still-p-text: #e2e6ec;
+  --still-p-muted: #a6acb5;
+  --still-p-faint: #747c88;
+  --still-p-accent: #4d85d6;
+  --still-p-link: #5389d7;
   --still-p-css: linear-gradient(180deg, #1e293a 0%, #131c2a 100%);
 }
 
@@ -2306,7 +2479,7 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
 
 .menu-item {
   border-radius: var(--radius-s);
-  padding: 5px 8px;
+  padding: var(--still-row-y, 5px) 8px;
   font-size: var(--font-ui-small);
 }
 
@@ -2382,7 +2555,7 @@ body.is-popout-modal .modal-container.mod-dim .modal {
 }
 
 .prompt-results .suggestion-item {
-  padding: 7px 10px;
+  padding: calc(var(--still-row-y, 5px) + 2px) 10px;
 }
 
 .prompt-instructions {
@@ -2405,7 +2578,7 @@ body:not(.is-mobile) .modal.mod-settings {
 }
 
 body:not(.is-phone) .modal.mod-sidebar-layout :is(.vertical-tab-header-group-title, .vertical-tab-nav-item) {
-  padding: 8px 12px;
+  padding: calc(var(--still-row-y, 5px) + 3px) 12px;
   align-items: center;
   font-size: var(--font-ui-small);
   line-height: normal;
@@ -2714,6 +2887,12 @@ body:not(.still-table-plain) .markdown-rendered tr:last-child > :is(th, td):last
   margin-top: 0.4em;
 }
 
+/* The callout's padding is the gap below; a last paragraph's own margin
+   would more than double it. Under a nested callout too. */
+.callout-content > :last-child {
+  margin-bottom: 0;
+}
+
 /* Option: card callouts. The title rides on a tinted frame, a large faint
    icon marks the corner, and the content sits on an inner card. */
 body.still-card-callouts .callout {
@@ -2760,11 +2939,6 @@ body.still-card-callouts.theme-dark .callout-content {
 
 body.still-card-callouts .callout-content > :first-child {
   margin-top: 0;
-}
-
-/* The card's padding is the gap below too, e.g. under a nested callout. */
-body.still-card-callouts .callout-content > :last-child {
-  margin-bottom: 0;
 }
 
 .markdown-rendered hr,

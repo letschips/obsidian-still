@@ -11,7 +11,7 @@ Still is a quiet, monochrome theme for Obsidian. Neutral greys carry the structu
 - **Reading and editing cues.** Visible keyboard focus on note links; optional active-line highlighting and always-underlined links.
 - **Presets and window background** (optional). Six light and dark palettes (Paper, Mist, Sand, Sage, Graphite, Night), and one background behind the whole window, drawn through a clear frame or through the page too.
 - **Task states.** `[>]` `[<]` `[?]` `[!]` `[*]` `[-]` `[/]` each get their own mark instead of reading as done.
-- **CJK typography** (optional). A gap where Chinese meets Latin letters or digits, and improved paragraph endings. iOS keeps normal paragraph wrapping.
+- **CJK typography** (optional). A gap where Chinese meets Latin letters or digits, and improved paragraph endings. iOS keeps normal paragraph wrapping. First-line indent and a Song or Hei font pairing from system fonts are separate options.
 - **Light to render.** No interface blur, 3D transforms or body-wide `:has()`, so typing and scrolling stay fast.
 
 | Light | Dark |
@@ -41,6 +41,7 @@ Add these to a note's `cssclasses` property (the names match Minimal's):
 | `embed-strict` | Note embeds read as part of the text, without a frame or title |
 | `cjk`, `no-cjk` | CJK typography on or off for this note, whatever the global option says |
 | `justify`, `no-justify` | Justified paragraphs on or off for this note |
+| `indent`, `no-indent` | First-line indent on or off for this note |
 | `link-underline`, `no-link-underline` | Link underlines on or off for this note; graphite ink keeps its underlines |
 
 Try them in the [example note](./docs/Still%20example.md): copy it into a vault and switch between reading view and Live Preview.
@@ -80,6 +81,6 @@ Still 是一个安静的单色 Obsidian 主题：灰阶构成层次，细线代�
 - 可选的**中文排版**：中英文、数字之间自动留空隙，优化段落断行；iOS 正文保留普通换行。
 - 安装 Style Settings 后可调行宽、颜色、圆角、标签、侧栏等；开关类选项默认关闭，界面语言为中文时显示中文名称。
 - 正文链接支持清晰的键盘焦点提示；可在「阅读」中开启「当前编辑行提示」和「链接常显下划线」，两项默认关闭。
-- 在笔记属性 `cssclasses` 里写 `wide`、`max`、`img-grid`，可以单独加宽这篇笔记或把图片排成网格；表格类 `table-small`、`table-tiny`、`table-nowrap`、`table-numbers`、`row-alt`、`col-lines`、`table-lines`、`table-center`、`table-wide` 调整这篇笔记里的表格（`table-wide` 让表格和内嵌 Bases 比正文更宽，正文宽度不变）；`img-wide` 让图片同样加宽，`embed-strict` 让嵌入的笔记去掉底色、竖线和标题，像正文一样衔接。`cjk` / `no-cjk`、`justify` / `no-justify`、`link-underline` / `no-link-underline` 让这篇笔记单独开关中文排版、两端对齐和链接下划线，优先于全局设置。可以把[示例笔记](./docs/Still%20example.md)复制到库里直接试。
+- 在笔记属性 `cssclasses` 里写 `wide`、`max`、`img-grid`，可以单独加宽这篇笔记或把图片排成网格；表格类 `table-small`、`table-tiny`、`table-nowrap`、`table-numbers`、`row-alt`、`col-lines`、`table-lines`、`table-center`、`table-wide` 调整这篇笔记里的表格（`table-wide` 让表格和内嵌 Bases 比正文更宽，正文宽度不变）；`img-wide` 让图片同样加宽，`embed-strict` 让嵌入的笔记去掉底色、竖线和标题，像正文一样衔接。`cjk` / `no-cjk`、`justify` / `no-justify`、`indent` / `no-indent`、`link-underline` / `no-link-underline` 让这篇笔记单独开关中文排版、两端对齐、首行缩进和链接下划线，优先于全局设置。可以把[示例笔记](./docs/Still%20example.md)复制到库里直接试。
 - 任务状态：`[>]` 转出、`[<]` 已排期、`[?]` 疑问、`[!]` 重要、`[*]` 星标、`[-]` 取消、`[/]` 进行中，各有自己的标记，不再都显示成已完成。
 - 安装：设置 → 外观 → 主题 → 管理，搜索 **Still**。需要 Obsidian 1.14.0 或更高版本。

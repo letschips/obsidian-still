@@ -21,7 +21,7 @@ const code=String.raw`(async()=>{
   // The window background skips popouts; let this one stand in for the main window.
   body.classList.remove('is-translucent','is-popout-window','is-popout-modal','is-mobile');
   host=doc.createElement('div');host.style.cssText='position:fixed;inset:0;overflow:hidden;z-index:100';
-  host.innerHTML='<div class="probe-page" style="background:var(--background-primary)"></div><div class="probe-side" style="background:var(--background-secondary)"></div><div class="markdown-rendered"><blockquote><p>Quote</p></blockquote><div class="markdown-embed">Embed</div><pre><code>code</code></pre></div><div class="menu" style="position:relative;inset:auto;width:200px"><div class="menu-item">Menu</div></div><input type="text" class="probe-input"><button class="probe-button">Button</button><div class="workspace-split mod-sidedock mod-left-split is-sidedock-collapsed" style="display:flex;position:relative;width:200px;height:40px"></div>';
+  host.innerHTML='<div class="probe-page" style="background:var(--background-primary)"></div><div class="probe-side" style="background:var(--background-secondary)"></div><div class="markdown-rendered"><blockquote><p>Quote</p></blockquote><div class="markdown-embed">Embed</div><pre><code>code</code></pre></div><div class="menu" style="position:relative;inset:auto;width:200px"><div class="menu-item">Menu</div></div><input type="text" class="probe-input"><button class="probe-button">Button</button><span class="probe-muted" style="color:var(--text-muted)">m</span><span class="probe-faint" style="color:var(--text-faint)">f</span><span class="probe-link" style="color:var(--text-accent)">l</span><span class="probe-accent" style="background:var(--interactive-accent);color:var(--text-on-accent)">a</span><div class="workspace-split mod-sidedock mod-left-split is-sidedock-collapsed" style="display:flex;position:relative;width:200px;height:40px"></div>';
   body.append(host);
   // color-mix() serializes as color(srgb 0-1); compare everything as rounded rgb.
   const norm=c=>{const m=c.match(/^color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)(?: \/ ([\d.]+))?\)$/);if(!m)return c;const [r,g,b]=m.slice(1,4).map(x=>Math.round(x*255));return m[4]===undefined?'rgb('+r+', '+g+', '+b+')':'rgba('+r+', '+g+', '+b+', '+m[4]+')'};
@@ -49,6 +49,34 @@ const code=String.raw`(async()=>{
      check(palette+' '+preset+': menu and button sit above the page',lum(s.menu)>lum(s.page)&&lum(s.button)>lum(s.page),s);
     }
    }
+   // Secondary and faint text, and the optional accent, per preset and mode.
+   const fg=sel=>norm(view.getComputedStyle(host.querySelector(sel)).color);
+   const rl=c=>{const [r,g,b]=c.match(/[\d.]+/g).slice(0,3).map(v=>{v=Number(v)/255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4)});return 0.2126*r+0.7152*g+0.0722*b};
+   const cr=(a,b)=>{const x=rl(a),y=rl(b);return Math.round((Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)*100)/100};
+   const inks=()=>({page:bg('.probe-page'),side:bg('.probe-side'),muted:fg('.probe-muted'),faint:fg('.probe-faint'),link:fg('.probe-link'),accent:bg('.probe-accent'),onAccent:fg('.probe-accent')});
+   stage='default inks';set('theme-light','still-preset-off','still-backdrop-off');let k=inks();
+   check('Default light: secondary and faint text stay #4d4d4d and #939393',k.muted==='rgb(77, 77, 77)'&&k.faint==='rgb(147, 147, 147)',k);
+   set('theme-dark','still-preset-off','still-backdrop-off');k=inks();
+   check('Default dark: secondary and faint text stay #ababab and #7a7a7a',k.muted==='rgb(171, 171, 171)'&&k.faint==='rgb(122, 122, 122)',k);
+   const graphite=body.classList.contains('still-graphite'),accentOn=body.classList.contains('still-preset-accent');body.classList.remove('still-graphite','still-preset-accent');
+   try{
+    for(const palette of ['theme-light','theme-dark'])for(const name of ['paper','mist','sand','sage','graphite','night']){
+     stage=palette+' '+name+' inks';set(palette,'still-preset-off','still-backdrop-off');const base=inks();
+     set(palette,'still-preset-'+name,'still-backdrop-off');k=inks();
+     const faintMin=palette==='theme-light'?2.9:3.7;
+     const c={mutedPage:cr(k.muted,k.page),mutedSide:cr(k.muted,k.side),faintPage:cr(k.faint,k.page),faintSide:cr(k.faint,k.side)};
+     check(palette+' '+name+': secondary text holds 7:1 and faint text '+faintMin+':1 on page and sidebar',c.mutedPage>=6.9&&c.mutedSide>=6.9&&c.faintPage>=faintMin&&c.faintSide>=faintMin,{...k,...c});
+     check(palette+' '+name+': the accent follows Appearance until Preset accent is on',k.accent===base.accent&&k.link===base.link,{k,base});
+     body.classList.add('still-preset-accent');const a=inks();
+     const ac={label:cr(a.onAccent,a.accent),linkPage:cr(a.link,a.page),linkSide:cr(a.link,a.side)};
+     check(palette+' '+name+': Preset accent sets a hue that holds 4.5:1 as a fill and as link text',a.accent!==base.accent&&ac.label>=4.45&&ac.linkPage>=4.45&&ac.linkSide>=4.45,{...a,...ac});
+     body.classList.remove('still-preset-accent');
+    }
+    stage='graphite ink over preset accent';set('theme-light','still-preset-sand','still-backdrop-off');body.classList.add('still-preset-accent','still-graphite');k=inks();
+    check('Graphite ink wins over Preset accent',k.accent===norm(view.getComputedStyle(body).color)||k.accent==='rgb(46, 36, 25)',k);
+    set('theme-light','still-preset-off','still-backdrop-off');body.classList.remove('still-graphite');const off=inks();body.classList.remove('still-preset-accent');const plain=inks();
+    check('Preset accent does nothing with the preset off',off.accent===plain.accent&&off.link===plain.link,{off,plain});
+   }finally{body.classList.remove('still-graphite','still-preset-accent');if(graphite)body.classList.add('still-graphite');if(accentOn)body.classList.add('still-preset-accent')}
    // Window color set alone: floats take it, opaque.
    stage='frame with window color';set('theme-light','still-preset-off','still-backdrop-frame');
    body.style.setProperty('--still-backdrop-color','rgba(242, 233, 205, 0.6)');await pause(30);

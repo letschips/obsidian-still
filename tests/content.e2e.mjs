@@ -209,7 +209,7 @@ const code=String.raw`(async()=>{
   const plainCo=card();toggle('still-card-callouts',true);const cardCo=card();toggle('still-card-callouts',false);
   check('Card callouts leave no extra gap under a nested callout',cardCo.bottom<=cardCo.top+1,cardCo);
   check('A collapsed card callout keeps its corner icon inside',cardCo.iconOut<=0,cardCo);
-  check('Plain callouts keep core spacing under a nested callout',plainCo.bottom>0,plainCo);
+  check('Plain callouts leave no extra gap under their last block',plainCo.bottom===0,plainCo);
   // Callout titles and icons are inked darker than the raw hue (the raw hue
   // is a fill color, below 4.5:1 as text); a card title keeps clear of the
   // corner icon.

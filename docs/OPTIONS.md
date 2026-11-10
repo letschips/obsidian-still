@@ -8,13 +8,17 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | Centered note title | Off |
 | Reading | CJK typography: a gap where Han meets Latin or digits, improved paragraph endings in reading view (normal paragraph wrapping on iOS), line height 1.75 unless set | Off |
 | Reading | Justified paragraphs: body text lines up on both edges in reading and editing views; headings, code and tables keep their alignment | Off |
+| Reading | First-line indent: body paragraphs start two characters in, in reading view and Live Preview; lists, quotes, callouts, tables and code are left alone | Off |
+| Reading | Chinese font pairing: system fonts only. Hei keeps Chinese sans glyphs on systems set to another language; Song sets body text in a Song typeface with sans headings and Kai quotes. A font chosen in Settings → Appearance still comes first | Off |
 | Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
 | Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
-| Colors | Preset: a ready-made light and dark palette (Paper, Mist, Sand, Sage, Graphite, Night). While one is picked it sets the window background, page, sidebar and text colors; Off brings back your own. Its grain or gradient shows with Window background on | Off |
+| Colors | Preset: a ready-made light and dark palette (Paper, Mist, Sand, Sage, Graphite, Night). While one is picked it sets the window background, page, sidebar, text and secondary text colors; Off brings back your own. Its grain or gradient shows with Window background on | Off |
+| Colors | Preset accent: with a preset picked, buttons, links, tags and the selection use the preset's own hue instead of the accent from Settings → Appearance | Off |
 | Colors | Page, sidebar, text, secondary text, link, list marker, checkbox, H1–H6 heading, table header text and table header background colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text; table headers use the text color on a faint wash |
 | Colors | Window background: one background behind the whole window, showing through a clear frame (Frame) or through the page too (Whole window); a color per light and dark, with optional CSS backgrounds such as a paper texture drawn over it. On phones and tablets only the color carries over: to the sidebars, and to the page with Whole window | Off; the color defaults to the sidebar color |
 | Colors | Graphite ink: buttons, toggles and links use the text color | Off |
 | Interface | Roundness: scales every corner radius | 1.25 |
+| Interface | Compact interface: a shorter header and tabs, closer rows in the sidebars, menus and settings; reading sizes stay the same. Desktop only | Off |
 | Interface | Flat page: no floating card beside the sidebars | Off |
 | Interface | Left-aligned tabs; tabs fit their titles | Off |
 | Interface | Always show the note title in the header (otherwise it appears on hover) | Off |
@@ -45,6 +49,6 @@ Still also respects the system "reduce motion" setting.
 
 Keyboard focus on links in rendered notes always has a visible outline; this does not require Style Settings.
 
-CJK typography, Justified paragraphs and Underline links can also be set per note: add `cjk` / `no-cjk`, `justify` / `no-justify` or `link-underline` / `no-link-underline` to the note's `cssclasses`. The note's class wins over the global option. An embedded note follows its own classes; inside a note that turns an option off, it stays off.
+CJK typography, Justified paragraphs, First-line indent and Underline links can also be set per note: add `cjk` / `no-cjk`, `justify` / `no-justify`, `indent` / `no-indent` or `link-underline` / `no-link-underline` to the note's `cssclasses`. The note's class wins over the global option. An embedded note follows its own classes; inside a note that turns an option off, it stays off.
 
 Back to the [README](../README.md).
