@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.17.3 · 2026-11-10
+
+### Fixed
+- **Quotes in Live Preview on 1x screens.** A faint line no longer shows under the first line and above the last line of a quote. It appeared on standard-density displays when the quote sat on a fractional pixel.
+- **Pink in light mode.** `--color-pink` is its own pink again instead of repeating red, so Mermaid charts and plugins that use it can tell the two apart.
+
+### 中文
+- 修复：实时预览里的引用块，在 1 倍屏（普通分辨率显示器）上首行下方、末行上方不再出现一条细线。
+- 修复：浅色模式的 `--color-pink` 恢复为粉色，不再和红色相同，Mermaid 图表和用到它的插件可以区分两者。
+
 ## 0.17.2 · 2026-11-09
 
 ### Fixed

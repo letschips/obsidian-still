@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.17.2 · MIT License · https://github.com/letschips
+  Version 0.17.3 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -834,7 +834,7 @@ body:not(.is-mobile) {
   --color-cyan: #0d97b3;
   --color-blue: #62afef;
   --color-purple: #a626a4;
-  --color-pink: #e45749;
+  --color-pink: #d6508c;
   /* The softened orange and yellow blur together as 30% highlight washes. */
   --highlight-background-orange: color-mix(in oklch, #e8780e var(--highlight-opacity), transparent);
   --highlight-background-yellow: color-mix(in oklch, #e0b000 var(--highlight-opacity), transparent);
@@ -2570,14 +2570,15 @@ body:not(.still-motion-off):not(.is-popout-modal):not(.is-mobile) .modal-contain
 }
 
 /* Live Preview quotes match reading view. Obsidian writes a hanging indent
-   inline on each quote line, so the 16px inset is drawn as a border in the
-   quote's own color rather than padding; the bar sits inside it. The first
-   and last lines round the block and give it room above and below, a quote
-   that opens the note included. */
+   inline on each quote line, so the 16px inset is a clear border rather
+   than padding, and the line's own ground runs under it; the bar sits
+   inside it. One fill per line: a colored border beside a clipped ground
+   leaves a hairline between the two on 1x screens. The first and last lines
+   round the block and give it room above and below, a quote that opens the
+   note included. */
 .markdown-source-view.mod-cm6.is-live-preview .HyperMD-quote {
-  border: 0 solid var(--blockquote-background-color);
+  border: 0 solid transparent;
   border-inline-width: 16px;
-  background-clip: padding-box;
 }
 
 .markdown-source-view.mod-cm6.is-live-preview :is(.cm-content > .HyperMD-quote:first-child, :not(.HyperMD-quote) + .HyperMD-quote) {
