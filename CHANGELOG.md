@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.18.4 · 2026-11-13
+
+### Fixed
+- **Solid view header in a translucent window.** The main-window view header now stays transparent with Obsidian's native translucency enabled, even without the companion CSS snippet. Content surfaces, sidebars, mobile and separate windows keep their existing appearance.
+
+### 中文
+- 修复：开启原生半透明窗口后，即使未启用配套 CSS 片段，主窗口视图标题栏也不再出现实色横条；内容区、侧栏、移动端及独立窗口的样式保持不变。
+
 ## 0.18.3 · 2026-11-13
 
 ### Fixed

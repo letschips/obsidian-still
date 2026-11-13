@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.18.3 · MIT License · https://github.com/letschips
+  Version 0.18.4 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -3658,6 +3658,14 @@ body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-withi
 /* ========================================================================== */
 /* 14. Translucent and separate windows                                       */
 /* ========================================================================== */
+
+/* Native translucency can clear a plugin view while its file header stays
+   solid. Let the main-window header share that glass without repainting
+   the content, sidebars, or separate windows. */
+body.is-translucent:not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) .mod-root .view-header {
+  --file-header-background: transparent;
+  --file-header-background-focused: transparent;
+}
 
 /* In a translucent window, any backdrop-filter inside the workspace (a
    plugin's frosted buttons, say) makes Chromium keep stale frames after
