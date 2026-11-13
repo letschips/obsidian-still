@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.18.3 · 2026-11-13
+
+### Fixed
+- **Settings window in two tones.** Pages in Settings now sit on the same ground as its sidebar, without a lighter band behind them or a strip under the titlebar.
+
+### 中文
+- 修复：设置窗口的内容区不再比侧栏多出一层底色，顶部也不再留一条白边。
+
 ## 0.18.2 · 2026-11-13
 
 ### Fixed

@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.18.2 · MIT License · https://github.com/letschips
+  Version 0.18.3 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -2581,6 +2581,13 @@ body:not(.is-mobile) .modal.mod-settings {
 /* Settings sidebar: roomy rows on the window's own ground. */
 .modal.mod-sidebar-layout .vertical-tab-header {
   border-right: 0;
+  background-color: transparent;
+}
+
+/* Pages sit on that same ground. Core paints them with the page color, a
+   second tone beside the sidebar that also left a strip under the floating
+   titlebar. Phones already use one ground. */
+body:not(.is-mobile) .modal.mod-settings .vertical-tab-content {
   background-color: transparent;
 }
 

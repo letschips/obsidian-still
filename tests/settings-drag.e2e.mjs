@@ -22,7 +22,10 @@ const code = `(${async function() {
     ['search stays interactive', css(doc.querySelector('.vertical-tab-header input')).appRegion === 'no-drag'],
     ['content stops below the bar', box.top >= bar.bottom],
     ['content ends at the window edge', Math.abs(box.bottom - win.innerHeight) <= 1],
-    ['content starts where it did', Math.abs(box.top + parseFloat(css(content).paddingTop) - 48) <= 1]
+    ['content starts where it did', Math.abs(box.top + parseFloat(css(content).paddingTop) - 48) <= 1],
+    // One ground behind sidebar and pages: no second tone, no strip above it.
+    ['content shares the window ground', css(content).backgroundColor === 'rgba(0, 0, 0, 0)'
+      && css(content.parentElement).backgroundColor === 'rgba(0, 0, 0, 0)']
   ];
 }})()`;
 const run = spawnSync('obsidian', [`vault=${vault}`, 'eval', `code=${code}.then(JSON.stringify)`], {encoding: 'utf8', timeout: 30000});
