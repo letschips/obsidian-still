@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.19.0 · 2026-11-13
+
+### Added
+- **Stronger text highlight.** An optional stronger wash for highlighted text in reading view and Live Preview.
+
+### Fixed
+- **First-line indent.** Lazy list continuations stay flush, and image paragraphs match between reading view and Live Preview.
+
+### 中文
+- 新增：可选「加深文字高亮」。
+- 修复：列表续行不再误缩进，含图片段落在阅读视图和实时预览中保持一致。
+
 ## 0.18.4 · 2026-11-13
 
 ### Fixed

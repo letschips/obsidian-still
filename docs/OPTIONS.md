@@ -10,6 +10,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | Justified paragraphs: body text lines up on both edges in reading and editing views; headings, code and tables keep their alignment | Off |
 | Reading | First-line indent: body paragraphs start two characters in, in reading view and Live Preview; lists, quotes, callouts, tables and code are left alone | Off |
 | Reading | Chinese font pairing: system fonts only. Hei keeps Chinese sans glyphs on systems set to another language; Song sets body text in a Song typeface with sans headings and Kai quotes. A font chosen in Settings → Appearance still comes first | Off |
+| Reading | Stronger text highlight: make Obsidian's text highlight colors more visible in reading view and Live Preview | Off |
 | Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
 | Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
 | Colors | Preset: a ready-made light and dark palette (Paper, Mist, Sand, Sage, Graphite, Night). While one is picked it sets the window background, page, sidebar, text and secondary text colors; Off brings back your own. Its grain or gradient shows with Window background on | Off |

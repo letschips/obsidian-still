@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.18.4 · MIT License · https://github.com/letschips
+  Version 0.19.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -123,6 +123,14 @@ settings:
       -
         label: Song · 宋体
         value: still-fonts-song
+  -
+    id: still-highlight-strong
+    title: Stronger text highlight
+    title.zh: 加深文字高亮
+    description: Makes Obsidian's text highlight colors more visible in reading view and Live Preview.
+    description.zh: 加深阅读视图和实时预览中的文字高亮颜色。
+    type: class-toggle
+    default: false
   -
     id: still-active-line
     title: Active line highlight
@@ -1229,22 +1237,32 @@ body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > 
   text-align: initial;
 }
 
+/* Option: a stronger wash for Obsidian's text highlight colors. */
+body.still-highlight-strong {
+  --highlight-opacity: 60%;
+}
+
+body.theme-dark.still-highlight-strong {
+  --highlight-opacity: 45%;
+}
+
 /* Option: first-line indent, two characters, as Chinese body text is set.
    Only plain paragraphs: lists, quotes, callouts, tables and code keep
-   their own edge, and a paragraph that holds an embed or opens with an
-   image stays flush. In Live Preview every plain line is a paragraph.
+   their own edge, and a paragraph that holds an embed or image
+   stays flush. In Live Preview each source line is its own block.
    Per note: indent / no-indent. */
-body.still-indent .markdown-rendered .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img:first-child))),
-.markdown-rendered:is(.indent, .indent *) .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img:first-child))),
+body.still-indent .markdown-rendered .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img))),
+.markdown-rendered:is(.indent, .indent *) .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img))),
 body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))),
 .markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))) {
   text-indent: 2em;
 }
 
 /* Live Preview draws every source line as its own block. A line right
-   after another line of text continues the same paragraph, so only the
-   first one indents, as in reading view. */
-.markdown-source-view.mod-cm6.is-live-preview:is(.indent, body.still-indent *) .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> br:only-child)) + .cm-line:not([class*="HyperMD-"]) {
+   after another line of text continues the same paragraph, and a lazy
+   continuation under a list item stays part of the item, so only the
+   first paragraph line indents, as in reading view. */
+.markdown-source-view.mod-cm6.is-live-preview:is(.indent, body.still-indent *) .cm-content > :is(.cm-line:not([class*="HyperMD-"]):not(:has(> br:only-child)), .HyperMD-list-line) + .cm-line:not([class*="HyperMD-"]) {
   text-indent: 0;
 }
 

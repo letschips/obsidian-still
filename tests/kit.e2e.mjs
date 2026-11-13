@@ -20,8 +20,8 @@ const code=String.raw`(async()=>{
   const mine=['still-indent','still-compact','still-fonts-off','still-fonts-hei','still-fonts-song','is-mobile'];
   const had=mine.filter(c=>body.classList.contains(c));body.classList.remove(...mine);
   host=doc.createElement('div');host.style.cssText='position:fixed;inset:0;overflow:auto;z-index:100;font-size:16px';
-  const reading=cls=>'<div class="markdown-preview-view markdown-rendered '+cls+'"><div class="markdown-preview-sizer"><div class="el-h1"><h1>Title</h1></div><div class="el-p"><p class="plain">Body <span class="inl" style="display:inline-block">x</span></p></div><div class="el-p"><p class="pic"><img alt=""> caption</p></div><div class="el-p"><p class="emb"><span class="internal-embed">embed</span></p></div><div class="el-ul"><ul><li><p class="inlist">Item</p></li></ul></div><div class="el-blockquote"><blockquote><p class="inquote">Quote</p></blockquote></div><div class="el-div"><div class="callout"><div class="callout-title">T</div><div class="callout-content"><p class="incallout">Call</p></div></div></div></div></div>';
-  const editor=cls=>'<div class="markdown-source-view mod-cm6 is-live-preview cm-s-obsidian '+cls+'"><div class="cm-content"><div class="cm-line plain">Body <span class="inl" style="display:inline-block">x</span></div><div class="cm-line HyperMD-header HyperMD-header-1 head">Title</div><div class="cm-line HyperMD-list-line list">Item</div><div class="cm-line HyperMD-quote quote">Quote</div><div class="cm-line pic"><img alt=""></div><div class="cm-line"><br></div><div class="cm-line para2">Second</div><div class="cm-line cont">same paragraph</div></div></div>';
+  const reading=cls=>'<div class="markdown-preview-view markdown-rendered '+cls+'"><div class="markdown-preview-sizer"><div class="el-h1"><h1>Title</h1></div><div class="el-p"><p class="plain">Body <span class="inl" style="display:inline-block">x</span></p></div><div class="el-p"><p class="pic"><img alt=""> caption</p></div><div class="el-p"><p class="emb"><span class="internal-embed">embed</span></p></div><div class="el-p"><p class="midpic"><em>Before</em> <img alt=""> after</p></div><div class="el-ul"><ul><li><p class="inlist">Item</p></li></ul></div><div class="el-blockquote"><blockquote><p class="inquote">Quote</p></blockquote></div><div class="el-div"><div class="callout"><div class="callout-title">T</div><div class="callout-content"><p class="incallout">Call</p></div></div></div></div></div>';
+  const editor=cls=>'<div class="markdown-source-view mod-cm6 is-live-preview cm-s-obsidian '+cls+'"><div class="cm-content"><div class="cm-line plain">Body <span class="inl" style="display:inline-block">x</span></div><div class="cm-line HyperMD-header HyperMD-header-1 head">Title</div><div class="cm-line HyperMD-list-line list">Item</div><div class="cm-line HyperMD-quote quote">Quote</div><div class="cm-line pic"><img alt=""></div><div class="cm-line"><br></div><div class="cm-line para2">Second</div><div class="cm-line cont">same paragraph</div><div class="cm-line"><br></div><div class="cm-line HyperMD-list-line">- Item</div><div class="cm-line lazy">list continuation</div><div class="cm-line lazy2">another continuation</div><div class="cm-line"><br></div><div class="cm-line afterlist">New paragraph</div><div class="cm-line"><br></div><div class="cm-line comment"><span class="cm-comment">%% comment %%</span></div><div class="cm-line"><br></div><div class="cm-line inline-comment">Body <span class="cm-comment">%% comment %%</span> text</div><div class="cm-line"><br></div><div class="cm-line midpic"><em>Before</em> <img alt=""> after</div></div></div>';
   host.innerHTML='<div class="r-plain">'+reading('')+'</div><div class="r-on">'+reading('indent')+'</div><div class="r-off">'+reading('no-indent')+'</div><div class="e-plain">'+editor('')+'</div><div class="e-on">'+editor('indent')+'</div><div class="e-off">'+editor('no-indent')+'</div><div class="menu" style="position:relative;inset:auto;width:200px"><div class="menu-item">Menu</div></div>';
   body.append(host);
   const cs=(sel,prop)=>view.getComputedStyle(host.querySelector(sel))[prop];
@@ -31,6 +31,9 @@ const code=String.raw`(async()=>{
   stage='indent off';
   check('Indent is off by default',[row('.r-plain'),row('.e-plain')].every(r=>r.plain==='0px'),{reading:row('.r-plain'),editor:row('.e-plain')});
   check('A note opts in with indent',row('.r-on').plain==='32px'&&row('.e-on').plain==='32px',{reading:row('.r-on'),editor:row('.e-on')});
+  const edge=g=>({lazy:ind(g+' .lazy'),lazy2:ind(g+' .lazy2'),afterList:ind(g+' .afterlist'),comment:ind(g+' .comment'),midImage:ind(g+' .midpic')});
+  const flush=r=>r.lazy==='0px'&&r.lazy2==='0px'&&r.afterList==='32px'&&r.midImage==='0px';
+  check('Note opt-in keeps list continuations and image paragraphs flush',flush(edge('.e-on'))&&ind('.r-on .midpic')==='0px',{editor:edge('.e-on'),readingImage:ind('.r-on .midpic')});
   stage='indent on';body.classList.add('still-indent');
   let r=row('.r-plain'),e=row('.e-plain');
   check('Plain paragraphs indent two characters in both views',r.plain==='32px'&&e.plain==='32px',{r,e});
@@ -38,6 +41,12 @@ const code=String.raw`(async()=>{
   check('Image-led and embed paragraphs, lists, quotes and callouts stay flush',r.pic==='0px'&&e.pic==='0px'&&rest('.r-plain').every(v=>v==='0px')&&['.head','.list','.quote'].every(s=>ind('.e-plain '+s)==='0px'),{r,e,rest:rest('.r-plain'),lines:['.head','.list','.quote'].map(s=>ind('.e-plain '+s))});
   const soft={first:ind('.e-plain .para2'),next:ind('.e-plain .cont'),noteFirst:ind('.e-on .para2'),noteNext:ind('.e-on .cont')};
   check('Live Preview indents only the first line of a paragraph',soft.first==='32px'&&soft.next==='0px'&&soft.noteFirst==='32px'&&soft.noteNext==='0px',soft);
+  const edges=edge('.e-plain');
+  check('Lazy list continuations stay flush; a new paragraph indents',edges.lazy==='0px'&&edges.lazy2==='0px'&&edges.afterList==='32px',edges);
+  // CodeMirror leaves body text as bare text nodes; CSS cannot distinguish
+  // an all-comment line from a paragraph with an inline comment.
+  check('Comment lines retain paragraph indentation',edges.comment==='32px'&&ind('.e-plain .inline-comment')==='32px',{comment:edges.comment,inline:ind('.e-plain .inline-comment')});
+  check('Images after inline elements stay flush in both views',edges.midImage==='0px'&&ind('.r-plain .midpic')==='0px',{editor:edges.midImage,reading:ind('.r-plain .midpic')});
   check('A note opts out with no-indent',row('.r-off').plain==='0px'&&row('.e-off').plain==='0px',{reading:row('.r-off'),editor:row('.e-off')});
   body.classList.remove('still-indent');
   stage='fonts';const fam=sel=>cs(sel,'fontFamily');
