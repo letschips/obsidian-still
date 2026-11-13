@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.18.2 · 2026-11-13
+
+### Fixed
+- **Doubled tabs at launch in a translucent window.** While Obsidian 1.15 shows its startup snapshot, the app loading underneath no longer shows through the clear tab strip and sidebars.
+
+### 中文
+- 修复：半透明窗口下启动 Obsidian 时，标签栏文字不再短暂重叠。
+
 ## 0.18.1 · 2026-11-10
 
 ### Fixed

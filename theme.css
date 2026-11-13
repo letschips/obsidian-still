@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.18.1 · MIT License · https://github.com/letschips
+  Version 0.18.2 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -3670,6 +3670,15 @@ body.is-translucent:not(.is-popout-window) .workspace *::after {
      Inline 3D transforms (translate3d) promote layers too and are out of a
      theme's reach; plugins have to avoid them. */
   will-change: auto !important;
+}
+
+/* While Obsidian loads, it shows the last session's workspace in a snapshot
+   frame above the app. Over glass the snapshot's clear tab strip and sidebars
+   let the loading app show through, so tabs and titles read double until the
+   snapshot goes. Keep the app out of sight until then; opacity leaves its
+   layout and focus alone. Opaque windows look the same either way. */
+#startup-snapshot ~ .app-container {
+  opacity: 0;
 }
 
 /* Over a translucent window the page card keeps its shape but drops its
