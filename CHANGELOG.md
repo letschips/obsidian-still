@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.20.0 · 2026-11-14
+
+### Added
+- **Preset texture.** Smooth, Frosted and Mottled options for desktop window backgrounds.
+
+### Fixed
+- **Whole-window surfaces.** Quotes, embeds and code blocks preserve the window texture; Bases follows the page background without clearing sidebar notes or stacked panes.
+- **Preset colors.** Preset accent preserves Appearance colors when no palette is selected; light floating surfaces follow the selected palette.
+- **Soft sidebar peek.** A shorter fade blends into whole-window backgrounds.
+
+### 中文
+- 新增：配方质感，可选「平滑」「磨砂」「斑驳」，用于电脑端窗口背景。
+- 修复：整窗模式下引用、嵌入和代码块保留背景纹理，Bases 随页面取色，侧栏笔记与堆叠页保留底色。
+- 修复：未选配方时保留外观强调色，浅色浮层随配方取色。
+- 调整：整窗背景下侧栏柔边的过渡范围。
+
 ## 0.19.0 · 2026-11-13
 
 ### Added

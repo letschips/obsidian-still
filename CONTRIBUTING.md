@@ -35,6 +35,8 @@ Open an [issue](https://github.com/letschips/obsidian-still/issues) with:
 - `node tests/settings.check.mjs` checks the Style Settings block. It needs only Node.
 - `tests/*.e2e.mjs` run inside a live Obsidian through the [Obsidian CLI](https://obsidian.md/help/cli), with Still selected: `node tests/surfaces.e2e.mjs "<vault name>" report.json`. They add and remove their own probe elements and restore what they toggle. `content.e2e` opens and closes a Bases tab (pass a `.base` file and a table view, or the stripe checks are skipped), `runtime.e2e` opens Settings windows, `mobile.e2e` turns on Obsidian's mobile emulation, which reloads the window, and `vault-foot.e2e` needs the left sidebar open in the main window. None of them edits notes.
 
+- `node tests/appearance.e2e.mjs "<vault name>" report.json [snippet directory]` checks the source `theme.css` in a temporary popout: presets, whole-window and Frame surfaces, selector boundaries, and mobile CSS fallbacks. The optional directory must contain `still-translucent-window.v2.css` and `letschips-content.active.css`; supplying it also checks their integration, including Dataview output and error backgrounds. Without it, snippet checks are skipped. This test does not change the vault's saved settings.
+
 If a change fixes a bug that a check could catch, add the check, and make sure it fails without the fix.
 
 ## Releases

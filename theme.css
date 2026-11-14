@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.19.0 · MIT License · https://github.com/letschips
+  Version 0.20.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -193,6 +193,28 @@ settings:
     description.zh: 选了配方时，按钮、链接、标签和选中底色改用这套配方自己的色调，不再用「设置 → 外观」里的强调色。
     type: class-toggle
     default: false
+  -
+    id: still-preset-texture
+    title: Preset texture
+    title.zh: 配方质感
+    description: With a preset picked, Smooth removes grain, Frosted adds a fine surface texture, and Mottled adds soft uneven flecks and grain. Each keeps the preset's gradient. Turn on Window background to see the texture; phones and tablets keep the color only.
+    description.zh: 选了配方时，「平滑」去掉颗粒，「磨砂」铺一层细纹，「斑驳」叠加不均匀的淡斑和细颗粒，都保留配方原有的渐变。要打开「窗口背景」才看得到；手机和平板上只有颜色。
+    type: class-select
+    allowEmpty: false
+    default: still-texture-preset
+    options:
+      -
+        label: Preset · 跟随配方
+        value: still-texture-preset
+      -
+        label: Smooth · 平滑
+        value: still-texture-smooth
+      -
+        label: Frosted · 磨砂
+        value: still-texture-frosted
+      -
+        label: Mottled · 斑驳
+        value: still-texture-mottled
   -
     id: still-page-color
     title: Page background
@@ -1446,6 +1468,10 @@ body.theme-dark:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile
 
 body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) {
   --still-peek-page: var(--still-p-ground, var(--still-desk-ground, var(--background-secondary)));
+  --background-primary-alt: var(--still-wash);
+  --still-quote: var(--still-wash);
+  --code-background: var(--still-wash);
+  --background-modifier-form-field: var(--still-wash);
 }
 
 /* The CSS layer sits under .app-container (positioned, later in the tree).
@@ -1473,11 +1499,12 @@ body:is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-p
 /* Whole window: the page shows the ground too. Stacked panes keep opaque
    cards, since they overlap while scrolling; a translucent window already
    clears their leaves, so their views stay solid. */
-body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) .workspace-tabs:not(.mod-stacked) :is(
-  .mod-root .workspace-leaf,
-  .mod-root .view-header,
-  .mod-root .view-content,
-  .workspace-leaf-content.is-read-mode .markdown-preview-view
+body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) .mod-root .workspace-tabs:not(.mod-stacked) :is(
+  .workspace-leaf,
+  .view-header,
+  .view-content,
+  .workspace-leaf-content.is-read-mode .markdown-preview-view,
+  .bases-tbody
 ) {
   background-color: transparent;
 }
@@ -1537,7 +1564,7 @@ body.still-backdrop-window:not(.is-mobile):not(.still-flat-page) .workspace:is(.
    preset's own hue. --still-p-accent fills (4.5:1 under its label),
    --still-p-link is the same hue as text (4.5:1 on page and sidebar).
    Graphite ink still wins. */
-body.still-preset-accent:not(.still-preset-off):not(.still-graphite) {
+body.still-preset-accent:is(.still-preset-paper, .still-preset-mist, .still-preset-sand, .still-preset-sage, .still-preset-graphite, .still-preset-night):not(.still-graphite) {
   --color-accent: var(--still-p-accent);
   --color-accent-1: var(--still-p-accent);
   --color-accent-2: color-mix(in srgb, var(--still-p-accent) 85%, var(--text-normal));
@@ -1548,8 +1575,12 @@ body.still-preset-accent:not(.still-preset-off):not(.still-graphite) {
 }
 
 /* Dark accents are light enough to carry the page color as their label. */
-body.theme-dark.still-preset-accent:not(.still-preset-off):not(.still-graphite) {
+body.theme-dark.still-preset-accent:is(.still-preset-paper, .still-preset-mist, .still-preset-sand, .still-preset-sage, .still-preset-graphite, .still-preset-night):not(.still-graphite) {
   --text-on-accent: var(--still-p-page);
+}
+
+body.theme-light:is(.still-preset-paper, .still-preset-mist, .still-preset-sand, .still-preset-sage, .still-preset-graphite, .still-preset-night) {
+  --still-raised: color-mix(in srgb, var(--still-p-page) 75%, #ffffff);
 }
 
 /* Paper: warm paper with a fine fibre grain. */
@@ -1700,6 +1731,40 @@ body.theme-dark.still-preset-night {
   --still-p-accent: #4d85d6;
   --still-p-link: #5389d7;
   --still-p-css: linear-gradient(180deg, #1e293a 0%, #131c2a 100%);
+}
+
+/* Option: preset texture. Smooth drops the grain Paper and Graphite carry;
+   Frosted swaps it for one neutral frost that lies over every preset's
+   gradient, dark specks by day and light ones by night. Both layers paint on
+   the window background, so the frost shows wherever the ground does. A
+   preset's CSS is images only, never a color, so the two lists join safely;
+   phones and tablets have no CSS layer and keep the color alone. */
+body:is(.still-texture-smooth, .still-texture-frosted, .still-texture-mottled):is(.still-preset-paper, .still-preset-graphite) {
+  --still-p-css: none;
+}
+
+body.theme-light.still-texture-frosted {
+  --still-frost: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.56 .72' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting surfaceScale='1.75' diffuseConstant='1' lighting-color='white'%3E%3CfeDistantLight azimuth='225' elevation='60'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -0.10000 0 0 0 0.0866025'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body.theme-dark.still-texture-frosted {
+  --still-frost: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.56 .72' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting surfaceScale='1.75' diffuseConstant='1' lighting-color='white'%3E%3CfeDistantLight azimuth='225' elevation='60'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.22000 0 0 0 -0.1905256'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body.still-texture-frosted:is(.still-preset-paper, .still-preset-mist, .still-preset-sand, .still-preset-sage, .still-preset-graphite, .still-preset-night):is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal)::before {
+  background: var(--still-frost), var(--still-p-css);
+}
+
+body.theme-light.still-texture-mottled {
+  --still-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1536' height='1024'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='3' seed='41' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 4 0 0 0 -2.02' result='distribution'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .045' numOctaves='3' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12000 0 0 0 -0.04800' result='mottle'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='1' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.22000 0 0 0 -0.11000'/%3E%3CfeBlend in2='mottle' mode='normal' result='surface'/%3E%3CfeComposite in='surface' in2='distribution' operator='in'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14.285714 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.07'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body.theme-dark.still-texture-mottled {
+  --still-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1536' height='1024'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='3' seed='41' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 4 0 0 0 -2.02' result='distribution'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .045' numOctaves='3' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.08400 0 0 0 -0.03360' result='mottle'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='1' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.15400 0 0 0 -0.07700'/%3E%3CfeBlend in2='mottle' mode='normal' result='surface'/%3E%3CfeComposite in='surface' in2='distribution' operator='in'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 14.285714 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.07'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body.still-texture-mottled:is(.still-preset-paper, .still-preset-mist, .still-preset-sand, .still-preset-sage, .still-preset-graphite, .still-preset-night):is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal)::before {
+  background: var(--still-mottle), var(--still-p-css);
 }
 
 /* ========================================================================== */
@@ -2219,6 +2284,10 @@ body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[st
    plain gradient on the same pseudo-element. */
 body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"] {
   --still-peek-fade: 144px;
+}
+
+body.still-backdrop-window.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"] {
+  --still-peek-fade: 48px;
 }
 
 body.still-peek-soft:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[style*="display"]::before {
