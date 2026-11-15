@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.1 · 2026-11-15
+
+### Added
+- **Always show the status bar.** An optional switch keeps the Quiet status bar pill visible on desktop.
+
+### 中文
+- 新增：「状态栏始终显示」开关，可让电脑端的居中胶囊状态栏常驻。
+
 ## 0.20.0 · 2026-11-14
 
 ### Added

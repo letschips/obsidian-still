@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.20.0 · MIT License · https://github.com/letschips
+  Version 0.20.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -518,6 +518,14 @@ settings:
     title.zh: 安静的状态栏
     description: The status bar stays hidden until the pointer nears the bottom center.
     description.zh: 状态栏平时隐藏，鼠标靠近底部中间时出现。
+    type: class-toggle
+    default: false
+  -
+    id: still-status-always
+    title: Always show the status bar
+    title.zh: 状态栏始终显示
+    description: Keep the Quiet status bar pill visible on desktop.
+    description.zh: 开启「安静的状态栏」后，让电脑端底部胶囊始终显示。
     type: class-toggle
     default: false
   -
@@ -3730,16 +3738,21 @@ body.still-quiet-status:not(.is-mobile) .status-bar > * {
   white-space: nowrap;
 }
 
-body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within) {
+body.still-quiet-status:not(.still-status-always):not(.is-mobile) .status-bar:not(:hover):not(:focus-within) {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--still-status-fade) var(--still-ease-out);
 }
 
-body.still-quiet-status:not(.is-mobile) .status-bar:not(:hover):not(:focus-within)::after {
+body.still-quiet-status:not(.still-status-always):not(.is-mobile) .status-bar:not(:hover):not(:focus-within)::after {
   inset: auto auto -4px calc(50% - var(--still-status-reach-x));
   width: calc(var(--still-status-reach-x) * 2);
   height: var(--still-status-reach);
+}
+
+/* A pinned pill needs no invisible hover target around it. */
+body.still-quiet-status.still-status-always:not(.is-mobile) .status-bar::after {
+  content: none;
 }
 
 /* ========================================================================== */

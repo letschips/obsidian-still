@@ -9,9 +9,10 @@ const code=String.raw`(async()=>{
  const results=[];const check=(name,pass,evidence)=>results.push({name,pass,evidence});
  const pause=ms=>new Promise(r=>setTimeout(r,ms));
  const dbg=require('electron').remote.getCurrentWebContents().debugger;
- const hadOption=document.body.classList.contains('still-quiet-status');let attached=false,stage='setup';
+ const hadOption=document.body.classList.contains('still-quiet-status'),hadAlways=document.body.classList.contains('still-status-always');let attached=false,stage='setup';
  try{
   document.body.classList.add('still-quiet-status');
+  document.body.classList.remove('still-status-always');
   if(!dbg.isAttached()){dbg.attach('1.3');attached=true}
   const bar=document.querySelector('.status-bar');
   const mouse=(x,y)=>dbg.sendCommand('Input.dispatchMouseEvent',{type:'mouseMoved',x:Math.round(x),y:Math.round(y)});
@@ -45,10 +46,24 @@ const code=String.raw`(async()=>{
   while(performance.now()-t0<700){await new Promise(r=>requestAnimationFrame(r));samples.push([Math.round(performance.now()-t0),op(),width()])}
   const early=samples.find(x=>x[0]>=80),fixed=samples.every(x=>x[2]===openWidth),monotone=samples.every((x,i)=>!i||x[1]<=samples[i-1][1]);
   check('Pill fades out in place right away, without holding or reshaping',early[1]<1&&fixed&&monotone&&op()===0,{early,fixed,monotone,end:op()});
+
+  stage='always visible';document.body.classList.add('still-status-always');await away();
+  const pinned=bar.getBoundingClientRect(),pinnedStyle=getComputedStyle(bar),pinnedItem=item.getBoundingClientRect();
+  const pinnedHit=document.elementFromPoint(Math.round(pinnedItem.left+pinnedItem.width/2),Math.round(pinnedItem.top+pinnedItem.height/2));
+  check('Always show keeps the centered pill visible and interactive away from the pointer',op()===1&&pinnedStyle.pointerEvents!=='none'&&Math.abs(pinned.left+pinned.width/2-cx)<1&&pinned.width===openWidth&&item.contains(pinnedHit),{opacity:op(),pointer:pinnedStyle.pointerEvents,center:pinned.left+pinned.width/2,width:pinned.width,openWidth,hit:pinnedHit?.className});
+  check('Always show removes the invisible pointer reach band',getComputedStyle(bar,'::after').content==='none',{content:getComputedStyle(bar,'::after').content});
+  document.body.classList.remove('still-status-always');await away();
+  check('Turning Always show off restores automatic hiding',op()===0,{opacity:op()});
+
+  stage='native status bar';document.body.classList.remove('still-quiet-status');await away();
+  const native=()=>{const s=getComputedStyle(bar),b=bar.getBoundingClientRect();return {opacity:s.opacity,left:b.left,top:b.top,width:b.width,height:b.height,after:getComputedStyle(bar,'::after').content}};
+  const original=native();document.body.classList.add('still-status-always');await away();const standalone=native();
+  check('Always show alone preserves the native status bar',JSON.stringify(original)===JSON.stringify(standalone),{original,standalone});
  }catch(e){check('Run '+stage,false,{error:String(e)})}finally{
   try{await dbg.sendCommand('Input.dispatchMouseEvent',{type:'mouseMoved',x:Math.round(innerWidth/2),y:Math.round(innerHeight/2)})}catch{}
   if(attached)try{dbg.detach()}catch{}
   document.body.classList.toggle('still-quiet-status',hadOption);
+  document.body.classList.toggle('still-status-always',hadAlways);
  }
  return JSON.stringify({vault:app.vault.getName(),theme:app.customCss.theme,translucent:document.body.classList.contains('is-translucent'),results,passed:results.filter(r=>r.pass).length,total:results.length});
 })()`;

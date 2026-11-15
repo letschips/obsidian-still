@@ -30,6 +30,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
 | Interface | Quiet sidebar toolbar: buttons rest as dots; hover opens them, or a tap on touch screens | Off |
 | Interface | Quiet status bar: hidden until the pointer nears the bottom center | Off |
+| Interface | Always show the status bar: keep the Quiet status bar pill visible on desktop | Off |
 | Interface | Outline guides: a hairline per heading level in the outline view; the branch under the pointer darkens | Off |
 | Interface | Disable entrance motion | Off |
 | Interface | Pure black on phones and tablets in dark mode, for OLED screens | Off |
