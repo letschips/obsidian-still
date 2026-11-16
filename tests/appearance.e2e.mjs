@@ -82,6 +82,21 @@ const code=String.raw`(async()=>{
   const fade=parseFloat(style('.audit-side').getPropertyValue('--still-peek-fade'));
   check('Textured whole-window peek avoids a wide flat fade band',fade>0&&fade<=64,{fade,filter:view.getComputedStyle(element('.audit-side'),'::before').backdropFilter});
   element('.audit-side').classList.remove('is-sidedock-collapsed');element('.audit-side').style.removeProperty('display');
+  stage='soft peek surface continuity';
+  const ribbon=doc.createElement('div');ribbon.className='workspace-ribbon side-dock-ribbon mod-primary is-collapsed';element('.workspace').prepend(ribbon);
+  const side=element('.audit-side');side.classList.add('is-sidedock-collapsed');side.style.display='flex';
+  for(const palette of ['theme-light','theme-dark'])for(const preset of [null,'mist','sage','night'])for(const backdrop of ['off','frame','window']){
+   state(palette,preset,'still-backdrop-'+backdrop,'still-peek-soft','still-peek-ribbon','show-ribbon');
+   const expected=token('--still-peek-page, var(--background-secondary)');
+   for(const direction of ['left','right']){
+    side.classList.toggle('mod-left-split',direction==='left');side.classList.toggle('mod-right-split',direction==='right');
+    const gradient=view.getComputedStyle(side,'::before').backgroundImage;
+    check(palette+' '+(preset??'default')+' '+backdrop+': '+direction+' soft peek starts in the sidebar surface',gradient.startsWith('linear-gradient(to '+(direction==='left'?'right':'left')+', '+expected+' '),{expected,gradient});
+   }
+   const gradient=view.getComputedStyle(ribbon,'::after').backgroundImage;
+   check(palette+' '+(preset??'default')+' '+backdrop+': ribbon shares the soft peek surface',gradient.startsWith('linear-gradient(to right, '+expected+' '),{expected,gradient});
+  }
+  ribbon.remove();side.classList.remove('is-sidedock-collapsed','mod-right-split');side.classList.add('mod-left-split');side.style.removeProperty('display');
   if(snippetStyles.length){
    stage='ANKS snippet integration';snippetStyles.forEach(element=>element.sheet.disabled=false);
    for(const palette of ['theme-light','theme-dark']){

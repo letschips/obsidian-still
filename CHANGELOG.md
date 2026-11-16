@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.2 · 2026-11-16
+
+### Fixed
+- **Soft sidebar peek.** Match the auto-hide ribbon and feathered edges to the sidebar background, removing mismatched strips and corner patches.
+
+### 中文
+- 修复：柔和滑出时，自动隐藏功能区和侧栏柔边与侧栏底色保持一致，消除异色色条和左上角色块。
+
 ## 0.20.1 · 2026-11-15
 
 ### Added
