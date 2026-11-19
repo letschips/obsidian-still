@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.20.3 · MIT License · https://github.com/letschips
+  Version 0.20.4 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -17,9 +17,10 @@
     the theme never sets backdrop-filter, uses translucent hairlines rather
     than solid border tones, and never forces workspace backgrounds with
     !important. The only !important rules override inline styles Obsidian
-    writes on collapsed sidebars (sidebar peek), switch motion off for
-    reduced motion, and keep plugins from blurring or promoting layers
-    inside a translucent window.
+    writes on collapsed sidebars (sidebar peek) and phone drawers (Push
+    drawers), switch motion off for reduced motion, keep plugins from
+    blurring or promoting layers inside a translucent window, and keep the
+    window background off printed pages.
   - Accent and fonts follow Settings → Appearance.
 */
 
@@ -942,17 +943,19 @@ body.still-compact:not(.is-mobile) {
   --still-float-shadow: 0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px rgb(0 0 0 / 0.05), 0 12px 24px rgb(0 0 0 / 0.08);
   --still-dialog-shadow: 0 0 0 1px rgb(0 0 0 / 0.06), 0 24px 64px rgb(0 0 0 / 0.16);
 
+  /* Tokens hold 4.5:1 and comments 3:1 on every light code ground, the
+     deepest being the Sand preset's sidebar tone. */
   --code-normal: #1f2328;
-  --code-comment: #9b9a97;
-  --code-function: #0b7285;
-  --code-keyword: #9065b0;
-  --code-important: #d9480f;
-  --code-operator: #0b7285;
-  --code-property: #9a6700;
-  --code-punctuation: #6b6a66;
-  --code-string: #0f7b6c;
-  --code-tag: #c92a2a;
-  --code-value: #c2410c;
+  --code-comment: #797774;
+  --code-function: #0a6576;
+  --code-keyword: #734b91;
+  --code-important: #a5370b;
+  --code-operator: #0a6576;
+  --code-property: #7d5400;
+  --code-punctuation: #5c5c58;
+  --code-string: #0d675a;
+  --code-tag: #b12525;
+  --code-value: #a5370a;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1022,7 +1025,7 @@ body.still-compact:not(.is-mobile) {
   --pdf-shadow: none;
 
   --code-normal: #c9d1d9;
-  --code-comment: #6a737d;
+  --code-comment: #76808b;
   --code-function: #7ec9d8;
   --code-keyword: #c792ea;
   --code-important: #f087bd;
@@ -1513,9 +1516,18 @@ body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout
   .view-header,
   .view-content,
   .workspace-leaf-content.is-read-mode .markdown-preview-view,
-  .bases-tbody
+  .bases-tbody,
+  .document-search-container,
+  .pdf-toolbar
 ) {
   background-color: transparent;
+}
+
+/* Bases' sticky header and summary rows cover the rows scrolling under
+   them, so they stay opaque, on the window color rather than the page's. */
+body.still-backdrop-window:not(.is-mobile):not(.is-popout-window):not(.is-popout-modal) .mod-root .workspace-tabs:not(.mod-stacked) {
+  --bases-table-header-background: var(--still-peek-page);
+  --bases-table-summary-background: var(--still-peek-page);
 }
 
 /* Phones and tablets: no frame and no CSS layer, but the color carries over,
@@ -2685,7 +2697,7 @@ body:not(.is-mobile) .modal.mod-settings {
 
 /* Settings sidebar: roomy rows on the window's own ground. */
 .modal.mod-sidebar-layout .vertical-tab-header {
-  border-right: 0;
+  border-inline-end: 0;
   background-color: transparent;
 }
 
@@ -3040,6 +3052,11 @@ body.still-card-callouts .callout-title {
   padding-inline: 12px 72px;
 }
 
+/* Folded, the title is the whole card: even space above and below. */
+body.still-card-callouts .callout.is-collapsed .callout-title {
+  padding-block: 12px;
+}
+
 body.still-card-callouts .callout-icon {
   position: absolute;
   top: 8px;
@@ -3085,7 +3102,9 @@ body.still-card-callouts .callout-content > :first-child {
   transform: none;
 }
 
-.metadata-container .metadata-content {
+/* In a note the rows reach into the margin so keys line up with the text;
+   the sidebar Properties view keeps core's inset. */
+:is(.markdown-source-view, .markdown-preview-view) .metadata-container .metadata-content {
   margin-inline: -8px;
 }
 
@@ -3275,16 +3294,29 @@ body:is(.theme-light, .theme-dark) .canvas-card-menu .canvas-card-menu-button sv
 
 .canvas-control-item {
   border-color: var(--still-hairline);
+  background-color: transparent;
 }
 
 /* Images and frames round to the image radius everywhere, plugin galleries
-   included. Zero specificity: any rule that sets its own radius wins. */
-:where(img:not(.link-favicon), iframe, video, .file-embed) {
+   included. Zero specificity: any rule that sets its own radius wins. Icons
+   in suggestion rows (Web Viewer's site icons) and PDF page thumbnails stay
+   square. */
+:where(img:not(.link-favicon):not(.thumbnailImage):not(.suggestion-item img), iframe, video, .file-embed) {
   border-radius: var(--image-radius);
 }
 
 .bases-view {
   font-variant-numeric: tabular-nums;
+}
+
+/* Bases cards and Kanban boards (1.15) use the content radius and a hairline
+   instead of core's 16px-scale corners and drop shadow. */
+body {
+  --bases-cards-radius: var(--still-content-radius);
+  --bases-kanban-column-radius: var(--still-content-radius);
+  --bases-kanban-card-radius: var(--still-content-radius);
+  --bases-kanban-card-shadow: 0 0 0 1px var(--background-modifier-border);
+  --bases-kanban-card-shadow-hover: 0 0 0 1px var(--background-modifier-border-hover);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -3458,6 +3490,8 @@ body.is-mobile .markdown-source-view.mod-cm6.is-readable-line-width:is(.table-wi
 .markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > .el-table,
 .markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget,
 :is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.table-wide :is(.markdown-preview-sizer > div > p, .cm-content) > .bases-embed,
+.markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > div > .block-language-base,
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-lang-base,
 .markdown-preview-view.is-readable-line-width.img-wide .markdown-preview-sizer > div > p:is(.markdown-preview-view:not(.img-grid) p, :not(:has(> :is(.image-embed, img) ~ :is(.image-embed, img)))) > :is(.image-embed:not([width]), img:not([width]):not(.link-favicon)),
 .markdown-source-view.mod-cm6.is-readable-line-width.img-wide .cm-content > .cm-line > .image-embed:not([width]):not(:has(img[width])) {
   position: relative;
@@ -3470,7 +3504,9 @@ body.is-mobile .markdown-source-view.mod-cm6.is-readable-line-width:is(.table-wi
   overflow-x: auto;
 }
 
-:is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.table-wide :is(.markdown-preview-sizer > div > p, .cm-content) > .bases-embed {
+:is(.markdown-preview-view, .markdown-source-view.mod-cm6).is-readable-line-width.table-wide :is(.markdown-preview-sizer > div > p, .cm-content) > .bases-embed,
+.markdown-preview-view.is-readable-line-width.table-wide .markdown-preview-sizer > div > .block-language-base,
+.markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-lang-base {
   width: var(--still-wide-width);
 }
 
@@ -3624,6 +3660,10 @@ body:not(.still-table-plain) :is(.markdown-preview-view, .markdown-source-view.m
 /* ========================================================================== */
 
 body.still-graphite {
+  /* Core also paints tags, Canvas tools and Bases resizers from these. */
+  --color-accent: var(--text-normal);
+  --color-accent-1: var(--text-normal);
+  --color-accent-2: var(--text-muted);
   --interactive-accent: var(--text-normal);
   --interactive-accent-hover: var(--text-muted);
   --text-on-accent: var(--background-primary);
@@ -3677,7 +3717,7 @@ body.still-colored-headings :is(.markdown-rendered h4, .HyperMD-header-4) {
   color: var(--still-h4-color, color-mix(in srgb, var(--color-green) 75%, var(--text-normal)));
 }
 body.still-colored-headings :is(.markdown-rendered h5, .HyperMD-header-5) {
-  color: var(--still-h5-color, color-mix(in srgb, var(--color-blue) 75%, var(--text-normal)));
+  color: var(--still-h5-color, color-mix(in srgb, var(--color-blue) 60%, var(--text-normal)));
 }
 body.still-colored-headings :is(.markdown-rendered h6, .HyperMD-header-6) {
   color: var(--still-h6-color, color-mix(in srgb, var(--color-purple) 75%, var(--text-normal)));
@@ -3958,12 +3998,14 @@ body.is-phone {
 }
 
 /* Bottom sheet menus: a tinted sheet with the grabber floating at the top,
-   and each group of actions on its own rounded card with inset dividers. */
+   and each group of actions on its own rounded card with inset dividers.
+   Bases' filter, sort and property sheets lay out their own pages and keep
+   core's look. */
 body.is-phone {
   --menu-padding: 32px 16px;
 }
 
-body.is-phone > .menu {
+body.is-phone > .menu:not(.bases-toolbar-menu) {
   padding: 0;
   overflow: hidden;
   border-radius: var(--radius-l) var(--radius-l) 0 0;
@@ -3971,41 +4013,39 @@ body.is-phone > .menu {
   box-shadow: none;
 }
 
-body.is-phone > .menu .menu-grabber {
+body.is-phone > .menu:not(.bases-toolbar-menu) .menu-grabber {
   position: absolute;
   inset: 0 0 auto;
   z-index: 1;
   margin: 8px auto;
 }
 
-/* Bases' filter, sort and property sheets lay out their own pages and keep
-   core's unpadded, full-height scroll box. */
 body.is-phone > .menu:not(.bases-toolbar-menu) .menu-scroll {
   max-height: min(80dvh, calc(100dvh - var(--keyboard-height, 0px) - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px) - 16px));
   overflow-y: auto;
   padding: 32px 16px calc(16px + var(--safe-area-inset-bottom));
 }
 
-body.is-phone > .menu .menu-item {
+body.is-phone > .menu:not(.bases-toolbar-menu) .menu-item {
   gap: 16px;
   padding: 16px 20px;
   font-size: var(--nav-item-size);
   border-radius: 0;
 }
 
-body.is-phone > .menu .menu-item:not(.is-label) {
+body.is-phone > .menu:not(.bases-toolbar-menu) .menu-item:not(.is-label) {
   background-color: var(--still-sheet-card);
 }
 
-body.is-phone > .menu .menu-item.mobile-tap:not(.is-disabled):not(.is-label) {
+body.is-phone > .menu:not(.bases-toolbar-menu) .menu-item.mobile-tap:not(.is-disabled):not(.is-label) {
   background-color: color-mix(in srgb, var(--still-sheet-card), var(--text-normal) 6%);
 }
 
-body.is-phone > .menu .menu-group .menu-item:only-child {
+body.is-phone > .menu:not(.bases-toolbar-menu) .menu-group .menu-item:only-child {
   border-radius: var(--radius-m);
 }
 
-body.is-phone > .menu .menu-separator {
+body.is-phone > .menu:not(.bases-toolbar-menu) .menu-separator {
   margin: 12px 16px;
 }
 
@@ -4147,10 +4187,15 @@ body.is-phone.still-push-drawers .mod-root[style*="translateX"] + .workspace-dra
 }
 
 body.is-phone.still-push-drawers .mod-root[style*="translateX"] {
-  z-index: 1;
   overflow: hidden;
   border-radius: max(var(--radius-l), var(--safe-area-inset-top));
   box-shadow: 0 0 0 1px var(--still-hairline), 0 8px 32px rgb(0 0 0 / 0.16);
+}
+
+/* 1.14 leaves the sliding note on core's base layer; lift it over the
+   drawer. 1.15 marks it .is-sliding-sidebar and already layers it higher. */
+body.is-phone.still-push-drawers .mod-root[style*="translateX"]:not(.is-sliding-sidebar) {
+  z-index: 1;
 }
 
 /* The dimming cover would sit over the waiting drawer; keep it invisible

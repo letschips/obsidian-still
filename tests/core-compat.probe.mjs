@@ -33,6 +33,15 @@ const cases = [
   ['Active line skips YAML', 'theme-light still-active-line', W('<div class="markdown-source-view mod-cm6"><div class="cm-editor cm-focused"><div class="cm-line cm-active" id=t><span class="cm-hmd-frontmatter">a: b</span></div></div></div>'), 'background-color', 'rgba(0, 0, 0, 0)'],
   ['Tablet pinned drawer has its edge', 'theme-light is-mobile is-tablet', W('<div class="workspace-drawer mod-primary is-pinned" id=t></div>'), 'border-inline-end-width', '1px'],
   ['Print drops the window texture', 'theme-light still-backdrop-frame', '<div class="print"></div>', 'content', 'none', 'body::before'],
+  ['Canvas tool buttons show the group tone', 'theme-dark', W('<div class="canvas-control-group"><div class="canvas-control-item" id=t></div></div>'), 'background-color', 'rgba(0, 0, 0, 0)'],
+  ['Phone Bases sheet keeps core ground', 'theme-dark is-phone is-mobile', '<div class="menu bases-toolbar-menu mod-sheet" id=t><div class="menu-scroll"></div></div><div class="menu mod-sheet" id=u></div>', 'background-color', 'differs'],
+  ['Phone Bases sheet grabber stays in flow', 'theme-light is-phone is-mobile', '<div class="menu bases-toolbar-menu mod-sheet"><div class="menu-grabber" id=t></div></div>', 'position', 'relative'],
+  ['Push drawers: 1.15 note keeps core layer', 'theme-light is-phone is-mobile still-push-drawers', W('<div class="workspace-split mod-root is-sliding-sidebar" id=t style="transform:translateX(300px)"></div>'), 'z-index', '31'],
+  ['Graphite ink: tags carry no accent hue', 'theme-light still-graphite', W('<div class="markdown-rendered"><a class="tag" id=t>#x</a></div>'), 'background-color', 'neutral'],
+  ['Graphite ink: Canvas active tool is ink', 'theme-light still-graphite', W('<div class="canvas-control-group"><div class="canvas-control-item is-active" id=t></div></div>'), 'background-color', 'neutral'],
+  ['Suggestion icons stay square', 'theme-light', W('<div class="suggestion-item"><div class="suggestion-flair-left"><img id=t></div></div>'), 'border-top-left-radius', '0px'],
+  ['Kanban cards use the content radius', 'theme-light', W('<div class="bases-kanban-card" id=t></div>'), 'border-top-left-radius', '10px'],
+  ['Folded card callout is even', 'theme-light still-card-callouts', W('<div class="callout is-collapsed"><div class="callout-title" id=t></div></div>'), 'padding-bottom', '12px'],
 ];
 
 const browser = await chromium.launch({executablePath: chrome});
@@ -41,12 +50,22 @@ let fail = 0;
 for (const [name, cls, html, prop, want, target] of cases) {
   await page.emulateMedia({media: name.startsWith('Print') ? 'print' : 'screen'});
   await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="${cls}">${html}</body></html>`);
-  const got = await page.evaluate(([prop, target]) => {
+  const got = await page.evaluate(([prop, target, want]) => {
     if (target === 'body::before') return getComputedStyle(document.body, '::before').getPropertyValue(prop);
     const a = getComputedStyle(document.getElementById('t')).getPropertyValue(prop);
     const u = document.getElementById('u');
+    if (want === 'neutral') {
+      // Graphite: any accent hue left over shows as unequal channels.
+      const ok = a.match(/^oklch\(\S+ (\S+)/);
+      if (ok) return parseFloat(ok[1]) < 0.02 ? 'neutral' : a;
+      const c = document.createElement('canvas').getContext('2d');
+      c.fillStyle = a; c.fillRect(0, 0, 1, 1);
+      const [r, g, b, al] = c.getImageData(0, 0, 1, 1).data;
+      return al === 0 || Math.max(r, g, b) - Math.min(r, g, b) <= 6 ? 'neutral' : a;
+    }
+    if (want === 'differs') return u && a !== getComputedStyle(u).getPropertyValue(prop) ? 'differs' : a;
     return u ? (a === getComputedStyle(u).getPropertyValue(prop) ? 'same' : a + ' vs ' + getComputedStyle(u).getPropertyValue(prop)) : a;
-  }, [prop, target]);
+  }, [prop, target, want]);
   const ok = got === want;
   if (!ok) fail++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : `: want ${want}, got ${got}`}`);

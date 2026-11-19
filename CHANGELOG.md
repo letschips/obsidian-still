@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.20.4 · 2026-11-19
+
+### Changed
+- **Code highlighting.** Light-mode token colors are a shade deeper so code stays readable on every preset; dark comments are a little brighter.
+- **Colored headings.** H5 is darker in light mode for readable small text.
+- **Bases cards and Kanban.** Corners follow the content radius, and Kanban cards use a hairline instead of a drop shadow.
+
+### Fixed
+- **Graphite ink.** Tags, Canvas tools and Bases resizers no longer show the accent color.
+- **Canvas.** Tool buttons share the toolbar's tone.
+- **Phones.** Bases filter, sort and property sheets keep Obsidian's own layout; Push drawers keeps the sliding note above the drawer on Obsidian 1.15.
+- **Whole window background.** Bases header and summary rows sit on the window color; the find bar and PDF toolbar no longer show a page-colored strip.
+- **Properties view in the sidebar.** Rows keep their inset instead of reaching the panel edges.
+- **Images.** Site icons in suggestions and PDF thumbnails stay square.
+- **Callout cards.** Folded cards have even space above and below the title.
+- **Inline Bases.** ```base blocks follow table-wide like embedded bases.
+
+### 中文
+- 调整：浅色模式代码高亮整体加深一档，在各配方下都清晰可读；深色注释略提亮。
+- 调整：彩色标题的 H5 在浅色模式下加深，小字更易读。
+- 调整：Bases 卡片和看板的圆角跟随正文圆角，看板卡片改用细线、不再用投影。
+- 修复：石墨墨色下标签、Canvas 工具和 Bases 列宽拖柄不再带强调色。
+- 修复：Canvas 工具按钮与工具栏底色一致。
+- 修复：手机端 Bases 筛选、排序、属性面板保持 Obsidian 自身样式；Obsidian 1.15 下「侧栏推开笔记」时笔记保持在侧栏上层。
+- 修复：整窗背景下，Bases 表头和汇总行使用窗口底色，查找栏和 PDF 工具栏不再露出页面色条。
+- 修复：侧栏「笔记属性」面板的属性行保留内边距，不再顶到面板边缘。
+- 修复：建议列表里的网站图标和 PDF 缩略图保持方角。
+- 修复：卡片式提示块折叠后标题上下留白一致。
+- 修复：内联 ```base 代码块与嵌入的 Base 一样支持 table-wide。
+
 ## 0.20.3 · 2026-11-19
 
 ### Fixed
