@@ -28,6 +28,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Soft sidebar peek: the peeking sidebar fades softly into the page, with no shadowed edge | Off |
 | Interface | Auto-hide ribbon, revealed from the left edge together with the sidebar | Off |
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
+| Interface | Hide the Settings button too: with Quiet vault switcher on, Settings stays invisible until the pointer reaches it | Off |
 | Interface | Quiet sidebar toolbar: buttons rest as dots; hover opens them, or a tap on touch screens | Off |
 | Interface | Quiet status bar: hidden until the pointer nears the bottom center | Off |
 | Interface | Always show the status bar: keep the Quiet status bar pill visible on desktop | Off |

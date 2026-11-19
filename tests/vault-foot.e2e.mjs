@@ -1,6 +1,6 @@
 // Quiet vault switcher, driven with synthetic pointer moves in the main window
 // (popout windows ignore CDP moves for :hover). Needs the left sidebar open.
-// Turns the option on for the run and restores it; does not move the real cursor.
+// Turns the options on for the run and restores them; does not move the real cursor.
 // Usage: node tests/vault-foot.e2e.mjs <vault> <report.json>
 import {spawnSync} from 'node:child_process';
 import {writeFileSync} from 'node:fs';
@@ -9,7 +9,7 @@ const code=String.raw`(async()=>{
  const results=[];const check=(name,pass,evidence)=>results.push({name,pass,evidence});
  const pause=ms=>new Promise(r=>setTimeout(r,ms));
  const dbg=require('electron').remote.getCurrentWebContents().debugger;
- const hadOption=document.body.classList.contains('still-hide-vault');let attached=false,stage='setup';
+ const hadOption=document.body.classList.contains('still-hide-vault'),hadSettings=document.body.classList.contains('still-hide-vault-settings');let attached=false,stage='setup';
  try{
   const profile=document.querySelector('.mod-left-split .workspace-sidedock-vault-profile');
   if(!profile||!profile.offsetWidth)throw Error('Open the left sidebar first');
@@ -33,10 +33,20 @@ const code=String.raw`(async()=>{
   await mouse(nx,ny);await pause(16);const regained=profile.matches(':hover');
   await mouse(nx,profile.getBoundingClientRect().top-60);await pause(700);const gone=onName();
   check('Vault name lingers after the pointer leaves, then goes',lingering&&regained&&!gone,{lingering,regained,gone});
+  stage='settings';const gear=profile.querySelector('.workspace-drawer-vault-actions .clickable-icon:last-child'),op=()=>parseFloat(getComputedStyle(gear).opacity);
+  document.body.classList.remove('still-hide-vault-settings');await away();const shownByDefault=op();
+  document.body.classList.add('still-hide-vault-settings');await pause(700);const restOp=op();
+  await mouse(gx,gy);await pause(300);const hoverOp=op(),gearHit=gear.contains(document.elementFromPoint(Math.round(gx),Math.round(gy)));
+  await mouse(gx,profile.getBoundingClientRect().top-60);await pause(150);const lingerOp=op();await pause(700);const goneOp=op();
+  check('Settings stays visible unless its option is on',shownByDefault===1,{shownByDefault});
+  check('Hidden Settings rests invisible, still under the pointer, and returns on hover',restOp===0&&gearHit&&hoverOp===1,{restOp,gearHit,hoverOp});
+  check('Hidden Settings lingers with the name, then goes',lingerOp===1&&goneOp===0,{lingerOp,goneOp});
+  document.body.classList.remove('still-hide-vault');await pause(300);const offWithoutQuiet=op();document.body.classList.add('still-hide-vault');
+  check('Hide Settings does nothing without the quiet switcher',offWithoutQuiet===1,{offWithoutQuiet});
  }catch(e){check('Run '+stage,false,{error:String(e)})}finally{
   try{await dbg.sendCommand('Input.dispatchMouseEvent',{type:'mouseMoved',x:Math.round(innerWidth/2),y:Math.round(innerHeight/2)})}catch{}
   if(attached)try{dbg.detach()}catch{}
-  document.body.classList.toggle('still-hide-vault',hadOption);
+  document.body.classList.toggle('still-hide-vault',hadOption);document.body.classList.toggle('still-hide-vault-settings',hadSettings);
  }
  return JSON.stringify({vault:app.vault.getName(),theme:app.customCss.theme,results,passed:results.filter(r=>r.pass).length,total:results.length});
 })()`;

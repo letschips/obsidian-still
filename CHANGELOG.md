@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.5 · 2026-11-19
+
+### Added
+- **Hide the Settings button too.** With Quiet vault switcher on, the Settings button at the foot of the left sidebar can stay invisible until the pointer reaches it.
+
+### 中文
+- 新增：「设置按钮也隐藏」选项。打开「安静的库切换器」后，左侧栏底部的设置按钮可以平时不显示，鼠标移上去才出现。
+
 ## 0.20.4 · 2026-11-19
 
 ### Changed

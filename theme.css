@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.20.4 · MIT License · https://github.com/letschips
+  Version 0.20.5 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -503,6 +503,14 @@ settings:
     title.zh: 安静的库切换器
     description: The vault foot floats over the sidebar with only the Settings button; the vault name appears when the pointer reaches it. Help is in the command palette (search for Help).
     description.zh: 库信息浮在侧栏底部，只留设置按钮；鼠标移上去才显示库名。帮助可在命令面板搜索「查看帮助」打开。
+    type: class-toggle
+    default: false
+  -
+    id: still-hide-vault-settings
+    title: Hide the Settings button too
+    title.zh: 设置按钮也隐藏
+    description: Works with Quiet vault switcher. The Settings button keeps its place but stays invisible until the pointer reaches it.
+    description.zh: 配合「安静的库切换器」使用：设置按钮位置不变，平时不显示，鼠标移上去才出现。
     type: class-toggle
     default: false
   -
@@ -2238,6 +2246,17 @@ body.still-hide-vault:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-
   visibility: hidden;
   transition: opacity var(--still-fast) var(--still-ease-out) var(--still-vault-linger),
     visibility 0s linear calc(var(--still-vault-linger) + var(--still-fast));
+}
+
+/* Option: hide Settings too. The button keeps its spot and its hit area, so
+   reaching it brings the whole foot back; it fades out with the name. */
+body.still-hide-vault.still-hide-vault-settings:not(.is-mobile) .mod-left-split .workspace-drawer-vault-actions .clickable-icon {
+  transition: opacity var(--still-fast) var(--still-ease-out);
+}
+
+body.still-hide-vault.still-hide-vault-settings:not(.is-mobile) .mod-left-split .workspace-sidedock-vault-profile:not(:hover):not(:focus-within) .workspace-drawer-vault-actions .clickable-icon {
+  opacity: 0;
+  transition: opacity var(--still-fast) var(--still-ease-out) var(--still-vault-linger);
 }
 
 /* ========================================================================== */
