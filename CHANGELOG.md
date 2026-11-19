@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.20.3 · 2026-11-19
+
+### Fixed
+- **Web Viewer.** The address bar stays visible when the header title is hidden.
+- **Settings sub-pages.** The back button is no longer covered by the window's title bar.
+- **Popout windows.** No extra gap beside the window controls with the auto-hide ribbon.
+- **Bases.** Multi-line tables wrap again; phone filter, sort and property sheets keep their full height.
+- **Dark PDFs.** No double inversion when Obsidian's own Adapt to theme is on.
+- **Canvas.** Both toolbars share one floating tone in dark mode.
+- **Phones.** Push drawers keeps the note undimmed on Obsidian 1.15.
+- **Tablets.** Pinned sidebars get their edge line.
+- **Callout cards.** The corner icon follows right-to-left titles.
+- **Active line.** YAML lines in Source mode stay clear.
+- **Notices.** Light progress bars on light notices.
+- **Print and PDF export.** The window background and texture stay off the page.
+
+### 中文
+- 修复：隐藏视图标题时，网页浏览器的地址栏仍然可见。
+- 修复：设置子页的返回按钮不再被窗口标题栏挡住。
+- 修复：开启自动隐藏功能区时，弹出窗口的窗口按钮旁不再多出空白。
+- 修复：Bases 多行表格恢复换行；手机端筛选、排序、属性面板保持完整高度。
+- 修复：开启 Obsidian 自带「适应主题」时，深色 PDF 不再二次反色。
+- 修复：深色模式下 Canvas 两组工具栏底色统一。
+- 修复：Obsidian 1.15 手机端「侧栏推开笔记」时，笔记不再被压暗。
+- 修复：平板固定侧栏显示分隔线。
+- 修复：卡片式提示块的角标图标跟随从右到左的标题。
+- 修复：源码模式下 YAML 行不再显示当前行底色。
+- 修复：浅色通知里的进度条改为浅色轨道。
+- 修复：打印和导出 PDF 时不带窗口背景和纹理。
+
 ## 0.20.2 · 2026-11-16
 
 ### Fixed

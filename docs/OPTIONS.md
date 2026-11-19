@@ -25,7 +25,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Left-aligned tabs; tabs fit their titles | Off |
 | Interface | Always show the note title in the header (otherwise it appears on hover) | Off |
 | Interface | Disable sidebar peek | Off |
-| Interface | Soft sidebar peek: the peeking sidebar sits on the page color and fades into the page, with no shadowed edge | Off |
+| Interface | Soft sidebar peek: the peeking sidebar fades softly into the page, with no shadowed edge | Off |
 | Interface | Auto-hide ribbon, revealed from the left edge together with the sidebar | Off |
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
 | Interface | Quiet sidebar toolbar: buttons rest as dots; hover opens them, or a tap on touch screens | Off |

@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.20.2 · MIT License · https://github.com/letschips
+  Version 0.20.3 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -484,8 +484,8 @@ settings:
     id: still-peek-soft
     title: Soft sidebar peek
     title.zh: 柔和侧栏展开
-    description: The peeking sidebar sits on the page color and fades into the page, with no shadowed edge.
-    description.zh: 滑出的侧栏使用页面底色并渐隐到页面里，没有阴影边。
+    description: The peeking sidebar fades softly into the page, with no shadowed edge.
+    description.zh: 滑出的侧栏柔和地渐隐到页面里，没有阴影边。
     type: class-toggle
     default: false
   -
@@ -1197,7 +1197,7 @@ body.still-link-underline .markdown-source-view.mod-cm6:not(.no-link-underline) 
 
 /* Only the focused editor's current text line gets a wash. Blocks with
    their own ground keep it, and changing focus never changes geometry. */
-body.still-active-line .markdown-source-view.mod-cm6 .cm-editor.cm-focused .cm-line.cm-active:not(.HyperMD-codeblock):not(.HyperMD-quote):not(.HyperMD-frontmatter) {
+body.still-active-line .markdown-source-view.mod-cm6 .cm-editor.cm-focused .cm-line.cm-active:not(.HyperMD-codeblock):not(.HyperMD-quote):not(.HyperMD-frontmatter):not(:has(.cm-hmd-frontmatter)) {
   background-color: var(--still-wash);
 }
 
@@ -1370,8 +1370,9 @@ body:not(.is-mobile) .mod-sidedock > .workspace-leaf-resize-handle:not(:hover) {
   font-weight: 500;
 }
 
-/* The header title stays out of the way until the pointer reaches it. */
-body:not(.still-header-title):not(.is-mobile) .view-header-title-container {
+/* The header title stays out of the way until the pointer reaches it.
+   Web Viewer puts its address bar in the same container, so it stays. */
+body:not(.still-header-title):not(.is-mobile) .view-header-title-container:not(.webviewer-address-container) {
   opacity: 0;
   transition: opacity var(--still-fast) var(--still-ease-out);
 }
@@ -2441,7 +2442,7 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
 }
 
 /* Core's own no-drag corner sits before the tab strip, which outranks it. */
-body.still-peek-ribbon.show-ribbon.is-hidden-frameless:not(.is-fullscreen):not(.mod-macos):not(.is-mobile) .workspace-tabs.mod-top-left-space .workspace-tab-header-container-inner::after {
+body.still-peek-ribbon.show-ribbon.is-hidden-frameless:not(.is-fullscreen):not(.mod-macos):not(.is-mobile):not(.is-popout-window) .workspace-tabs.mod-top-left-space .workspace-tab-header-container-inner::after {
   content: "";
   position: absolute;
   inset-block: 0;
@@ -2475,9 +2476,10 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
 
 /* macOS: core sizes the traffic-light gap assuming the ribbon fills the
    corner. A parked ribbon leaves the corner empty, so add its width back.
+   Popout windows have no ribbon and keep core's gap.
    While an open sidebar is shifted for the ribbon, the header gives back the
    same amount, so the window controls and toolbar stay where they are. */
-body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile):not(.is-popout-window) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
   padding-left: calc(var(--size-4-2) + var(--frame-left-space) + var(--ribbon-width));
   transition: padding-left var(--still-moderate) var(--still-glide);
 }
@@ -2616,6 +2618,13 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
   border-radius: var(--radius-m);
 }
 
+/* Core draws the progress track near-black for its dark light-mode notice;
+   Still's notice is light, so the track follows the surface. */
+.theme-light .notice progress[value]::-webkit-progress-bar {
+  background-color: var(--background-modifier-hover);
+  box-shadow: inset 0 0 0 1px var(--still-hairline);
+}
+
 .tooltip {
   border-radius: var(--radius-s);
   font-size: var(--font-ui-smaller);
@@ -2752,6 +2761,14 @@ body.is-frameless.is-hidden-frameless.is-popout-modal:not(.is-fullscreen):not(.i
   height: calc(100% - var(--titlebar-height));
   margin-top: var(--titlebar-height);
   padding-top: calc(var(--size-4-12) - var(--titlebar-height));
+}
+
+/* Sub-pages (Appearance > CSS snippets and the like) stop below the bar too,
+   or it covers their back button; their sticky title row keeps core's
+   spacing. */
+body.is-frameless.is-hidden-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) .modal.mod-settings .setting-page.vertical-tab-content {
+  height: calc(100% - var(--titlebar-height));
+  margin-top: var(--titlebar-height);
 }
 
 body.is-frameless.is-hidden-frameless.is-popout-modal:not(.is-fullscreen):not(.is-mobile) .vertical-tab-header {
@@ -3019,13 +3036,14 @@ body.still-card-callouts.theme-dark .callout {
 /* The right padding keeps a long title clear of the corner icon
    (56px wide, 16px from the edge). */
 body.still-card-callouts .callout-title {
-  padding: 12px 72px 16px 12px;
+  padding-block: 12px 16px;
+  padding-inline: 12px 72px;
 }
 
 body.still-card-callouts .callout-icon {
   position: absolute;
   top: 8px;
-  right: 16px;
+  inset-inline-end: 16px;
   width: 56px;
   max-height: calc(100% - 16px);
   opacity: 0.2;
@@ -3080,8 +3098,9 @@ body.still-card-callouts .callout-content > :first-child {
 }
 
 /* Long text values stay on one line until focused, so the block keeps an
-   even rhythm. */
-.metadata-input-longtext:not(:focus) {
+   even rhythm. Note properties only: Bases cells, cards and filters keep
+   core's wrapping, including multi-line tables. */
+.metadata-properties .metadata-input-longtext:not(:focus) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: pre;
@@ -3239,12 +3258,19 @@ body.still-canvas-plain {
   border-radius: var(--still-content-radius);
 }
 
-.canvas-card-menu,
-.canvas-control-group {
-  border: 1px solid var(--still-hairline);
+/* Both toolbars float like Still's menus. The body classes outrank core's
+   .theme-dark .canvas-card-menu, which would split the two tones. */
+body:is(.theme-light, .theme-dark) .canvas-card-menu,
+body:is(.theme-light, .theme-dark) .canvas-control-group {
+  border: 0;
   border-radius: var(--radius-s);
-  background-color: var(--background-primary);
-  box-shadow: var(--shadow-s);
+  background-color: var(--still-raised);
+  box-shadow: var(--still-float-shadow);
+}
+
+/* The card icons are filled with the toolbar's own tone. */
+body:is(.theme-light, .theme-dark) .canvas-card-menu .canvas-card-menu-button svg {
+  fill: var(--still-raised);
 }
 
 .canvas-control-item {
@@ -3657,7 +3683,9 @@ body.still-colored-headings :is(.markdown-rendered h6, .HyperMD-header-6) {
   color: var(--still-h6-color, color-mix(in srgb, var(--color-purple) 75%, var(--text-normal)));
 }
 
-body.theme-dark.still-pdf-dark .pdf-container .pdfViewer .page {
+/* Core's own Adapt to theme (.mod-themed) already darkens pages; inverting
+   again would bring the white back. */
+body.theme-dark.still-pdf-dark .pdf-container:not(.mod-themed) .pdfViewer .page {
   filter: invert(1) hue-rotate(180deg) contrast(0.8);
 }
 
@@ -3950,7 +3978,9 @@ body.is-phone > .menu .menu-grabber {
   margin: 8px auto;
 }
 
-body.is-phone > .menu .menu-scroll {
+/* Bases' filter, sort and property sheets lay out their own pages and keep
+   core's unpadded, full-height scroll box. */
+body.is-phone > .menu:not(.bases-toolbar-menu) .menu-scroll {
   max-height: min(80dvh, calc(100dvh - var(--keyboard-height, 0px) - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px) - 16px));
   overflow-y: auto;
   padding: 32px 16px calc(16px + var(--safe-area-inset-bottom));
@@ -4139,6 +4169,14 @@ body.is-phone.still-push-drawers .is-right-sidedock-open > .mod-root[style*="tra
   width: auto;
 }
 
+/* Obsidian 1.15 moves the cover into the note itself and adds a second one
+   over the tab bar; the rules above only match 1.14. Both stay invisible and
+   still take the closing tap. */
+body.is-phone.still-push-drawers .mod-root.is-sliding-sidebar > .workspace-drawer-backdrop,
+body.is-phone.still-push-drawers .mobile-navbar.is-sliding-sidebar > .workspace-drawer-navbar-backdrop {
+  opacity: 0 !important;
+}
+
 /* Pull gestures (pull down for the chosen command, two-finger swipe for
    back and forward): a pill on the raised tone that fills with the accent
    once releasing will act. The pull-down box keeps core's padding, since
@@ -4222,11 +4260,11 @@ body.is-tablet .workspace-drawer.is-pinned {
   border-radius: 0;
 }
 
-body.is-tablet .workspace-drawer.is-pinned.mod-left {
+body.is-tablet .workspace-drawer.is-pinned.mod-primary {
   border-inline-end: 1px solid var(--still-hairline);
 }
 
-body.is-tablet .workspace-drawer.is-pinned.mod-right {
+body.is-tablet .workspace-drawer.is-pinned.mod-secondary {
   border-inline-start: 1px solid var(--still-hairline);
 }
 
@@ -4316,5 +4354,14 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
 
   .markdown-rendered :is(.collapse-indicator, .copy-code-button, .callout-fold) {
     display: none;
+  }
+
+  /* The window ground and its texture layer never reach the paper. */
+  body {
+    background: none !important;
+  }
+
+  body::before {
+    content: none !important;
   }
 }

@@ -62,7 +62,7 @@ const code=String.raw`(async()=>{
   doc.body.classList.add('still-peek-soft');const soft=surface().image;doc.body.classList.remove('still-peek-soft');const solid=surface().image;doc.body.classList.toggle('still-peek-soft',hadSoft);
   ribbon.classList.remove('is-collapsed');
   doc.body.classList.remove('still-peek-ribbon','show-ribbon');doc.body.classList.add(...had);
-  check('Floating ribbon matches the peek panel surface',soft.includes(tone('--background-primary'))&&solid.includes(tone('--background-secondary')),{soft,solid});
+  check('Floating ribbon matches the peek panel surface',soft.includes(tone('--background-secondary'))&&solid.includes(tone('--background-secondary')),{soft,solid});
   check('Floating ribbon paints its own opaque surface',parked.image.startsWith('linear-gradient')&&parked.position==='absolute'&&parked.zIndex==='-1'&&plain.image==='none',{plain,parked});
   check('Ribbon beside an open sidebar has no surface',open.image==='none',{open});
   // Ribbon tiles: 32px hit areas, 4px apart, centred in the ribbon.
