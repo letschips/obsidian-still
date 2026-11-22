@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.20.6 · 2026-11-22
+
+### Changed
+- **Faster style recalculation (macOS & iOS).** First-line indent uses explicit `HyperMD-*` line classes and scopes its child reset to active indent contexts instead of `[class*="HyperMD-"]`, eliminating full-subtree style invalidation on unrelated class toggles and cutting CodeMirror cursor-move recalculation.
+- **Lighter touch interaction (iOS).** Hover-only color transitions on tabs, tree rows, icons and buttons stay on fine-pointer hover devices; mobile file-tree rows drop core's 100 ms row transition so taps respond at once.
+- **Standard ligature property.** Body typography uses `font-variant-ligatures: common-ligatures contextual` instead of low-level `font-feature-settings`, keeping WebKit's fast text layout path on iOS.
+- **Lighter Mottled texture.** The Mottled SVG tile drops from `1536×1024` (3-octave) to `1024×768` (2-octave), halving Retina GPU texture memory and cutting rasterization time while keeping the same visual distribution.
+- **Faster CJK tables and contained toolbar motion.** CJK `text-wrap-style: pretty` skips `td`/`th` table cells; Quiet sidebar toolbar isolates layout with `contain: layout style` and animates `margin-inline` only on mobile; Push drawers uses a lighter drag shadow on phones.
+
+### Fixed
+- **CJK code spacing.** Code blocks and inline code under CJK typography reset `text-spacing-trim: space-all` and `text-wrap-style: auto`, keeping fullwidth brackets untouched.
+- **First-line indent with YAML frontmatter.** Obsidian 1.15 frontmatter lines (`.cm-hmd-frontmatter`) are no longer indented, and a paragraph directly following frontmatter keeps its first-line indent.
+- **Justified math blocks.** Live Preview math lines (`.HyperMD-math`) stay un-justified under Justified paragraphs.
+
+### 中文
+- 优化：重构「首行缩进」的编辑器选择器，去掉会触发全树样式失效的 `[class*="HyperMD-"]` 通配匹配并将子元素重置限定到缩进生效范围，显著降低 macOS 与 iOS 的样式重算和编辑器光标移动开销。
+- 优化：标签、文件树行、图标和按钮的悬停过渡收敛到精细指针设备，移动端关闭文件树行 100 ms 颜色过渡，iOS 点选更跟手。
+- 优化：正文连字改用标准属性 `font-variant-ligatures: common-ligatures contextual` 替代底层 `font-feature-settings`，避免 iOS WebKit 退出快速文本排版路径。
+- 优化：斑驳纹理（Mottled）SVG 瓦片调整为 `1024×768`（低频层 2-octave），在保持观感与分布指标不变的前提下，Retina 显存减半、光栅化耗时大幅下降。
+- 优化：中文排版 `text-wrap-style: pretty` 排除表格单元格（`td`/`th`）以提升大表重排速度；「安静的侧栏工具栏」补充 `contain: layout style` 并收窄移动端过渡为 `margin-inline`；手机端「侧栏推开笔记」减轻拖动投影。
+- 修复：开启「中文排版」时，代码块重置 `text-spacing-trim: space-all` 与 `text-wrap-style: auto`，行首全角括号不再被压缩。
+- 修复：开启「首行缩进」时，Obsidian 1.15 源码态 YAML Frontmatter 不再被缩进，紧跟 Frontmatter 的首段正常缩进。
+- 修复：开启「两端对齐」时，实时预览公式行（`.HyperMD-math`）不再被两端对齐。
+
 ## 0.20.5 · 2026-11-19
 
 ### Added

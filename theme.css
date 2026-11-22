@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.20.5 · MIT License · https://github.com/letschips
+  Version 0.20.6 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1155,7 +1155,7 @@ body {
 }
 
 body {
-  font-feature-settings: "liga" 1, "calt" 1;
+  font-variant-ligatures: common-ligatures contextual;
 }
 
 .markdown-rendered a,
@@ -1244,16 +1244,20 @@ body.still-cjk :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content
   text-wrap-style: initial;
 }
 
-/* The default spacing, so this holds with the option off. */
+/* The default spacing, so this holds with the option off. Code keeps its
+   exact width and wrapping even inside CJK paragraphs or callouts. */
 :is(.markdown-rendered, .markdown-source-view.mod-cm6 .cm-content) :is(code, pre, kbd, .cm-inline-code, .HyperMD-codeblock) {
   text-autospace: no-autospace;
+  text-spacing-trim: space-all;
+  text-wrap-style: auto;
 }
 
 /* WebKit on iOS rebalances every line of a short paragraph under pretty,
    leaving a ragged column well short of the line width, so iOS keeps
-   normal wrapping. */
-body.still-cjk:not(.is-ios) .markdown-rendered :is(p, li, td, th, .callout-content):not(.no-cjk *),
-body:not(.is-ios) .markdown-rendered:is(.cjk, .cjk *) :is(p, li, td, th, .callout-content):not(.no-cjk *) {
+   normal wrapping. Table cells stay on normal wrapping to avoid DP line-break
+   overhead across large tables. */
+body.still-cjk:not(.is-ios) .markdown-rendered :is(p, li, .callout-content):not(.no-cjk *),
+body:not(.is-ios) .markdown-rendered:is(.cjk, .cjk *) :is(p, li, .callout-content):not(.no-cjk *) {
   text-wrap-style: pretty;
 }
 
@@ -1268,8 +1272,8 @@ body.still-cjk .markdown-rendered :is(h1, h2, h3, h4, h5, h6):not(.no-cjk *),
    rows keep their own alignment. */
 body.still-justify .markdown-rendered :is(p, li):not(.no-justify *),
 .markdown-rendered:is(.justify, .justify *) :is(p, li):not(.no-justify *),
-body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row):not(.HyperMD-frontmatter):not(:has(.cm-hmd-frontmatter)),
-.markdown-source-view.mod-cm6.justify .cm-content > .cm-line:not(.HyperMD-header):not(.HyperMD-codeblock):not(.HyperMD-table-row):not(.HyperMD-frontmatter):not(:has(.cm-hmd-frontmatter)) {
+body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-table-row, .HyperMD-frontmatter, .HyperMD-math):not(:has(.cm-hmd-frontmatter)),
+.markdown-source-view.mod-cm6.justify .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-table-row, .HyperMD-frontmatter, .HyperMD-math):not(:has(.cm-hmd-frontmatter)) {
   text-align: justify;
 }
 
@@ -1288,28 +1292,38 @@ body.theme-dark.still-highlight-strong {
 }
 
 /* Option: first-line indent, two characters, as Chinese body text is set.
-   Only plain paragraphs: lists, quotes, callouts, tables and code keep
-   their own edge, and a paragraph that holds an embed or image
-   stays flush. In Live Preview each source line is its own block.
+   Only plain paragraphs: lists, quotes, callouts, tables, math, frontmatter
+   and code keep their own edge, and a paragraph that holds an embed or image
+   stays flush. Explicit HyperMD-* classes avoid [class*="HyperMD-"], which
+   disables targeted class invalidation in Blink/WebKit.
    Per note: indent / no-indent. */
 body.still-indent .markdown-rendered .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img))),
 .markdown-rendered:is(.indent, .indent *) .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img))),
-body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))),
-.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not([class*="HyperMD-"]):not(:has(> :is(.internal-embed, img))) {
+body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> :is(.internal-embed, img), .cm-hmd-frontmatter)),
+.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> :is(.internal-embed, img), .cm-hmd-frontmatter)) {
   text-indent: 2em;
 }
 
 /* Live Preview draws every source line as its own block. A line right
    after another line of text continues the same paragraph, and a lazy
    continuation under a list item stays part of the item, so only the
-   first paragraph line indents, as in reading view. */
-.markdown-source-view.mod-cm6.is-live-preview:is(.indent, body.still-indent *) .cm-content > :is(.cm-line:not([class*="HyperMD-"]):not(:has(> br:only-child)), .HyperMD-list-line) + .cm-line:not([class*="HyperMD-"]) {
+   first paragraph line indents, as in reading view. Frontmatter lines do
+   not suppress indentation on a following paragraph. */
+body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > :is(.cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> br:only-child, .cm-hmd-frontmatter)), .HyperMD-list-line) + .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter),
+.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > :is(.cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> br:only-child, .cm-hmd-frontmatter)), .HyperMD-list-line) + .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter) {
   text-indent: 0;
 }
 
 /* text-indent inherits: inline widgets inside an indented paragraph (math,
-   pills, inline blocks) start from zero again. */
-:where(.markdown-rendered .el-p > p, .markdown-source-view.mod-cm6.is-live-preview .cm-content > .cm-line:not([class*="HyperMD-"])) > * {
+   pills, inline blocks) start from zero again. Scoped to active indent
+   contexts without [class*=] so unrelated class mutations skip subtree
+   invalidation. */
+:where(
+  body.still-indent .markdown-rendered:not(.no-indent) .el-p > p,
+  .markdown-rendered:is(.indent, .indent *) .el-p > p,
+  body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter),
+  .markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter)
+) > * {
   text-indent: 0;
 }
 
@@ -1785,11 +1799,11 @@ body.still-texture-frosted:is(.still-preset-paper, .still-preset-mist, .still-pr
 }
 
 body.theme-light.still-texture-mottled {
-  --still-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1536' height='1024'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='3' seed='41' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 4 0 0 0 -2.02' result='distribution'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .045' numOctaves='3' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12000 0 0 0 -0.04800' result='mottle'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='1' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.22000 0 0 0 -0.11000'/%3E%3CfeBlend in2='mottle' mode='normal' result='surface'/%3E%3CfeComposite in='surface' in2='distribution' operator='in'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14.285714 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.07'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --still-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='768'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='2' seed='41' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 4 0 0 0 -2.02' result='distribution'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .045' numOctaves='2' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.12000 0 0 0 -0.04800' result='mottle'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='1' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.22000 0 0 0 -0.11000'/%3E%3CfeBlend in2='mottle' mode='normal' result='surface'/%3E%3CfeComposite in='surface' in2='distribution' operator='in'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14.285714 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.07'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 body.theme-dark.still-texture-mottled {
-  --still-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1536' height='1024'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='3' seed='41' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 4 0 0 0 -2.02' result='distribution'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .045' numOctaves='3' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.08400 0 0 0 -0.03360' result='mottle'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='1' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.15400 0 0 0 -0.07700'/%3E%3CfeBlend in2='mottle' mode='normal' result='surface'/%3E%3CfeComposite in='surface' in2='distribution' operator='in'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 14.285714 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.07'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --still-mottle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='768'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .009' numOctaves='2' seed='41' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 4 0 0 0 -2.02' result='distribution'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.035 .045' numOctaves='2' seed='19' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.08400 0 0 0 -0.03360' result='mottle'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='1' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.15400 0 0 0 -0.07700'/%3E%3CfeBlend in2='mottle' mode='normal' result='surface'/%3E%3CfeComposite in='surface' in2='distribution' operator='in'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 14.285714 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.07'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 body.still-texture-mottled:is(.still-preset-paper, .still-preset-mist, .still-preset-sand, .still-preset-sage, .still-preset-graphite, .still-preset-night):is(.still-backdrop-frame, .still-backdrop-window):not(.is-mobile):not(.is-popout-window):not(.is-popout-modal)::before {
@@ -1815,9 +1829,11 @@ body.still-texture-mottled:is(.still-preset-paper, .still-preset-mist, .still-pr
   display: none;
 }
 
-.workspace-tab-header {
-  transition: background-color var(--still-fast) var(--still-ease-out),
-    color var(--still-fast) var(--still-ease-out);
+@media (hover: hover) and (pointer: fine) {
+  .workspace-tab-header {
+    transition: background-color var(--still-fast) var(--still-ease-out),
+      color var(--still-fast) var(--still-ease-out);
+  }
 }
 
 .workspace-tab-header:not(.is-active):hover {
@@ -1985,8 +2001,13 @@ body:not(.is-mobile) .mod-sidedock .view-content .nav-header {
 
 .tree-item-self {
   border-radius: var(--radius-s);
-  transition: background-color var(--still-fast) var(--still-ease-out),
-    color var(--still-fast) var(--still-ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tree-item-self {
+    transition: background-color var(--still-fast) var(--still-ease-out),
+      color var(--still-fast) var(--still-ease-out);
+  }
 }
 
 .tree-item-self.is-clickable:active {
@@ -2019,9 +2040,11 @@ body:not(.is-mobile) .mod-sidedock .view-content .nav-header {
   gap: 2px;
 }
 
-.clickable-icon {
-  transition: background-color var(--still-fast) var(--still-ease-out),
-    color var(--still-fast) var(--still-ease-out);
+@media (hover: hover) and (pointer: fine) {
+  .clickable-icon {
+    transition: background-color var(--still-fast) var(--still-ease-out),
+      color var(--still-fast) var(--still-ease-out);
+  }
 }
 
 .clickable-icon:active {
@@ -2072,6 +2095,7 @@ body.still-quiet-nav:not(.is-mobile) .mod-sidedock .nav-header:first-child .nav-
   justify-content: safe center;
   align-items: center;
   gap: 4px;
+  contain: layout style;
 }
 
 /* Opening: a short intent delay so a pointer passing through doesn't fire
@@ -2139,6 +2163,7 @@ body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-bu
   justify-content: safe center;
   align-items: center;
   gap: 4px;
+  contain: layout style;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -2150,7 +2175,7 @@ body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-ac
   height: var(--still-touch-target);
   padding: 0;
   background-color: transparent;
-  transition: margin 240ms var(--still-glide);
+  transition: margin-inline 240ms var(--still-glide);
 }
 
 body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-action-button::after {
@@ -2184,7 +2209,7 @@ body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-bu
 body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container:not(:hover):not(:has(:focus-visible)) .nav-action-button {
   visibility: hidden;
   margin-inline: -20px;
-  transition: margin 200ms var(--still-glide) 40ms, visibility 0s linear 240ms;
+  transition: margin-inline 200ms var(--still-glide) 40ms, visibility 0s linear 240ms;
 }
 
 body.still-quiet-nav.is-mobile .workspace-drawer .nav-header:first-child .nav-buttons-container:not(:hover):not(:has(:focus-visible)) .nav-action-button::after {
@@ -2573,8 +2598,13 @@ body:not(.is-mobile) .workspace-ribbon.mod-primary .side-dock-ribbon-action {
 
 :where(button:not(.clickable-icon)) {
   font-weight: 500;
-  transition: background-color var(--still-fast) var(--still-ease-out),
-    box-shadow var(--still-fast) var(--still-ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :where(button:not(.clickable-icon)) {
+    transition: background-color var(--still-fast) var(--still-ease-out),
+      box-shadow var(--still-fast) var(--still-ease-out);
+  }
 }
 
 :where(button, .clickable-icon, [role="button"]):focus-visible {
@@ -3962,6 +3992,12 @@ body.is-mobile {
   --blur-opacity-m: 100%;
 }
 
+/* Touch screens have no hover; skipping core's 100ms tree-row transition
+   keeps file-list taps and active-state updates immediate on iOS. */
+body.is-mobile .tree-item-self {
+  transition: none;
+}
+
 /* Settings keeps core's own surface, even inside a dimmed modal container. */
 body.is-mobile .modal.mod-settings {
   background-color: var(--settings-background);
@@ -4208,7 +4244,7 @@ body.is-phone.still-push-drawers .mod-root[style*="translateX"] + .workspace-dra
 body.is-phone.still-push-drawers .mod-root[style*="translateX"] {
   overflow: hidden;
   border-radius: max(var(--radius-l), var(--safe-area-inset-top));
-  box-shadow: 0 0 0 1px var(--still-hairline), 0 8px 32px rgb(0 0 0 / 0.16);
+  box-shadow: 0 0 0 1px var(--still-hairline), 0 4px 16px rgb(0 0 0 / 0.14);
 }
 
 /* 1.14 leaves the sliding note on core's base layer; lift it over the

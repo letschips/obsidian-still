@@ -42,11 +42,27 @@ const cases = [
   ['Suggestion icons stay square', 'theme-light', W('<div class="suggestion-item"><div class="suggestion-flair-left"><img id=t></div></div>'), 'border-top-left-radius', '0px'],
   ['Kanban cards use the content radius', 'theme-light', W('<div class="bases-kanban-card" id=t></div>'), 'border-top-left-radius', '10px'],
   ['Folded card callout is even', 'theme-light still-card-callouts', W('<div class="callout is-collapsed"><div class="callout-title" id=t></div></div>'), 'padding-bottom', '12px'],
+  ['CJK code blocks keep exact spacing', 'theme-light still-cjk', W('<div class="markdown-rendered"><pre><code id=t>「a」</code></pre></div>'), 'text-spacing-trim', 'space-all'],
+  ['CJK table cells skip pretty wrapping', 'theme-light still-cjk', W('<div class="markdown-rendered"><table><tbody><tr><td id=t>cell</td></tr></tbody></table></div>'), 'text-wrap-style', 'auto'],
+  ['First-line indent skips YAML frontmatter', 'theme-light still-indent', W('<div class="markdown-source-view mod-cm6 is-live-preview"><div class="cm-content"><div class="cm-line" id=t><span class="cm-hmd-frontmatter">---</span></div></div></div>'), 'text-indent', '0px'],
+  ['First paragraph after YAML still indents', 'theme-light still-indent', W('<div class="markdown-source-view mod-cm6 is-live-preview" style="font-size:16px"><div class="cm-content"><div class="cm-line"><span class="cm-hmd-frontmatter">---</span></div><div class="cm-line" id=t>Body</div></div></div>'), 'text-indent', '32px'],
+  ['Justify skips math blocks', 'theme-light still-justify', W('<div class="markdown-source-view mod-cm6 is-live-preview"><div class="cm-content"><div class="cm-line HyperMD-math" id=t>$$x$$</div></div></div>'), 'text-align', 'start'],
+  ['Mobile tree items drop hover transition', 'theme-light is-mobile is-ios is-phone', W('<div class="tree-item-self" id=t>Note</div>'), 'transition-property', 'none'],
 ];
+
+// Static perf guard: [class*=...] to the left of a combinator triggers
+// WholeSubtreeInvalidation on every class mutation across the document.
+const hasClassSubstring = /\[class\*=/.test(theme.replace(/\/\*[\s\S]*?\*\//g, ''));
+let fail = 0;
+if (hasClassSubstring) {
+  fail++;
+  console.log('FAIL No [class*=] attribute substring selectors in theme.css');
+} else {
+  console.log('ok   No [class*=] attribute substring selectors in theme.css');
+}
 
 const browser = await chromium.launch({executablePath: chrome});
 const page = await browser.newPage();
-let fail = 0;
 for (const [name, cls, html, prop, want, target] of cases) {
   await page.emulateMedia({media: name.startsWith('Print') ? 'print' : 'screen'});
   await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="${cls}">${html}</body></html>`);
@@ -71,5 +87,6 @@ for (const [name, cls, html, prop, want, target] of cases) {
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : `: want ${want}, got ${got}`}`);
 }
 await browser.close();
-console.log(`${cases.length - fail}/${cases.length} passed`);
+const total = cases.length + 1;
+console.log(`${total - fail}/${total} passed`);
 process.exit(fail ? 1 : 0);
