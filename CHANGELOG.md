@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.20.7 · 2026-11-22
+
+### Fixed
+- **First-line indent after a setext heading.** A paragraph right after a `Title` / `---` heading keeps its first-line indent in Live Preview again (regression in 0.20.6).
+
+### 中文
+- 修复：开启「首行缩进」时，实时预览里紧跟 setext 标题（标题下一行写 `---` 或 `===`）的段落重新正常缩进（0.20.6 引入的问题）。
+
 ## 0.20.6 · 2026-11-22
 
 ### Changed

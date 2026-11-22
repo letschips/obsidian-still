@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.20.6 · MIT License · https://github.com/letschips
+  Version 0.20.7 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -1299,8 +1299,8 @@ body.theme-dark.still-highlight-strong {
    Per note: indent / no-indent. */
 body.still-indent .markdown-rendered .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img))),
 .markdown-rendered:is(.indent, .indent *) .el-p > p:not(.no-indent *):not(:has(> :is(.internal-embed, img))),
-body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> :is(.internal-embed, img), .cm-hmd-frontmatter)),
-.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> :is(.internal-embed, img), .cm-hmd-frontmatter)) {
+body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> :is(.internal-embed, img), .cm-hmd-frontmatter)),
+.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> :is(.internal-embed, img), .cm-hmd-frontmatter)) {
   text-indent: 2em;
 }
 
@@ -1309,8 +1309,8 @@ body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) 
    continuation under a list item stays part of the item, so only the
    first paragraph line indents, as in reading view. Frontmatter lines do
    not suppress indentation on a following paragraph. */
-body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > :is(.cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> br:only-child, .cm-hmd-frontmatter)), .HyperMD-list-line) + .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter),
-.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > :is(.cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> br:only-child, .cm-hmd-frontmatter)), .HyperMD-list-line) + .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter) {
+body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > :is(.cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> br:only-child, .cm-hmd-frontmatter)), .HyperMD-list-line) + .cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter),
+.markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > :is(.cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter):not(:has(> br:only-child, .cm-hmd-frontmatter)), .HyperMD-list-line) + .cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter) {
   text-indent: 0;
 }
 
@@ -1321,8 +1321,8 @@ body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) 
 :where(
   body.still-indent .markdown-rendered:not(.no-indent) .el-p > p,
   .markdown-rendered:is(.indent, .indent *) .el-p > p,
-  body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter),
-  .markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter)
+  body.still-indent .markdown-source-view.mod-cm6.is-live-preview:not(.no-indent) .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter),
+  .markdown-source-view.mod-cm6.is-live-preview.indent .cm-content > .cm-line:not(.HyperMD-header, .HyperMD-header-line, .HyperMD-codeblock, .HyperMD-quote, .HyperMD-list-line, .HyperMD-task-line, .HyperMD-table, .HyperMD-table-row, .HyperMD-hr, .HyperMD-callout, .HyperMD-footnote, .HyperMD-math, .HyperMD-frontmatter)
 ) > * {
   text-indent: 0;
 }
