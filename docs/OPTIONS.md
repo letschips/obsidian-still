@@ -16,7 +16,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Colors | Preset: a ready-made light and dark palette (Paper, Mist, Sand, Sage, Graphite, Night). While one is picked it sets the window background, page, sidebar, text and secondary text colors; Off brings back your own. Its grain or gradient shows with Window background on | Off |
 | Colors | Preset accent: with a preset picked, buttons, links, tags and the selection use the preset's own hue instead of the accent from Settings → Appearance | Off |
 | Colors | Preset texture: with a preset picked, Smooth removes grain, Frosted adds a fine surface texture, and Mottled adds soft uneven flecks and grain. Each keeps the preset's gradient. Shows with Window background on, on desktop | Preset |
-| Colors | Page, sidebar, text, secondary text, link, list marker, checkbox, H1–H6 heading, table header text and table header background colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text; table headers use the text color on a faint wash |
+| Colors | Page, sidebar, text, secondary text, link, list marker, checkbox, H1–H6 heading, table header text, table header background and text highlight (default + red, orange, yellow, green, blue, purple) colors, for light and dark | Theme palette; links and checkboxes use the accent; headings use the text color, H4 and H6 the secondary text; table headers use the text color on a faint wash; highlights blend with highlight opacity |
 | Colors | Window background: one background behind the whole window, showing through a clear frame (Frame) or through the page too (Whole window); a color per light and dark, with optional CSS backgrounds such as a paper texture drawn over it. On phones and tablets only the color carries over: to the sidebars, and to the page with Whole window | Off; the color defaults to the sidebar color |
 | Colors | Graphite ink: buttons, toggles and links use the text color | Off |
 | Interface | Roundness: scales every corner radius | 1.25 |
@@ -30,6 +30,8 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
 | Interface | Hide the Settings button too: with Quiet vault switcher on, Settings stays invisible until the pointer reaches it | Off |
 | Interface | Quiet sidebar toolbar: buttons rest as dots; hover opens them, or a tap on touch screens | Off |
+| Interface | Quiet view header: navigation arrows and action buttons in the note header stay hidden until hovered or focused on desktop; Web Viewer and stacked tabs keep their buttons | Off |
+| Interface | Quiet tab bar buttons: sidebar toggles, the new-tab button and the tab-list menu stay hidden until hovered or focused on desktop | Off |
 | Interface | Quiet status bar: hidden until the pointer nears the bottom center | Off |
 | Interface | Always show the status bar: keep the Quiet status bar pill visible on desktop | Off |
 | Interface | Outline guides: a hairline per heading level in the outline view; the branch under the pointer darkens | Off |

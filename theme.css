@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.21.0 · MIT License · https://github.com/letschips
+  Version 0.22.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -416,6 +416,78 @@ settings:
     type: class-toggle
     default: false
   -
+    id: still-heading-highlights
+    title: Text highlights
+    title.zh: 文字高亮
+    type: heading
+    level: 2
+    collapsed: true
+  -
+    id: still-highlight-color
+    title: Default highlight
+    title.zh: 默认高亮
+    description: Base color for ==text==, blended with the highlight opacity so it works with Stronger text highlight.
+    description.zh: 用于 ==文字== 的高亮底色，自动按高亮透明度混合，可与「加深文字高亮」联动。
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-highlight-red
+    title: Red highlight
+    title.zh: 红色高亮
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-highlight-orange
+    title: Orange highlight
+    title.zh: 橙色高亮
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-highlight-yellow
+    title: Yellow highlight
+    title.zh: 黄色高亮
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-highlight-green
+    title: Green highlight
+    title.zh: 绿色高亮
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-highlight-blue
+    title: Blue highlight
+    title.zh: 蓝色高亮
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
+    id: still-highlight-purple
+    title: Purple highlight
+    title.zh: 紫色高亮
+    type: variable-themed-color
+    format: hex
+    opacity: false
+    default-light: '#'
+    default-dark: '#'
+  -
     id: still-heading-interface
     title: Interface
     title.zh: 界面
@@ -519,6 +591,22 @@ settings:
     title.zh: 安静的侧栏工具栏
     description: Sidebar toolbar buttons rest as dots until hovered. On phones and tablets, tap the dots to open them.
     description.zh: 侧栏工具栏按钮平时显示为小圆点，悬停时展开；手机和平板上点一下圆点展开。
+    type: class-toggle
+    default: false
+  -
+    id: still-quiet-header
+    title: Quiet view header
+    title.zh: 安静的视图标题栏
+    description: Navigation arrows and action buttons in the note header stay hidden until the pointer reaches it on desktop. Web Viewer and stacked tabs keep their buttons.
+    description.zh: 笔记视图标题栏里的返回、前进和右侧动作按钮平时隐藏，电脑端鼠标移上去才出现。网页浏览器和堆叠标签页保持显示。
+    type: class-toggle
+    default: false
+  -
+    id: still-quiet-tab-actions
+    title: Quiet tab bar buttons
+    title.zh: 安静的顶栏按钮
+    description: Sidebar toggles, the new-tab button and the tab-list menu stay hidden until the pointer reaches the tab bar on desktop.
+    description.zh: 顶栏两侧的侧栏开关、新建标签和标签列表按钮平时隐藏，电脑端鼠标移到顶栏时才出现。
     type: class-toggle
     default: false
   -
@@ -955,8 +1043,8 @@ body.still-compact:not(.is-mobile) {
   --color-purple: #a626a4;
   --color-pink: #d6508c;
   /* The softened orange and yellow blur together as 30% highlight washes. */
-  --highlight-background-orange: color-mix(in oklch, #e8780e var(--highlight-opacity), transparent);
-  --highlight-background-yellow: color-mix(in oklch, #e0b000 var(--highlight-opacity), transparent);
+  --highlight-background-orange: color-mix(in oklch, var(--still-highlight-orange, #e8780e) var(--highlight-opacity), transparent);
+  --highlight-background-yellow: color-mix(in oklch, var(--still-highlight-yellow, #e0b000) var(--highlight-opacity), transparent);
 
   --still-hairline: rgb(0 0 0 / 0.08);
   --still-hairline-strong: rgb(0 0 0 / 0.12);
@@ -1298,7 +1386,22 @@ body.still-justify .markdown-source-view.mod-cm6:not(.no-justify) .cm-content > 
   text-align: initial;
 }
 
-/* Option: a stronger wash for Obsidian's text highlight colors. */
+/* Option: a stronger wash for Obsidian's text highlight colors, plus optional
+   per-channel highlight hues from Style Settings (Colors → Text highlights).
+   When --still-highlight-color is unset, --still-highlight-default becomes
+   invalid and --highlight-background falls back to --text-highlight-bg or
+   Obsidian's default yellow wash. */
+body {
+  --still-highlight-default: color-mix(in oklch, var(--still-highlight-color) var(--highlight-opacity), transparent);
+  --highlight-background: var(--still-highlight-default, var(--text-highlight-bg, var(--highlight-background-yellow)));
+  --highlight-background-red: color-mix(in oklch, var(--still-highlight-red, var(--color-red)) var(--highlight-opacity), transparent);
+  --highlight-background-orange: color-mix(in oklch, var(--still-highlight-orange, var(--color-orange)) var(--highlight-opacity), transparent);
+  --highlight-background-yellow: color-mix(in oklch, var(--still-highlight-yellow, var(--color-yellow)) var(--highlight-opacity), transparent);
+  --highlight-background-green: color-mix(in oklch, var(--still-highlight-green, var(--color-green)) var(--highlight-opacity), transparent);
+  --highlight-background-blue: color-mix(in oklch, var(--still-highlight-blue, var(--color-blue)) var(--highlight-opacity), transparent);
+  --highlight-background-purple: color-mix(in oklch, var(--still-highlight-purple, var(--color-purple)) var(--highlight-opacity), transparent);
+}
+
 body.still-highlight-strong {
   --highlight-opacity: 60%;
 }
@@ -1421,6 +1524,20 @@ body:not(.still-header-title):not(.is-mobile) .view-header-title-container:not(.
 body:not(.still-header-title):not(.is-mobile) .view-header:hover .view-header-title-container,
 body:not(.still-header-title):not(.is-mobile) .view-header-title-container:focus-within {
   opacity: 1;
+}
+
+/* Option: quiet view header. Keeps back/forward arrows and right-hand view
+   actions out of sight until hovered or focused on desktop, without changing
+   the bar's height. Web Viewer and stacked tab spines keep their controls. */
+@media (hover: hover) and (pointer: fine) {
+  body.still-quiet-header:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .view-header:not(:has(> .webviewer-address-container)) :is(.view-header-left, .view-actions) {
+    opacity: 0;
+    transition: opacity var(--still-fast) var(--still-ease-out);
+  }
+
+  body.still-quiet-header:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .view-header:not(:has(> .webviewer-address-container)):is(:hover, :focus-within) :is(.view-header-left, .view-actions) {
+    opacity: 1;
+  }
 }
 
 .status-bar {
@@ -1964,6 +2081,22 @@ body:not(.is-mobile) .mod-root :is(.workspace-tab-header-new-tab, .workspace-tab
 
 body:not(.is-mobile) .mod-root :is(.workspace-tab-header-new-tab, .workspace-tab-header-tab-list) > .clickable-icon {
   padding: 8px;
+}
+
+/* Option: quiet tab bar buttons. Fades sidebar toggles, new-tab and tab-list
+   buttons at rest on desktop; hovering or focusing the tab bar (or the ribbon
+   when the left toggle lives there) brings them back without shifting tabs. */
+@media (hover: hover) and (pointer: fine) {
+  body.still-quiet-tab-actions:not(.is-mobile) .workspace-tab-header-container > :is(.sidebar-toggle-button, .workspace-tab-header-new-tab, .workspace-tab-header-tab-list),
+  body.still-quiet-tab-actions:not(.is-mobile) .workspace-ribbon > .sidebar-toggle-button {
+    opacity: 0;
+    transition: opacity var(--still-fast) var(--still-ease-out);
+  }
+
+  body.still-quiet-tab-actions:not(.is-mobile) .workspace-tab-header-container:is(:hover, :focus-within) > :is(.sidebar-toggle-button, .workspace-tab-header-new-tab, .workspace-tab-header-tab-list),
+  body.still-quiet-tab-actions:not(.is-mobile) .workspace-ribbon:is(:hover, :focus-within) > .sidebar-toggle-button {
+    opacity: 1;
+  }
 }
 
 /* Sidebar tab bars: quiet icon tiles with room between them. */
@@ -4600,6 +4733,11 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
   .status-bar,
   .status-bar > *,
   .view-header-title-container,
+  .view-header-left,
+  .view-actions,
+  .sidebar-toggle-button,
+  .workspace-tab-header-new-tab,
+  .workspace-tab-header-tab-list,
   .nav-folder-title .collapse-icon svg.svg-icon,
   .checkbox-container,
   .checkbox-container::after,

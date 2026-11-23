@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.22.0 · 2026-11-23
+
+### Added
+- **Quiet view header.** An optional desktop switch fades back/forward arrows and right-hand action buttons in the note header until hovered or focused, without changing the bar height. Web Viewer and stacked tabs keep their controls.
+- **Quiet tab bar buttons.** An optional desktop switch fades sidebar toggles, the new-tab button and the tab-list button until hovered or focused, while preserving the tab strip and window drag area.
+- **Custom text highlight colors.** Seven light/dark color pickers under Colors → Text highlights (default `==text==` plus red, orange, yellow, green, blue and purple), each blended with `--highlight-opacity` so they work with Stronger text highlight. Unset channels keep their defaults.
+
+### 中文
+- 新增：「安静的视图标题栏」选项。电脑端平时隐藏主视图标题栏的返回、前进和右侧动作按钮，鼠标移上去或聚焦时与标题一起显现，不改变标题栏高度；网页浏览器和堆叠标签页保持显示。
+- 新增：「安静的顶栏按钮」选项。电脑端平时隐藏顶栏两侧的侧栏开关、新建标签和标签列表按钮，鼠标移到顶栏标签/按钮或聚焦时显现，不影响窗口拖拽。
+- 新增：「文字高亮」自定义颜色分组（颜色 → 文字高亮，默认折叠）。支持为浅色与深色分别自定义默认高亮（`==文字==`）及红、橙、黄、绿、蓝、紫 6 种彩色高亮；自动按高亮透明度混合并与「加深文字高亮」联动，留空则保持原有颜色。
+
 ## 0.21.0 · 2026-11-23
 
 ### Added
