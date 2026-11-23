@@ -37,6 +37,8 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Pure black on phones and tablets in dark mode, for OLED screens | Off |
 | Interface | Full-screen sidebars on phones: a swiped-in sidebar covers the whole screen; also narrow iPad windows | Off |
 | Interface | Sidebars stay put on phones: with Obsidian's Sliding sidebar on, the sidebar stays underneath and the note slides off it | Off |
+| Content | Quiet properties: compact, low-contrast note properties with a hairline separator; type icons and Add property appear on hover on desktop. Per note: `quiet-properties` / `no-quiet-properties` | Off |
+| Content | Two-column properties: lay out note properties in two columns when the pane is wide enough; tags and list fields span the full width. Per note: `compact-properties` / `no-compact-properties` | Off |
 | Content | Card callouts: tinted frame with an inner content card | Off |
 | Content | Plain tags, don't strike completed tasks | Off |
 | Content | Colored headings: one hue per level, red at H1 to purple at H6 | Off |
@@ -53,6 +55,6 @@ Still also respects the system "reduce motion" setting.
 
 Keyboard focus on links in rendered notes always has a visible outline; this does not require Style Settings.
 
-CJK typography, Justified paragraphs, First-line indent and Underline links can also be set per note: add `cjk` / `no-cjk`, `justify` / `no-justify`, `indent` / `no-indent` or `link-underline` / `no-link-underline` to the note's `cssclasses`. The note's class wins over the global option. An embedded note follows its own classes; inside a note that turns an option off, it stays off.
+CJK typography, Justified paragraphs, First-line indent, Underline links, Quiet properties and Two-column properties can also be set per note: add `cjk` / `no-cjk`, `justify` / `no-justify`, `indent` / `no-indent`, `link-underline` / `no-link-underline`, `quiet-properties` / `no-quiet-properties`, `compact-properties` / `no-compact-properties` or `hide-properties` to the note's `cssclasses`. The note's class wins over the global option. An embedded note follows its own classes; inside a note that turns an option off, it stays off.
 
 Back to the [README](../README.md).

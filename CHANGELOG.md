@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.21.0 · 2026-11-23
+
+### Added
+- **Quiet properties.** An optional switch tightens the note's top properties block, steps labels and values down to faint/secondary tones with a bottom hairline, aligns keys with the note title, and reveals type icons (in the left gutter) and the Add property button (opposite the heading) on hover or focus on desktop without shifting the text below. Per note: `quiet-properties` / `no-quiet-properties`.
+- **Two-column properties.** An optional switch lays out note properties in two columns when the pane is at least 520 px wide and falls back to one column in narrow panes or on phones; `tags`, `aliases`, `cssclasses` and list fields span the full width. Per note: `compact-properties` / `no-compact-properties`.
+- **Per-note `hide-properties` class.** Hides the note's top properties block in reading view and Live Preview while keeping YAML parse errors and the sidebar Properties view visible.
+
+### 中文
+- 新增：「安静的笔记属性」选项。收紧正文顶部属性块的行距和标签列宽，文字退为柔和的低对比灰阶并加底部细线；电脑端键名与标题左对齐，类型图标（位于左外槽）和「添加笔记属性」（位于标题同行右侧）在悬停或聚焦时显现，正文不抖动。单篇可用 `quiet-properties` / `no-quiet-properties`。
+- 新增：「双列笔记属性」选项。页面够宽（≥ 520 px）时将笔记属性排成两列，窄屏和手机端自动恢复单列；`tags`、`aliases`、`cssclasses` 及列表字段自动占满整行。单篇可用 `compact-properties` / `no-compact-properties`。
+- 新增：单篇 `hide-properties` 类，可在阅读视图和实时预览隐藏正文顶部属性块，同时保留 YAML 解析报错和侧栏「文件属性」视图。
+
 ## 0.20.7 · 2026-11-22
 
 ### Fixed

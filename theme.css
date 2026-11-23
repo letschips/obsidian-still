@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.20.7 · MIT License · https://github.com/letschips
+  Version 0.21.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -584,6 +584,22 @@ settings:
     type: heading
     level: 1
     collapsed: true
+  -
+    id: still-quiet-properties
+    title: Quiet properties
+    title.zh: 安静的笔记属性
+    description: Compact, low-contrast note properties with a hairline separator; type icons and Add property appear on hover on desktop. A note can turn it on or off with quiet-properties / no-quiet-properties in cssclasses.
+    description.zh: 笔记属性改为紧凑的低对比排版并加底部细线；电脑端类型图标和「添加属性」悬停时才出现。单篇笔记可在 cssclasses 写 quiet-properties / no-quiet-properties 单独开关。
+    type: class-toggle
+    default: false
+  -
+    id: still-properties-columns
+    title: Two-column properties
+    title.zh: 双列笔记属性
+    description: Lay out note properties in two columns when the pane is wide enough; tags and list fields span the full width. A note can turn it on or off with compact-properties / no-compact-properties in cssclasses.
+    description.zh: 页面够宽时将笔记属性排成两列，标签和列表字段占满整行；窄屏自动恢复单列。单篇笔记可在 cssclasses 写 compact-properties / no-compact-properties 单独开关。
+    type: class-toggle
+    default: false
   -
     id: still-card-callouts
     title: Card callouts
@@ -3181,6 +3197,172 @@ body.still-card-callouts .callout-content > :first-child {
   color: var(--text-faint);
 }
 
+/* Option: quiet properties. Tightens the note's frontmatter block, steps its
+   text down to secondary/faint until hovered or focused, and keeps type icons
+   and the Add property button out of the way on desktop without shifting text.
+   Scoped to notes in the main workspace so the sidebar Properties view and
+   Bases forms stay untouched. Per note: quiet-properties / no-quiet-properties. */
+body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.mod-error),
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.mod-error) {
+  --metadata-gap: 1px;
+  --metadata-padding: var(--size-4-1) 0 var(--size-4-3);
+  --metadata-label-text-color: var(--text-faint);
+  --metadata-input-text-color: var(--text-muted);
+  border-bottom: 1px solid var(--still-hairline);
+  margin-block-end: 1.25rem;
+}
+
+body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.mod-error),
+body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.mod-error) {
+  --metadata-input-height: calc(var(--font-text-size) * 1.5);
+  --metadata-label-width: 7.5em;
+}
+
+body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container.is-collapsed,
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container.is-collapsed {
+  padding-bottom: var(--size-4-1);
+  margin-block-end: 0.75rem;
+  border-bottom-color: transparent;
+}
+
+body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-properties-heading,
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-properties-heading {
+  margin-bottom: var(--size-2-1);
+}
+
+body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-properties-title,
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-properties-title {
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-normal);
+  color: var(--text-faint);
+  letter-spacing: 0.02em;
+}
+
+body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:is(:hover, :focus-within) .metadata-properties-title,
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:is(:hover, :focus-within) .metadata-properties-title {
+  color: var(--text-muted);
+}
+
+body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected),
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected) {
+  --metadata-label-text-color: var(--text-muted);
+  --metadata-input-text-color: var(--text-normal);
+}
+
+/* Core styles date/text/number inputs with --text-normal directly; inherit the
+   quiet value tone so dates and numbers step back alongside longtext values. */
+body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-value :is(input.metadata-input-text, input.metadata-input-number, input[type="date"], input[type="datetime-local"]),
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-value :is(input.metadata-input-text, input.metadata-input-number, input[type="date"], input[type="datetime-local"]) {
+  color: var(--metadata-input-text-color);
+}
+
+/* Desktop fine-pointer reveal: type icons sit in the left gutter (clear of the
+   row outline, aligned with Obsidian's collapse indicator) and Add property
+   sits opposite the heading, so revealing them never shifts the note below. */
+@media (hover: hover) and (pointer: fine) {
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property {
+    overflow: visible;
+  }
+
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon {
+    position: absolute;
+    inset-inline-start: -24px;
+    top: 0;
+    width: 24px;
+    padding: 0;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon::before,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon::before {
+    display: none;
+  }
+
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected) .metadata-property-icon,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected) .metadata-property-icon {
+    opacity: 0.65;
+  }
+
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon:hover,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon:hover {
+    opacity: 1;
+  }
+
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) input.metadata-property-key-input,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) input.metadata-property-key-input {
+    padding-inline-start: 0;
+  }
+
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error) .metadata-add-button,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error) .metadata-add-button {
+    position: absolute;
+    top: var(--size-4-1);
+    inset-inline-end: 0;
+    margin-top: 0;
+    padding: 2px 6px;
+    gap: 4px;
+    font-size: var(--font-ui-smaller);
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+
+  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error):is(:hover, :focus-within) .metadata-add-button,
+  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error):is(:hover, :focus-within) .metadata-add-button {
+    opacity: 1;
+  }
+}
+
+/* Option: two-column properties. Uses Obsidian's own metadata container query
+   so narrow panes, split views and mobile fall back to one column. Multi-value
+   fields (tags, aliases, lists) span both columns. Per note: compact-properties
+   / no-compact-properties. */
+@container metadata (min-width: 520px) {
+  body.still-properties-columns .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-compact-properties) .metadata-properties,
+  .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).compact-properties:not(.no-compact-properties) .metadata-properties {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    align-items: start;
+  }
+
+  body.still-quiet-properties.still-properties-columns .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties, .no-compact-properties) .metadata-properties,
+  body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).compact-properties:not(.no-quiet-properties, .no-compact-properties) .metadata-properties,
+  body.still-properties-columns .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties, .no-compact-properties) .metadata-properties,
+  .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties.compact-properties:not(.no-quiet-properties, .no-compact-properties) .metadata-properties {
+    column-gap: 32px;
+  }
+
+  body.still-properties-columns .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-compact-properties) .metadata-property,
+  .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).compact-properties:not(.no-compact-properties) .metadata-property {
+    --metadata-label-width: 7em;
+    min-width: 0;
+  }
+
+  /* data-property-type lives on the inner .metadata-property-value in
+     Obsidian 1.15; match known list keys directly and custom list fields via
+     a tight direct-child :has(). */
+  body.still-properties-columns .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-compact-properties) .metadata-property:is([data-property-key="tags"], [data-property-key="aliases"], [data-property-key="cssclasses"], :has(> .metadata-property-value:is([data-property-type="tags"], [data-property-type="aliases"], [data-property-type="multitext"]))),
+  .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).compact-properties:not(.no-compact-properties) .metadata-property:is([data-property-key="tags"], [data-property-key="aliases"], [data-property-key="cssclasses"], :has(> .metadata-property-value:is([data-property-type="tags"], [data-property-type="aliases"], [data-property-type="multitext"]))) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Per-note class: hide-properties hides the note's top properties block in
+   reading view and Live Preview via Obsidian's own display variables, while
+   keeping YAML parse errors and the sidebar Properties view visible. */
+.mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).hide-properties {
+  --metadata-display-reading: none;
+  --metadata-display-editing: none;
+}
+
+.mod-root .markdown-preview-view.hide-properties .metadata-container.mod-error {
+  display: block;
+}
+
 .markdown-embed,
 .file-embed {
   border-radius: var(--embed-radius);
@@ -4423,7 +4605,9 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
   .checkbox-container::after,
   body.still-quiet-nav .nav-header .nav-action-button,
   body.still-quiet-nav .nav-header .nav-action-button::after,
-  body.still-quiet-nav .nav-header .nav-action-button svg {
+  body.still-quiet-nav .nav-header .nav-action-button svg,
+  .metadata-property-icon,
+  .metadata-add-button {
     transition: none !important;
   }
 }
@@ -4452,7 +4636,8 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
     overflow-wrap: anywhere;
   }
 
-  .markdown-rendered :is(.collapse-indicator, .copy-code-button, .callout-fold) {
+  .markdown-rendered :is(.collapse-indicator, .copy-code-button, .callout-fold),
+  .metadata-add-button {
     display: none;
   }
 
