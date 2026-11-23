@@ -88,10 +88,10 @@ const code=String.raw`(async()=>{
  function contentRadius(){
   // Touch chrome is rounder on mobile; reading content keeps the desktop corners.
   const host=document.createElement('div');host.className='markdown-rendered';host.style.cssText='position:fixed;left:0;top:0;width:300px;z-index:-1';
-  host.innerHTML='<pre><code>x</code></pre><p><code>inline</code></p><div class="callout"></div><blockquote><p>q</p></blockquote><div class="markdown-embed"></div><div class="internal-embed image-embed"><img width="40" height="40"></div>';
+  host.innerHTML='<pre><code>x</code></pre><p><code>inline</code></p><div class="callout"></div><blockquote><p>q</p></blockquote><div class="markdown-embed"></div><div class="internal-embed image-embed"><img width="40" height="40"></div><table><tbody><tr><td>a</td></tr></tbody></table>';
   document.body.append(host);const r=e=>getComputedStyle(host.querySelector(e)).borderTopLeftRadius;
   const k=parseFloat(getComputedStyle(document.body).getPropertyValue('--still-r')),block=8*k+'px';
-  const out={actual:{pre:r('pre'),code:r('p code'),callout:r('.callout'),quote:r('blockquote'),embed:r('.markdown-embed'),image:r('img')},expected:{pre:block,code:4*k+'px',callout:block,quote:block,embed:block,image:block}};
+  const out={actual:{pre:r('pre'),code:r('p code'),callout:r('.callout'),quote:r('blockquote'),embed:r('.markdown-embed'),image:r('img'),table:r('table')},expected:{pre:block,code:4*k+'px',callout:block,quote:block,embed:block,image:block,table:block}};
   host.remove();return out;
  }
  function blackMobile(drawer){

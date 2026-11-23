@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.23.0 · 2026-11-23
+
+### Changed
+- **Mobile floating controls and keyboard toolbar.** Light-mode floating navigation and header pills now use the theme's lifted surface (`--still-raised`) with a soft shadow matching dark mode and desktop chrome; the mobile keyboard toolbar (`--touch-background`) follows the theme palette, presets and OLED mode with a crisp inset hairline under floating navigation.
+- **iPadOS narrow Split View and pointer support.** Narrow tablet windows (`≤ 640 px`) tighten horizontal reading margins to `16 px` like phones. On tablets with a fine pointer (trackpad or mouse), Quiet view header, Quiet tab bar buttons and Quiet properties hover-reveal now activate cleanly while touch-only tablets stay always visible.
+- **Mobile radius hierarchy.** Restored concentric touch radii across `--touch-radius-xxs`–`xl`, scaled mobile `--radius-xl` from core's `18 px` so tab-switcher preview cards and Bases filter rows no longer over-round, and bound Markdown tables and Bases table containers to `--still-content-radius` so reading content keeps uniform corners.
+- **Phone code block inset and touch dimming.** Tightened horizontal code-block padding on phones (`0.8em 0.9em`), allowed press-and-hold (`:active`) brightening on touch screens for Dark-mode image/PDF dimming, and clarified mobile system-font requirements in Chinese font pairing.
+
+### Fixed
+- **Mobile note properties and Quiet properties.** Scoped desktop's `-8 px` negative horizontal inset on `.metadata-content` away from mobile so properties no longer double-shift past phone margins; dropped core's tinted mobile property card under Quiet properties; replaced the two `rem` margins in Quiet properties with `var(--font-text-size)` spacing.
+- **Phone prompt capsule and grouped menu corners.** Scoped desktop's bottom border and transparent input rule on `.prompt-input-container` away from phones so the bottom capsule search bar keeps a clean lifted pill surface; lowered specificity on phone `.menu-item` resets via `:where(:not(.bases-toolbar-menu))` so grouped bottom-sheet menus keep rounded outer corners (regression in 0.20.4).
+- **Mobile wide tables.** `Wide tables grow` and `table-wide` now read `--table-drag-handle-size` (`24 px` on mobile in Obsidian 1.15) instead of a hard-coded `16 px`.
+- **OLED pure black mode.** Lifted settings cards, sheet rows, keyboard toolbar and tab-switcher card borders one step above `#000000` so surfaces remain legible on OLED screens while pages and drawers stay true black.
+- **Mobile safe areas, drawer fades and option conflicts.** Added horizontal landscape safe-area insets on phone menus and drawers; stopped clipping Obsidian 1.15's floating-nav drawer fade gradient when the toolbar has six or fewer buttons; disabled Push drawers automatically while Full-screen sidebars is active.
+
+### 中文
+- 升级：移动端浅色悬浮导航与顶栏按钮统一改用 `--still-raised` 抬升底色配轻阴影，与深色及电脑端悬浮控件一致；键盘工具栏（`--touch-background`）接入主题色阶、六套配方与 OLED 纯黑，悬浮导航下补齐 1px 内细线。
+- 升级：iPad 窄分屏（`≤ 640 px`）自动收窄水平页边距至 `16 px`；外接触控板或鼠标的平板现可启用「安静的视图标题栏」「安静的顶栏按钮」和「安静的笔记属性」悬停显隐，纯触屏平板保持常显。
+- 升级：重构移动端同心圆角阶梯，移动端 `--radius-xl` 按核心 `18 px` 比例缩放（修复标签总览预览卡与 Bases 筛选行圆角过大），并将 Markdown 表格与 Bases 表格容器统一绑定 `--still-content-radius`，与代码块/提示块圆角一致。
+- 优化：手机端代码块水平内边距收紧为 `0.8em 0.9em`；「深色模式图片/PDF 降亮」支持触屏按住恢复亮度；「中文字体搭配」补充移动端需系统已安装对应字体的说明。
+- 修复：桌面端属性区 `margin-inline: -8px` 不再作用到移动端，消除与原生偏移叠加导致的左缘溢出；移动端开启「安静的笔记属性」时同步去掉原生灰底卡片，并将两处 `rem` 间距改为跟随 `--font-text-size`。
+- 修复：桌面端命令面板/快速切换的底边框与透明输入规则不再泄漏到手机底部胶囊输入框；降低手机菜单项重置规则权重，恢复分组底部菜单卡片外圆角（0.20.4 引入的问题）。
+- 修复：移动端编辑态「宽表格自动加宽」与 `table-wide` 改读 `--table-drag-handle-size`（适配 1.15 移动端 `24 px` 拖拽槽）。
+- 修复：「手机和平板纯黑」下为设置卡片、底部菜单卡片、键盘工具栏与标签总览预览卡补足暗灰抬升与 1px 细边，避免黑卡贴黑底。
+- 修复：补齐手机横屏左右安全区留白；1.15 悬浮抽屉工具栏在常规按钮数下不再裁切底部渐隐遮罩；开启「手机侧栏全屏」时自动停用「手机侧栏推开笔记」。
+
 ## 0.22.0 · 2026-11-23
 
 ### Added

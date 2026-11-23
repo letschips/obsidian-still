@@ -27,6 +27,7 @@ const cases = [
   ['Dark PDF skips core Adapt to theme', 'theme-dark still-pdf-dark', W('<div class="pdf-container mod-themed"><div class="pdfViewer"><div class="page" id=t></div></div></div>'), 'filter', 'none'],
   ['Phone Bases sheet keeps full height', 'theme-light is-phone is-mobile', '<div class="menu bases-toolbar-menu mod-sheet"><div class="menu-scroll" id=t></div></div>', 'max-height', 'none'],
   ['Phone menu sheet keeps Still padding', 'theme-light is-phone is-mobile', '<div class="menu mod-sheet"><div class="menu-scroll" id=t></div></div>', 'padding-top', '32px'],
+  ['Phone grouped menu first item keeps rounded top corners', 'theme-light is-phone is-mobile', '<div class="menu mod-sheet"><div class="menu-scroll"><div class="menu-group"><div class="menu-item" id=t>A</div><div class="menu-item">B</div></div></div></div>', 'border-top-left-radius', '12.5px'],
   ['Push drawers: 1.15 note cover hidden', 'theme-light is-phone is-mobile still-push-drawers', W('<div class="workspace-split mod-root is-sliding-sidebar" style="transform:translateX(300px)"><div class="workspace-drawer-backdrop" id=t style="opacity:1"></div></div>'), 'opacity', '0'],
   ['Push drawers: 1.15 navbar cover hidden', 'theme-light is-phone is-mobile still-push-drawers', W('<div class="mobile-navbar is-sliding-sidebar"><div class="workspace-drawer-navbar-backdrop" id=t style="opacity:1"></div></div>'), 'opacity', '0'],
   ['Canvas toolbars share one dark tone', 'theme-dark', W('<div class="canvas-card-menu" id=t></div><div class="canvas-control-group" id=u></div>'), 'background-color', 'same'],
@@ -49,11 +50,33 @@ const cases = [
   ['Paragraph after a setext heading still indents', 'theme-light still-indent', W('<div class="markdown-source-view mod-cm6 is-live-preview" style="font-size:16px"><div class="cm-content"><div class="cm-line">Title</div><div class="cm-line HyperMD-header-line HyperMD-header-line-2">---</div><div class="cm-line" id=t>Body</div></div></div>'), 'text-indent', '32px'],
   ['Justify skips math blocks', 'theme-light still-justify', W('<div class="markdown-source-view mod-cm6 is-live-preview"><div class="cm-content"><div class="cm-line HyperMD-math" id=t>$$x$$</div></div></div>'), 'text-align', 'start'],
   ['Mobile tree items drop hover transition', 'theme-light is-mobile is-ios is-phone', W('<div class="tree-item-self" id=t>Note</div>'), 'transition-property', 'none'],
+  ['Mobile properties skip desktop -8px shift', 'theme-light is-mobile is-phone', W('<div class="mod-root"><div class="markdown-preview-view"><div class="metadata-container"><div class="metadata-content" id=t></div></div></div></div>'), 'margin-left', '0px'],
+  ['Mobile quiet properties drops core card fill', 'theme-light is-mobile is-phone still-quiet-properties', W('<div class="mod-root"><div class="markdown-preview-view"><div class="metadata-container"><div class="metadata-content" id=t></div></div></div></div>'), 'background-color', 'rgba(0, 0, 0, 0)'],
+  ['Mobile quiet properties resets core card transform', 'theme-light is-mobile is-phone still-quiet-properties', W('<div class="mod-root"><div class="markdown-preview-view"><div class="metadata-container"><div class="metadata-content" id=t></div></div></div></div>'), 'transform', 'none'],
+  ['Mobile tables keep desktop content radius', 'theme-light is-mobile is-phone', W('<div class="markdown-rendered"><table id=t><tbody><tr><td>a</td></tr></tbody></table></div>'), 'border-top-left-radius', '10px'],
+  ['Mobile tab switcher avoids oversized radius', 'theme-light is-mobile is-phone', '<div class="mobile-tab-switcher"><div class="mobile-tab"><div class="mobile-tab-preview" id=t></div></div></div>', 'border-top-left-radius', '22.5px'],
+  ['Phone prompt capsule drops desktop bottom border', 'theme-light is-mobile is-phone', '<div class="prompt"><div class="prompt-input-container" id=t><input type="text" class="prompt-input"></div></div>', 'border-bottom-width', '0px'],
+  ['Phone prompt input uses lifted sheet card ground', 'theme-light is-mobile is-phone', '<div class="prompt"><div class="prompt-input-container"><input type="text" class="prompt-input" id=t></div></div>', 'background-color', 'rgb(250, 250, 250)'],
+  ['Mobile wide table uses 24px drag-handle gutter', 'theme-light is-mobile is-tablet still-table-auto', W('<div class="markdown-source-view mod-cm6 is-readable-line-width" style="width:600px"><div class="cm-content"><div class="cm-table-widget" id=t><div class="table-wrapper"><table><tr><td>a</td></tr></table></div></div></div></div>'), 'width', '600px'],
+  ['OLED black mobile lifts settings cards', 'theme-dark is-mobile is-phone still-black-mobile', '<div class="modal mod-settings"><div class="setting-group"><div class="setting-items" id=t></div></div></div>', 'background-color', 'rgb(25, 25, 25)'],
+  ['OLED black mobile frames tab preview cards', 'theme-dark is-mobile is-phone still-black-mobile', '<div class="mobile-tab-switcher"><div class="mobile-tab"><div class="mobile-tab-preview-empty" id=t></div></div></div>', 'box-shadow', 'rgba(255, 255, 255, 0.11) 0px 0px 0px 1px'],
+  ['Full-screen drawers disables push-drawers rounding', 'theme-light is-mobile is-phone still-full-drawers still-push-drawers', W('<div class="workspace-split mod-root is-sliding-sidebar" id=t style="transform:translateX(300px)"></div>'), 'border-top-left-radius', '0px'],
+  ['Light floating nav uses raised surface', 'theme-light is-mobile is-phone is-floating-nav', '<div class="mobile-navbar mod-raised" id=t></div>', 'background-color', 'rgb(255, 255, 255)'],
+  ['Mobile keyboard toolbar follows preset surface', 'theme-light is-mobile is-phone still-preset-paper', '<div class="mobile-toolbar"><div class="mobile-toolbar-options-list" id=t></div></div>', 'background-color', 'rgb(242, 233, 205)'],
+  ['Floating-nav drawer keeps normal toolbar unclipped', 'theme-light is-mobile is-phone is-floating-nav', W('<div class="workspace-drawer"><div class="nav-buttons-container" id=t><div class="nav-action-button"></div><div class="nav-action-button"></div><div class="nav-action-button"></div><div class="nav-action-button"></div></div></div>'), 'overflow-x', 'visible'],
+  ['Floating-nav drawer scrolls crowded toolbar', 'theme-light is-mobile is-phone is-floating-nav', W('<div class="workspace-drawer"><div class="nav-buttons-container" id=t><div class="nav-action-button"></div><div class="nav-action-button"></div><div class="nav-action-button"></div><div class="nav-action-button"></div><div class="nav-action-button"></div><div class="nav-action-button"></div><div class="nav-action-button"></div></div></div>'), 'overflow-x', 'auto'],
+  ['Phone code block tightens horizontal padding', 'theme-light is-mobile is-phone', W('<div class="markdown-rendered" style="font-size:16px"><pre id=t><code>x</code></pre></div>'), 'padding-left', '14.4px'],
+  ['Tablet fine-pointer enables quiet view header', 'theme-light is-mobile is-tablet still-quiet-header', W('<div class="workspace-split mod-root"><div class="workspace-tabs"><div class="view-header"><div class="view-actions" id=t></div></div></div></div>'), 'opacity', '0'],
+  ['Narrow tablet shrinks horizontal file margins', 'theme-light is-mobile is-tablet', W('<div id=t style="padding-left:var(--file-margins-x)"></div>'), 'padding-left', '16px', null, {width: 600, height: 900}],
+  ['Wide tablet keeps 24px horizontal file margins', 'theme-light is-mobile is-tablet', W('<div id=t style="padding-left:var(--file-margins-x)"></div>'), 'padding-left', '24px', null, {width: 820, height: 1180}],
 ];
 
-// Static perf guard: [class*=...] to the left of a combinator triggers
-// WholeSubtreeInvalidation on every class mutation across the document.
-const hasClassSubstring = /\[class\*=/.test(theme.replace(/\/\*[\s\S]*?\*\//g, ''));
+// Static perf & typography guards:
+// - [class*=...] triggers WholeSubtreeInvalidation on every class mutation.
+// - rem units drift in popout windows (15px root) and iOS Dynamic Type.
+const uncommented = theme.replace(/\/\*[\s\S]*?\*\//g, '');
+const hasClassSubstring = /\[class\*=/.test(uncommented);
+const hasRemUnit = /\drem\b/.test(uncommented);
 let fail = 0;
 if (hasClassSubstring) {
   fail++;
@@ -61,10 +84,17 @@ if (hasClassSubstring) {
 } else {
   console.log('ok   No [class*=] attribute substring selectors in theme.css');
 }
+if (hasRemUnit) {
+  fail++;
+  console.log('FAIL No rem units in theme.css');
+} else {
+  console.log('ok   No rem units in theme.css');
+}
 
 const browser = await chromium.launch({executablePath: chrome});
 const page = await browser.newPage();
-for (const [name, cls, html, prop, want, target] of cases) {
+for (const [name, cls, html, prop, want, target, viewport] of cases) {
+  await page.setViewportSize(viewport ?? {width: 1280, height: 720});
   await page.emulateMedia({media: name.startsWith('Print') ? 'print' : 'screen'});
   await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="${cls}">${html}</body></html>`);
   const got = await page.evaluate(([prop, target, want]) => {
@@ -88,6 +118,6 @@ for (const [name, cls, html, prop, want, target] of cases) {
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : `: want ${want}, got ${got}`}`);
 }
 await browser.close();
-const total = cases.length + 1;
+const total = cases.length + 2;
 console.log(`${total - fail}/${total} passed`);
 process.exit(fail ? 1 : 0);

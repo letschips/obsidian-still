@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.22.0 · MIT License · https://github.com/letschips
+  Version 0.23.0 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -109,8 +109,8 @@ settings:
     id: still-fonts
     title: Chinese font pairing
     title.zh: 中文字体搭配
-    description: Uses fonts already on your system; nothing is downloaded. Hei keeps Chinese sans glyphs on systems set to another language. Song sets body text in a Song typeface with sans headings and Kai quotes. A font chosen in Settings → Appearance still comes first.
-    description.zh: 只用系统自带字体，不下载任何东西。「黑体」让系统语言不是中文时也显示中文字形；「宋体」把正文换成宋体，标题用黑体、引用用楷体。在「设置 → 外观」里选的字体仍然优先。
+    description: Uses fonts already on your system; nothing is downloaded. Hei keeps Chinese sans glyphs on systems set to another language. Song sets body text in a Song typeface with sans headings and Kai quotes (requires system Song/Kai fonts on mobile). A font chosen in Settings → Appearance still comes first.
+    description.zh: 只用系统自带字体，不下载任何东西。「黑体」让系统语言不是中文时也显示中文字形；「宋体」把正文换成宋体，标题用黑体、引用用楷体（移动端需系统已安装对应字体）。在「设置 → 外观」里选的字体仍然优先。
     type: class-select
     allowEmpty: false
     default: still-fonts-off
@@ -597,16 +597,16 @@ settings:
     id: still-quiet-header
     title: Quiet view header
     title.zh: 安静的视图标题栏
-    description: Navigation arrows and action buttons in the note header stay hidden until the pointer reaches it on desktop. Web Viewer and stacked tabs keep their buttons.
-    description.zh: 笔记视图标题栏里的返回、前进和右侧动作按钮平时隐藏，电脑端鼠标移上去才出现。网页浏览器和堆叠标签页保持显示。
+    description: Navigation arrows and action buttons in the note header stay hidden until hovered or focused on desktop and tablets with a pointer. Web Viewer and stacked tabs keep their buttons.
+    description.zh: 笔记视图标题栏里的返回、前进和右侧动作按钮平时隐藏，在电脑端及外接指针设备的平板上悬停或聚焦时显现。网页浏览器和堆叠标签页保持显示。
     type: class-toggle
     default: false
   -
     id: still-quiet-tab-actions
     title: Quiet tab bar buttons
     title.zh: 安静的顶栏按钮
-    description: Sidebar toggles, the new-tab button and the tab-list menu stay hidden until the pointer reaches the tab bar on desktop.
-    description.zh: 顶栏两侧的侧栏开关、新建标签和标签列表按钮平时隐藏，电脑端鼠标移到顶栏时才出现。
+    description: Sidebar toggles, the new-tab button and the tab-list menu stay hidden until hovered or focused on desktop and tablets with a pointer.
+    description.zh: 顶栏两侧的侧栏开关、新建标签和标签列表按钮平时隐藏，在电脑端及外接指针设备的平板上悬停或聚焦时显现。
     type: class-toggle
     default: false
   -
@@ -661,8 +661,8 @@ settings:
     id: still-push-drawers
     title: Sidebars stay put on phones
     title.zh: 手机侧栏推开笔记
-    description: With Obsidian's Sliding sidebar setting on, the sidebar stays in place underneath and the note slides off it like a card.
-    description.zh: 配合 Obsidian 的「滑动侧栏」设置：侧栏留在底层不动，笔记像一张卡片被推开。
+    description: With Obsidian's Sliding sidebar setting on, the sidebar stays in place underneath and the note slides off it like a card. Inactive while Full-screen sidebars is on.
+    description.zh: 配合 Obsidian 的「滑动侧栏」设置：侧栏留在底层不动，笔记像一张卡片被推开。开启「手机侧栏全屏」时自动停用。
     type: class-toggle
     default: false
   -
@@ -676,8 +676,8 @@ settings:
     id: still-quiet-properties
     title: Quiet properties
     title.zh: 安静的笔记属性
-    description: Compact, low-contrast note properties with a hairline separator; type icons and Add property appear on hover on desktop. A note can turn it on or off with quiet-properties / no-quiet-properties in cssclasses.
-    description.zh: 笔记属性改为紧凑的低对比排版并加底部细线；电脑端类型图标和「添加属性」悬停时才出现。单篇笔记可在 cssclasses 写 quiet-properties / no-quiet-properties 单独开关。
+    description: Compact, low-contrast note properties with a hairline separator; type icons and Add property appear on hover on desktop and tablets with a pointer. A note can turn it on or off with quiet-properties / no-quiet-properties in cssclasses.
+    description.zh: 笔记属性改为紧凑的低对比排版并加底部细线；电脑端及外接指针设备的平板上类型图标和「添加属性」悬停时才出现。单篇笔记可在 cssclasses 写 quiet-properties / no-quiet-properties 单独开关。
     type: class-toggle
     default: false
   -
@@ -784,16 +784,16 @@ settings:
     id: still-pdf-dim
     title: Dim PDFs in dark mode
     title.zh: 深色模式 PDF 降亮
-    description: PDF pages rest dimmed in dark mode and brighten under the pointer.
-    description.zh: 深色模式下 PDF 页面平时调暗，鼠标移上去恢复。
+    description: PDF pages rest dimmed in dark mode and brighten on hover (press and hold on touch screens).
+    description.zh: 深色模式下 PDF 页面平时调暗，悬停或触屏按住时恢复。
     type: class-toggle
     default: false
   -
     id: still-img-dim
     title: Dim images in dark mode
     title.zh: 深色模式图片降亮
-    description: Note images rest dimmed in dark mode and brighten under the pointer. Link favicons are left alone.
-    description.zh: 深色模式下笔记里的图片平时调暗，鼠标移上去恢复。链接图标不受影响。
+    description: Note images rest dimmed in dark mode and brighten on hover (press and hold on touch screens). Link favicons are left alone.
+    description.zh: 深色模式下笔记里的图片平时调暗，悬停或触屏按住时恢复。链接图标不受影响。
     type: class-toggle
     default: false
 */
@@ -905,7 +905,7 @@ body {
   --table-cell-padding-x: 12px;
   --table-cell-padding-y: 7px;
   --table-line-height: 1.5;
-  --still-table-radius: var(--radius-s);
+  --still-table-radius: var(--still-content-radius);
   /* Cells sit inside the frame, so they round by its inner edge. */
   --still-table-inner-radius: max(0px, calc(var(--still-table-radius) - var(--table-border-width)));
   /* Hairline rows only: core draws the outer columns' edges through these. */
@@ -1496,8 +1496,11 @@ body:not(.is-mobile) .mod-sidedock > .workspace-leaf-resize-handle:not(:hover) {
 .view-header {
   flex-shrink: 0;
   height: var(--header-height);
-  padding-inline: 8px;
   border-bottom: 0;
+}
+
+body:not(.is-mobile) .view-header {
+  padding-inline: 8px;
 }
 
 .view-header-title-container {
@@ -1527,15 +1530,16 @@ body:not(.still-header-title):not(.is-mobile) .view-header-title-container:focus
 }
 
 /* Option: quiet view header. Keeps back/forward arrows and right-hand view
-   actions out of sight until hovered or focused on desktop, without changing
-   the bar's height. Web Viewer and stacked tab spines keep their controls. */
+   actions out of sight until hovered or focused on desktop and tablets with a
+   fine pointer, without changing the bar's height. Web Viewer and stacked tab
+   spines keep their controls. */
 @media (hover: hover) and (pointer: fine) {
-  body.still-quiet-header:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .view-header:not(:has(> .webviewer-address-container)) :is(.view-header-left, .view-actions) {
+  body.still-quiet-header:not(.is-phone) .mod-root .workspace-tabs:not(.mod-stacked) .view-header:not(:has(> .webviewer-address-container)) :is(.view-header-left, .view-actions) {
     opacity: 0;
     transition: opacity var(--still-fast) var(--still-ease-out);
   }
 
-  body.still-quiet-header:not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .view-header:not(:has(> .webviewer-address-container)):is(:hover, :focus-within) :is(.view-header-left, .view-actions) {
+  body.still-quiet-header:not(.is-phone) .mod-root .workspace-tabs:not(.mod-stacked) .view-header:not(:has(> .webviewer-address-container)):is(:hover, :focus-within) :is(.view-header-left, .view-actions) {
     opacity: 1;
   }
 }
@@ -2084,17 +2088,18 @@ body:not(.is-mobile) .mod-root :is(.workspace-tab-header-new-tab, .workspace-tab
 }
 
 /* Option: quiet tab bar buttons. Fades sidebar toggles, new-tab and tab-list
-   buttons at rest on desktop; hovering or focusing the tab bar (or the ribbon
-   when the left toggle lives there) brings them back without shifting tabs. */
+   buttons at rest on desktop and tablets with a fine pointer; hovering or
+   focusing the tab bar (or the ribbon when the left toggle lives there)
+   brings them back without shifting tabs. */
 @media (hover: hover) and (pointer: fine) {
-  body.still-quiet-tab-actions:not(.is-mobile) .workspace-tab-header-container > :is(.sidebar-toggle-button, .workspace-tab-header-new-tab, .workspace-tab-header-tab-list),
-  body.still-quiet-tab-actions:not(.is-mobile) .workspace-ribbon > .sidebar-toggle-button {
+  body.still-quiet-tab-actions:not(.is-phone) .workspace-tab-header-container > :is(.sidebar-toggle-button, .workspace-tab-header-new-tab, .workspace-tab-header-tab-list),
+  body.still-quiet-tab-actions:not(.is-phone) .workspace-ribbon > .sidebar-toggle-button {
     opacity: 0;
     transition: opacity var(--still-fast) var(--still-ease-out);
   }
 
-  body.still-quiet-tab-actions:not(.is-mobile) .workspace-tab-header-container:is(:hover, :focus-within) > :is(.sidebar-toggle-button, .workspace-tab-header-new-tab, .workspace-tab-header-tab-list),
-  body.still-quiet-tab-actions:not(.is-mobile) .workspace-ribbon:is(:hover, :focus-within) > .sidebar-toggle-button {
+  body.still-quiet-tab-actions:not(.is-phone) .workspace-tab-header-container:is(:hover, :focus-within) > :is(.sidebar-toggle-button, .workspace-tab-header-new-tab, .workspace-tab-header-tab-list),
+  body.still-quiet-tab-actions:not(.is-phone) .workspace-ribbon:is(:hover, :focus-within) > .sidebar-toggle-button {
     opacity: 1;
   }
 }
@@ -2863,11 +2868,11 @@ body.is-popout-modal .modal-container.mod-dim .modal {
   letter-spacing: -0.01em;
 }
 
-.prompt-input-container {
+body:not(.is-phone) .prompt-input-container {
   border-bottom: 1px solid var(--still-hairline);
 }
 
-.prompt-input-container input.prompt-input {
+body:not(.is-phone) .prompt-input-container input.prompt-input {
   background: transparent;
   box-shadow: none;
 }
@@ -3300,9 +3305,10 @@ body.still-card-callouts .callout-content > :first-child {
   transform: none;
 }
 
-/* In a note the rows reach into the margin so keys line up with the text;
-   the sidebar Properties view keeps core's inset. */
-:is(.markdown-source-view, .markdown-preview-view) .metadata-container .metadata-content {
+/* In a note on desktop the rows reach into the margin so keys line up with
+   the text; the sidebar Properties view and mobile's shifted card keep core's
+   own inset. */
+body:not(.is-mobile) :is(.markdown-source-view, .markdown-preview-view) .metadata-container .metadata-content {
   margin-inline: -8px;
 }
 
@@ -3342,7 +3348,7 @@ body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-sour
   --metadata-label-text-color: var(--text-faint);
   --metadata-input-text-color: var(--text-muted);
   border-bottom: 1px solid var(--still-hairline);
-  margin-block-end: 1.25rem;
+  margin-block-end: calc(var(--font-text-size) * 1.25);
 }
 
 body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.mod-error),
@@ -3354,7 +3360,7 @@ body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view
 body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container.is-collapsed,
 .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container.is-collapsed {
   padding-bottom: var(--size-4-1);
-  margin-block-end: 0.75rem;
+  margin-block-end: calc(var(--font-text-size) * 0.75);
   border-bottom-color: transparent;
 }
 
@@ -3389,17 +3395,34 @@ body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-sour
   color: var(--metadata-input-text-color);
 }
 
-/* Desktop fine-pointer reveal: type icons sit in the left gutter (clear of the
-   row outline, aligned with Obsidian's collapse indicator) and Add property
-   sits opposite the heading, so revealing them never shifts the note below. */
+/* On mobile, core wraps note properties in a shifted tinted card; quiet
+   properties drops that card so the hairline separator reads cleanly. */
+body.is-mobile.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.mod-error) .metadata-content,
+body.is-mobile .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.mod-error) .metadata-content {
+  transform: none;
+  width: 100%;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+
+body.is-mobile.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.mod-error) .metadata-property-key,
+body.is-mobile .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.mod-error) .metadata-property-key {
+  padding-inline-start: 0;
+}
+
+/* Fine-pointer reveal (desktop and tablets with a trackpad or mouse): type
+   icons sit in the left gutter (clear of the row outline, aligned with
+   Obsidian's collapse indicator) and Add property sits opposite the heading,
+   so revealing them never shifts the note below. */
 @media (hover: hover) and (pointer: fine) {
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property {
     overflow: visible;
   }
 
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon {
     position: absolute;
     inset-inline-start: -24px;
     top: 0;
@@ -3410,28 +3433,28 @@ body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-sour
     transition: opacity 120ms ease;
   }
 
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon::before,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon::before {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon::before,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon::before {
     display: none;
   }
 
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected) .metadata-property-icon,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected) .metadata-property-icon {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected) .metadata-property-icon,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property:is(:hover, :focus-within, .is-selected) .metadata-property-icon {
     opacity: 0.65;
   }
 
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon:hover,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon:hover {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon:hover,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon:hover {
     opacity: 1;
   }
 
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) input.metadata-property-key-input,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) input.metadata-property-key-input {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) input.metadata-property-key-input,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) input.metadata-property-key-input {
     padding-inline-start: 0;
   }
 
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error) .metadata-add-button,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error) .metadata-add-button {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error) .metadata-add-button,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error) .metadata-add-button {
     position: absolute;
     top: var(--size-4-1);
     inset-inline-end: 0;
@@ -3443,9 +3466,20 @@ body.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-sour
     transition: opacity 120ms ease;
   }
 
-  body.still-quiet-properties:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error):is(:hover, :focus-within) .metadata-add-button,
-  body:not(.is-mobile) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error):is(:hover, :focus-within) .metadata-add-button {
+  body.still-quiet-properties:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error):is(:hover, :focus-within) .metadata-add-button,
+  body:not(.is-phone) .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-container:not(.is-collapsed, .mod-error):is(:hover, :focus-within) .metadata-add-button {
     opacity: 1;
+  }
+}
+
+/* Narrow tablet windows (Split View, Slide Over) have a 16px margin, too tight
+   for the 24px left gutter icon; keep the icon inline there. */
+@media (hover: hover) and (pointer: fine) and (max-width: 640px) {
+  body.is-tablet.still-quiet-properties .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6):not(.no-quiet-properties) .metadata-property-icon,
+  body.is-tablet .mod-root :is(.markdown-preview-view, .markdown-source-view.mod-cm6).quiet-properties:not(.no-quiet-properties) .metadata-property-icon {
+    position: static;
+    width: auto;
+    opacity: 0.65;
   }
 }
 
@@ -3673,9 +3707,10 @@ body:is(.theme-light, .theme-dark) .canvas-card-menu .canvas-card-menu-button sv
   font-variant-numeric: tabular-nums;
 }
 
-/* Bases cards and Kanban boards (1.15) use the content radius and a hairline
-   instead of core's 16px-scale corners and drop shadow. */
+/* Bases tables, cards and Kanban boards (1.15) use the content radius and a
+   hairline instead of core's 16px-scale corners and drop shadow. */
 body {
+  --bases-table-container-border-radius: var(--still-content-radius);
   --bases-cards-radius: var(--still-content-radius);
   --bases-kanban-column-radius: var(--still-content-radius);
   --bases-kanban-card-radius: var(--still-content-radius);
@@ -3798,7 +3833,7 @@ body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-w
 /* The editor widget keeps core's drag-handle gutter on both sides. */
 body.still-table-auto .markdown-source-view.mod-cm6.is-readable-line-width:not(.table-wide) .cm-content > .cm-table-widget {
   box-sizing: border-box;
-  width: calc(var(--still-pane-width) + 2 * var(--size-4-4));
+  width: calc(var(--still-pane-width) + 2 * var(--table-drag-handle-size, var(--size-4-4)));
 }
 
 body.still-table-auto .markdown-preview-view.is-readable-line-width:not(.table-wide) .markdown-preview-sizer > .el-table::before,
@@ -3916,7 +3951,7 @@ body.is-mobile .markdown-source-view.mod-cm6.is-readable-line-width:is(.table-wi
 /* The editor widget keeps core's drag-handle gutter on both sides. */
 .markdown-source-view.mod-cm6.is-readable-line-width.table-wide .cm-content > .cm-table-widget {
   box-sizing: border-box;
-  width: calc(var(--still-wide-width) + 2 * var(--size-4-4));
+  width: calc(var(--still-wide-width) + 2 * var(--table-drag-handle-size, var(--size-4-4)));
 }
 
 /* embed-strict: note embeds read as part of the text, with no ground, bar,
@@ -4093,15 +4128,15 @@ body.theme-dark.still-pdf-dark .pdf-container:not(.mod-themed) .pdfViewer .page 
   filter: invert(1) hue-rotate(180deg) contrast(0.8);
 }
 
-/* Option: dim PDF pages in dark mode until the pointer reaches them.
+/* Option: dim PDF pages in dark mode until hovered or pressed.
    Opacity only, so it stays cheap and combines with Dark PDFs. */
-body.theme-dark.still-pdf-dim .pdf-container .pdfViewer .page:not(:hover) {
+body.theme-dark.still-pdf-dim .pdf-container .pdfViewer .page:not(:hover):not(:active) {
   opacity: 0.75;
 }
 
 /* Option: note images rest dimmed in dark mode, the same way as PDF pages.
    Link favicons stay crisp. */
-body.theme-dark.still-img-dim :is(.markdown-rendered, .markdown-source-view.mod-cm6) img:not(.link-favicon):not(:hover) {
+body.theme-dark.still-img-dim :is(.markdown-rendered, .markdown-source-view.mod-cm6) img:not(.link-favicon):not(:hover):not(:active) {
   opacity: 0.75;
 }
 
@@ -4257,16 +4292,18 @@ body:is(.is-popout-window, .is-popout-modal) {
    24px reading margin, and sheets and drawers sit on the sidebar tone. */
 body.is-mobile {
   --still-touch-target: 44px;
-  --radius-s: calc(16px * var(--still-r));
+  --radius-s: calc(10px * var(--still-r));
   --radius-m: calc(16px * var(--still-r));
   --radius-l: calc(24px * var(--still-r));
-  --radius-xl: calc(32px * var(--still-r));
-  --touch-radius-xxs: var(--radius-s);
-  --touch-radius-xs: var(--radius-s);
-  --touch-radius-s: var(--radius-s);
+  /* Core lowers --radius-xl to 18px on mobile for tab-switcher preview cards
+     and Bases filter rows; scale from that instead of desktop's 32px. */
+  --radius-xl: calc(18px * var(--still-r));
+  --touch-radius-xxs: calc(10px * var(--still-r));
+  --touch-radius-xs: calc(14px * var(--still-r));
+  --touch-radius-s: var(--radius-m);
   --touch-radius-m: var(--radius-m);
   --touch-radius-l: var(--radius-l);
-  --touch-radius-xl: var(--radius-xl);
+  --touch-radius-xl: calc(28px * var(--still-r));
 
   --input-height: var(--still-touch-target);
   --file-margins-y: 8px;
@@ -4277,6 +4314,7 @@ body.is-mobile {
 
   --modal-background: var(--background-secondary);
   --mobile-sidebar-background: var(--background-secondary);
+  --touch-background: var(--background-secondary);
 
   --nav-item-padding: 12px 24px;
   --nav-item-color: var(--text-muted);
@@ -4287,12 +4325,13 @@ body.is-mobile {
   --nav-item-children-margin-start: 6px;
 
   /* Floating controls (header buttons, navbar, toolbar, prompt field) keep
-     core's raised surface without its frosted glass: an opaque tone and a
-     hairline instead of backdrop blur and a halo. Cheaper to draw, calmer
-     to look at, and icons never sit on the text scrolling underneath. */
-  --raised-background: var(--background-secondary);
+     core's raised surface without its frosted glass: an opaque lifted tone
+     and a hairline + soft lift instead of backdrop blur and a halo. Cheaper
+     to draw, calmer to look at, and icons never sit on the text scrolling
+     underneath. */
+  --raised-background: var(--still-raised);
   --raised-blur: none;
-  --raised-shadow: 0 0 0 1px var(--still-hairline);
+  --raised-shadow: 0 0 0 1px var(--still-hairline), 0 2px 8px rgb(0 0 0 / 0.06);
   --raised-mask-display: none;
 
   --still-sheet: var(--background-secondary);
@@ -4305,6 +4344,11 @@ body.is-mobile {
   --prompt-backdrop-filter: none;
   --suggestion-backdrop-filter: none;
   --blur-opacity-m: 100%;
+}
+
+/* Floating keyboard toolbar matches the raised navigation pill's hairline. */
+body.is-mobile.is-floating-nav :is(.mobile-toolbar-options-list, .mobile-toolbar-floating-options) {
+  box-shadow: inset 0 0 0 1px var(--still-hairline);
 }
 
 /* Touch screens have no hover; skipping core's 100ms tree-row transition
@@ -4331,6 +4375,7 @@ body.is-mobile.theme-dark {
   --tag-background: color-mix(in oklch, var(--color-accent) 10%, transparent);
   --tag-background-hover: color-mix(in oklch, var(--color-accent) 20%, transparent);
   --raised-background: var(--still-raised);
+  --raised-shadow: 0 0 0 1px var(--still-hairline-strong), 0 2px 10px rgb(0 0 0 / 0.28);
   --modal-background: var(--background-primary);
   --still-sheet: var(--background-primary);
   --still-sheet-card: color-mix(in srgb, var(--background-primary), white 5%);
@@ -4345,14 +4390,18 @@ body.is-tablet.theme-dark {
 }
 
 /* Option: pure black for OLED screens. Page, sidebars, sheets and dialogs go
-   black; code, embeds and form fields keep one step of lift so they still
-   read as blocks. */
+   black; code, embeds, settings cards, sheet rows and tab previews keep one
+   step of lift so they still read as blocks. */
 body.is-mobile.theme-dark.still-black-mobile {
   --background-primary: #000000;
   --background-secondary: #000000;
   --background-primary-alt: var(--color-base-05);
   --background-secondary-alt: var(--color-base-10);
   --background-modifier-form-field: var(--color-base-05);
+  --setting-items-background: var(--color-base-05);
+  --still-sheet-card: var(--color-base-10);
+  --touch-background: var(--color-base-10);
+  --tab-switcher-preview-shadow: 0 0 0 1px var(--still-hairline-strong);
   --code-background: var(--color-base-10);
   --embed-background: var(--color-base-05);
   --still-quote: var(--color-base-20);
@@ -4393,10 +4442,10 @@ body.is-phone > .menu:not(.bases-toolbar-menu) .menu-grabber {
 body.is-phone > .menu:not(.bases-toolbar-menu) .menu-scroll {
   max-height: min(80dvh, calc(100dvh - var(--keyboard-height, 0px) - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px) - 16px));
   overflow-y: auto;
-  padding: 32px 16px calc(16px + var(--safe-area-inset-bottom));
+  padding: 32px max(16px, var(--safe-area-inset-right, 0px)) calc(16px + var(--safe-area-inset-bottom, 0px)) max(16px, var(--safe-area-inset-left, 0px));
 }
 
-body.is-phone > .menu:not(.bases-toolbar-menu) .menu-item {
+body.is-phone > .menu:where(:not(.bases-toolbar-menu)) .menu-item {
   gap: 16px;
   padding: 16px 20px;
   font-size: var(--nav-item-size);
@@ -4412,7 +4461,7 @@ body.is-phone > .menu:not(.bases-toolbar-menu) .menu-item.mobile-tap:not(.is-dis
 }
 
 body.is-phone > .menu:not(.bases-toolbar-menu) .menu-group .menu-item:only-child {
-  border-radius: var(--radius-m);
+  border-radius: var(--touch-radius-xxs);
 }
 
 body.is-phone > .menu:not(.bases-toolbar-menu) .menu-separator {
@@ -4427,7 +4476,13 @@ body.is-phone:not(.is-floating-nav) .mobile-navbar {
 }
 
 /* Prompts (quick switcher, command palette): touch-height rows with the
-   same inset as menus, instead of the compact desktop list. */
+   same inset as menus, and a raised capsule field at the bottom of the
+   sheet instead of desktop's top-rule input. */
+body.is-phone .prompt-input-container input.prompt-input {
+  background-color: var(--still-sheet-card);
+  border-color: var(--still-hairline-strong);
+}
+
 body.is-phone .prompt-results {
   padding: 8px;
 }
@@ -4445,14 +4500,21 @@ body.is-mobile .workspace-drawer .workspace-drawer-inner {
 
 body.is-mobile .workspace-drawer .workspace-leaf-content > .node-insert-event,
 body.is-mobile .workspace-drawer .workspace-leaf-content > .view-content > .node-insert-event {
-  padding-inline: var(--still-drawer-gutter);
+  padding-inline: max(var(--still-drawer-gutter), var(--safe-area-inline-start, 0px)) max(var(--still-drawer-gutter), var(--safe-area-inline-end, 0px));
 }
 
 body.is-mobile .workspace-drawer .nav-buttons-container {
   gap: 4px;
   padding: 0 12px;
-  overflow-x: auto;
   scrollbar-width: none;
+}
+
+/* Keep overflow visible in 1.15 floating-nav drawers so core's 72px/120px
+   fade gradient on ::after is not clipped, falling back to horizontal scroll
+   only without floating nav or when plugins crowd the row. */
+body.is-mobile:not(.is-floating-nav) .workspace-drawer .nav-buttons-container,
+body.is-mobile.is-floating-nav .workspace-drawer .nav-buttons-container:has(> :nth-child(7)) {
+  overflow-x: auto;
 }
 
 body.is-mobile .workspace-drawer .nav-action-button {
@@ -4467,7 +4529,7 @@ body.is-mobile .workspace-drawer .nav-action-button.is-active {
 
 body.is-mobile .workspace-drawer .workspace-drawer-header {
   padding-top: 12px;
-  padding-inline: 24px;
+  padding-inline: max(24px, var(--safe-area-inline-start, 0px)) max(24px, var(--safe-area-inline-end, 0px));
 }
 
 body.is-mobile .workspace-drawer .workspace-drawer-header-name-text {
@@ -4486,7 +4548,7 @@ body.is-phone .workspace-drawer-header-left {
 /* A separate count row keeps long vault and note names readable. */
 body.is-phone .workspace-drawer .workspace-drawer-header {
   min-height: 68px;
-  padding: 8px 16px;
+  padding: 8px max(16px, var(--safe-area-inset-right, 0px)) 8px max(16px, var(--safe-area-inset-left, 0px));
 }
 
 body.is-phone .workspace-drawer-header-name {
@@ -4528,6 +4590,10 @@ body.is-phone.still-full-drawers {
 }
 
 @media (max-width: 640px) {
+  body.is-tablet {
+    --file-margins-x: 16px;
+  }
+
   body.is-tablet.still-full-drawers {
     --mobile-sidebar-max-width: 100vw;
     --mobile-sidebar-min-width: 0px;
@@ -4549,14 +4615,16 @@ body.is-phone.still-full-drawers {
    a swipe or close is under way; without that offset (Sliding sidebar off,
    or the opening tap's animation) everything stays as core draws it.
    !important beats the drawer's inline and animated transforms. The
-   corner follows the screen's, which the top safe area approximates. */
-body.is-phone.still-push-drawers .workspace-drawer.mod-primary:has(+ .mod-root[style*="translateX"]),
-body.is-phone.still-push-drawers .mod-root[style*="translateX"] + .workspace-drawer.mod-secondary {
+   corner follows the screen's, which the top safe area approximates.
+   Yields to Full-screen sidebars so the note is never pushed completely
+   off-screen. */
+body.is-phone.still-push-drawers:not(.still-full-drawers) .workspace-drawer.mod-primary:has(+ .mod-root[style*="translateX"]),
+body.is-phone.still-push-drawers:not(.still-full-drawers) .mod-root[style*="translateX"] + .workspace-drawer.mod-secondary {
   z-index: 0;
   transform: none !important;
 }
 
-body.is-phone.still-push-drawers .mod-root[style*="translateX"] {
+body.is-phone.still-push-drawers:not(.still-full-drawers) .mod-root[style*="translateX"] {
   overflow: hidden;
   border-radius: max(var(--radius-l), var(--safe-area-inset-top));
   box-shadow: 0 0 0 1px var(--still-hairline), 0 4px 16px rgb(0 0 0 / 0.14);
@@ -4564,21 +4632,21 @@ body.is-phone.still-push-drawers .mod-root[style*="translateX"] {
 
 /* 1.14 leaves the sliding note on core's base layer; lift it over the
    drawer. 1.15 marks it .is-sliding-sidebar and already layers it higher. */
-body.is-phone.still-push-drawers .mod-root[style*="translateX"]:not(.is-sliding-sidebar) {
+body.is-phone.still-push-drawers:not(.still-full-drawers) .mod-root[style*="translateX"]:not(.is-sliding-sidebar) {
   z-index: 1;
 }
 
 /* The dimming cover would sit over the waiting drawer; keep it invisible
    and only over the note, where a tap still closes the drawer. */
-body.is-phone.still-push-drawers .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
+body.is-phone.still-push-drawers:not(.still-full-drawers) .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
   opacity: 0 !important;
 }
 
-body.is-phone.still-push-drawers .is-left-sidedock-open > .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
+body.is-phone.still-push-drawers:not(.still-full-drawers) .is-left-sidedock-open > .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
   inset-inline-start: clamp(var(--mobile-sidebar-min-width), var(--mobile-sidebar-width), var(--mobile-sidebar-max-width));
 }
 
-body.is-phone.still-push-drawers .is-right-sidedock-open > .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
+body.is-phone.still-push-drawers:not(.still-full-drawers) .is-right-sidedock-open > .mod-root[style*="translateX"] ~ .workspace-drawer-backdrop {
   inset-inline-start: 0;
   inset-inline-end: clamp(var(--mobile-sidebar-min-width), var(--mobile-sidebar-width), var(--mobile-sidebar-max-width));
   width: auto;
@@ -4587,8 +4655,8 @@ body.is-phone.still-push-drawers .is-right-sidedock-open > .mod-root[style*="tra
 /* Obsidian 1.15 moves the cover into the note itself and adds a second one
    over the tab bar; the rules above only match 1.14. Both stay invisible and
    still take the closing tap. */
-body.is-phone.still-push-drawers .mod-root.is-sliding-sidebar > .workspace-drawer-backdrop,
-body.is-phone.still-push-drawers .mobile-navbar.is-sliding-sidebar > .workspace-drawer-navbar-backdrop {
+body.is-phone.still-push-drawers:not(.still-full-drawers) .mod-root.is-sliding-sidebar > .workspace-drawer-backdrop,
+body.is-phone.still-push-drawers:not(.still-full-drawers) .mobile-navbar.is-sliding-sidebar > .workspace-drawer-navbar-backdrop {
   opacity: 0 !important;
 }
 
@@ -4630,9 +4698,14 @@ body.is-mobile .pull-out-action.mod-activated {
 }
 
 /* Phones keep Obsidian's bottom navigation, keyboard toolbar and swipe
-   transforms. Only their reading gutter and touch surfaces change. */
+   transforms. Only their reading gutter, code block inset and touch surfaces
+   change. */
 body.is-phone {
   --file-margins-x: 16px;
+}
+
+body.is-phone .markdown-rendered pre {
+  padding: 0.8em 0.9em;
 }
 
 body.is-mobile :is(.mobile-navbar-action, .mobile-toolbar-option) {

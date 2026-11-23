@@ -9,7 +9,7 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Reading | CJK typography: a gap where Han meets Latin or digits, improved paragraph endings in reading view (normal paragraph wrapping on iOS), line height 1.75 unless set | Off |
 | Reading | Justified paragraphs: body text lines up on both edges in reading and editing views; headings, code and tables keep their alignment | Off |
 | Reading | First-line indent: body paragraphs start two characters in, in reading view and Live Preview; lists, quotes, callouts, tables and code are left alone | Off |
-| Reading | Chinese font pairing: system fonts only. Hei keeps Chinese sans glyphs on systems set to another language; Song sets body text in a Song typeface with sans headings and Kai quotes. A font chosen in Settings → Appearance still comes first | Off |
+| Reading | Chinese font pairing: system fonts only. Hei keeps Chinese sans glyphs on systems set to another language; Song sets body text in a Song typeface with sans headings and Kai quotes (requires system Song/Kai fonts on mobile). A font chosen in Settings → Appearance still comes first | Off |
 | Reading | Stronger text highlight: make Obsidian's text highlight colors more visible in reading view and Live Preview | Off |
 | Reading | Active line highlight: a faint wash on the focused editor's current text line; quotes and code keep their backgrounds | Off |
 | Reading | Underline links: keep note and web links underlined in reading and editing views | Off |
@@ -30,16 +30,16 @@ Every option needs the [Style Settings](https://github.com/obsidian-community/ob
 | Interface | Quiet vault switcher: the vault foot keeps only Settings (Help is in the command palette); the vault name appears when the pointer reaches it | Off |
 | Interface | Hide the Settings button too: with Quiet vault switcher on, Settings stays invisible until the pointer reaches it | Off |
 | Interface | Quiet sidebar toolbar: buttons rest as dots; hover opens them, or a tap on touch screens | Off |
-| Interface | Quiet view header: navigation arrows and action buttons in the note header stay hidden until hovered or focused on desktop; Web Viewer and stacked tabs keep their buttons | Off |
-| Interface | Quiet tab bar buttons: sidebar toggles, the new-tab button and the tab-list menu stay hidden until hovered or focused on desktop | Off |
+| Interface | Quiet view header: navigation arrows and action buttons in the note header stay hidden until hovered or focused on desktop and tablets with a pointer; Web Viewer and stacked tabs keep their buttons | Off |
+| Interface | Quiet tab bar buttons: sidebar toggles, the new-tab button and the tab-list menu stay hidden until hovered or focused on desktop and tablets with a pointer | Off |
 | Interface | Quiet status bar: hidden until the pointer nears the bottom center | Off |
 | Interface | Always show the status bar: keep the Quiet status bar pill visible on desktop | Off |
 | Interface | Outline guides: a hairline per heading level in the outline view; the branch under the pointer darkens | Off |
 | Interface | Disable entrance motion | Off |
 | Interface | Pure black on phones and tablets in dark mode, for OLED screens | Off |
 | Interface | Full-screen sidebars on phones: a swiped-in sidebar covers the whole screen; also narrow iPad windows | Off |
-| Interface | Sidebars stay put on phones: with Obsidian's Sliding sidebar on, the sidebar stays underneath and the note slides off it | Off |
-| Content | Quiet properties: compact, low-contrast note properties with a hairline separator; type icons and Add property appear on hover on desktop. Per note: `quiet-properties` / `no-quiet-properties` | Off |
+| Interface | Sidebars stay put on phones: with Obsidian's Sliding sidebar on, the sidebar stays underneath and the note slides off it; inactive while Full-screen sidebars is on | Off |
+| Content | Quiet properties: compact, low-contrast note properties with a hairline separator; type icons and Add property appear on hover on desktop and tablets with a pointer. Per note: `quiet-properties` / `no-quiet-properties` | Off |
 | Content | Two-column properties: lay out note properties in two columns when the pane is wide enough; tags and list fields span the full width. Per note: `compact-properties` / `no-compact-properties` | Off |
 | Content | Card callouts: tinted frame with an inner content card | Off |
 | Content | Plain tags, don't strike completed tasks | Off |
