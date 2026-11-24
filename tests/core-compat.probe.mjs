@@ -69,6 +69,11 @@ const cases = [
   ['Tablet fine-pointer enables quiet view header', 'theme-light is-mobile is-tablet still-quiet-header', W('<div class="workspace-split mod-root"><div class="workspace-tabs"><div class="view-header"><div class="view-actions" id=t></div></div></div></div>'), 'opacity', '0'],
   ['Narrow tablet shrinks horizontal file margins', 'theme-light is-mobile is-tablet', W('<div id=t style="padding-left:var(--file-margins-x)"></div>'), 'padding-left', '16px', null, {width: 600, height: 900}],
   ['Wide tablet keeps 24px horizontal file margins', 'theme-light is-mobile is-tablet', W('<div id=t style="padding-left:var(--file-margins-x)"></div>'), 'padding-left', '24px', null, {width: 820, height: 1180}],
+  ['macOS scrollbar thumb keeps the Still hairline', 'theme-light mod-macos', W('<div id=t></div>'), '--scrollbar-thumb-bg', 'rgb(0 0 0 / 0.12)'],
+  ['macOS slider thumb keeps its hairline edge', 'theme-light mod-macos', W('<input type=range id=t>'), '--slider-thumb-border-width', '0.5px'],
+  ['macOS slider thumb stays opaque while pressed', 'theme-light mod-macos', W('<input type=range id=t>'), '--slider-thumb-opacity-active', '1'],
+  ['macOS tree rows keep the desktop radius', 'theme-light mod-macos', W('<div class="tree-item-self" id=t>a</div>'), 'border-top-left-radius', '10px'],
+  ['Phone tree rows take the touch radius', 'theme-light is-mobile is-phone', W('<div class="tree-item-self" id=t>a</div>'), 'border-top-left-radius', '17.5px'],
 ];
 
 // Static perf & typography guards:

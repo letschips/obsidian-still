@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.23.2 · 2026-11-24
+
+### Fixed
+- **macOS scrollbars.** Scrollbars use Still's hairline again instead of core's solid gray.
+- **macOS sliders.** The slider thumb keeps its hairline edge and stays opaque while pressed.
+- **Touch dimming.** On touch screens, dimmed images and PDF pages brighten only while pressed instead of staying bright after a tap.
+- **Mobile tree rows.** File tree and outline rows on mobile follow the touch radius.
+
+### 中文
+- 修复：macOS 滚动条恢复主题的细线色，不再是核心的实心灰。
+- 修复：macOS 滑块圆点保留细描边，按住时不再半透明。
+- 修复：触屏上降亮的图片和 PDF 只在按住时变亮，点一下不再一直亮着。
+- 修复：手机和平板上文件树、大纲的行圆角跟随触控圆角。
+
 ## 0.23.1 · 2026-11-24
 
 ### Fixed

@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.1 · MIT License · https://github.com/letschips
+  Version 0.23.2 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -957,6 +957,8 @@ body:not(.is-mobile) {
   --search-input-corner-shape: superellipse(1.1);
   --modal-border-width: 0px;
   --prompt-input-height: 64px;
+  /* Core paints macOS scrollbars solid gray. */
+  --scrollbar-thumb-bg: var(--still-hairline-strong);
 
   /* Compact controls. */
   --toggle-width: 32px;
@@ -969,6 +971,10 @@ body:not(.is-mobile) {
   --slider-thumb-height: 16px;
   --slider-thumb-radius: 16px;
   --slider-thumb-y: -5px;
+  /* macOS drops the edge and fades the pressed thumb for its glass capsule;
+     a small white dot needs both. */
+  --slider-thumb-border-width: 0.5px;
+  --slider-thumb-opacity-active: 1;
 
   /* Settings: quiet group headings, roomy cards. */
   --setting-group-heading-color: var(--text-muted);
@@ -2151,10 +2157,6 @@ body:not(.is-mobile) .mod-sidedock .view-content .nav-header {
 .nav-files-container {
   padding-top: 0;
   padding-inline: 8px;
-}
-
-.tree-item-self {
-  border-radius: var(--radius-s);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -4138,15 +4140,32 @@ body.theme-dark.still-pdf-dark .pdf-container:not(.mod-themed) .pdfViewer .page 
 }
 
 /* Option: dim PDF pages in dark mode until hovered or pressed.
-   Opacity only, so it stays cheap and combines with Dark PDFs. */
-body.theme-dark.still-pdf-dim .pdf-container .pdfViewer .page:not(:hover):not(:active) {
-  opacity: 0.75;
+   Opacity only, so it stays cheap and combines with Dark PDFs. Touch
+   screens keep :hover after a tap, so there only pressing lifts the dim. */
+@media (hover: hover) and (pointer: fine) {
+  body.theme-dark.still-pdf-dim .pdf-container .pdfViewer .page:not(:hover):not(:active) {
+    opacity: 0.75;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  body.theme-dark.still-pdf-dim .pdf-container .pdfViewer .page:not(:active) {
+    opacity: 0.75;
+  }
 }
 
 /* Option: note images rest dimmed in dark mode, the same way as PDF pages.
    Link favicons stay crisp. */
-body.theme-dark.still-img-dim :is(.markdown-rendered, .markdown-source-view.mod-cm6) img:not(.link-favicon):not(:hover):not(:active) {
-  opacity: 0.75;
+@media (hover: hover) and (pointer: fine) {
+  body.theme-dark.still-img-dim :is(.markdown-rendered, .markdown-source-view.mod-cm6) img:not(.link-favicon):not(:hover):not(:active) {
+    opacity: 0.75;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  body.theme-dark.still-img-dim :is(.markdown-rendered, .markdown-source-view.mod-cm6) img:not(.link-favicon):not(:active) {
+    opacity: 0.75;
+  }
 }
 
 /* Option: images fill the line width, in reading and editing views. Only

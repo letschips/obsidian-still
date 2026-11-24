@@ -4,7 +4,9 @@ cssclasses:
   # Try more: wide, max, img-wide, img-grid, embed-strict, table-small,
   # table-tiny, table-nowrap, table-numbers, row-alt, col-lines,
   # table-lines, table-center, cjk, no-cjk, justify, no-justify,
-  # indent, no-indent, link-underline, no-link-underline
+  # indent, no-indent, link-underline, no-link-underline,
+  # quiet-properties, no-quiet-properties, compact-properties,
+  # no-compact-properties, hide-properties
 ---
 
 # Still example
