@@ -74,6 +74,9 @@ const cases = [
   ['macOS slider thumb stays opaque while pressed', 'theme-light mod-macos', W('<input type=range id=t>'), '--slider-thumb-opacity-active', '1'],
   ['macOS tree rows keep the desktop radius', 'theme-light mod-macos', W('<div class="tree-item-self" id=t>a</div>'), 'border-top-left-radius', '10px'],
   ['Phone tree rows take the touch radius', 'theme-light is-mobile is-phone', W('<div class="tree-item-self" id=t>a</div>'), 'border-top-left-radius', '17.5px'],
+  ['macOS menus share the control corner curve', 'theme-light mod-macos', W('<div class="menu" id=t></div><button id=u>b</button>'), 'corner-shape', 'same'],
+  ['macOS search field keeps the control corner curve', 'theme-light mod-macos', W('<div class="search-input-container"><input type="search" id=t></div><button id=u>b</button>'), 'corner-shape', 'same'],
+  ['Windows tabs share the control corner curve', 'theme-light mod-windows', W('<div class="workspace-tab-header-container"><div class="workspace-tab-header" id=t></div></div><input type="text" id=u>'), 'corner-shape', 'same'],
 ];
 
 // Static perf & typography guards:

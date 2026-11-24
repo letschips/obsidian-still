@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.4 · MIT License · https://github.com/letschips
+  Version 0.23.5 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -952,8 +952,11 @@ body:not(.is-mobile) {
   --input-font-weight: 500;
   --search-input-radius: var(--radius-s);
   --dropdown-padding-start: var(--font-ui-small);
-  --input-corner-shape: superellipse(1.1);
-  --button-corner-shape: superellipse(1.1);
+  /* One corner curve for the desktop chrome. Core uses 1.33 on macOS and
+     round elsewhere; 1.1 keeps Still's pill buttons and search fields round
+     at the ends, so menus, tabs, cards and dialogs take it too. Core sets
+     the search field apart on macOS, so it is named here. */
+  --corner-shape: superellipse(1.1);
   --search-input-corner-shape: superellipse(1.1);
   --modal-border-width: 0px;
   --prompt-input-height: 64px;

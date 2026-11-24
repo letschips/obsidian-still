@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.5 · 2026-11-24
+
+### Changed
+- **One corner curve on desktop.** Menus, tabs, cards, notices and dialogs now share the slightly rounded corner curve that buttons and fields already used, instead of the squarer macOS curve (or plain round corners on Windows).
+
+### 中文
+- 改进：桌面端的菜单、标签、卡片、通知和对话框统一使用按钮和输入框的圆角曲线，不再和 macOS 更方的曲线（Windows 上是普通圆角）混用。
+
 ## 0.23.4 · 2026-11-24
 
 ### Changed
