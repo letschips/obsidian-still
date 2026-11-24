@@ -82,6 +82,11 @@ const code=String.raw`(async()=>{
   const slabOff=slab();toggle('still-peek-soft',true);const slabOn=slab();toggle('still-peek-soft',false);
   check('Sidebar peek keeps its shadowed slab by default',slabOff.shadow!=='none'&&slabOff.image==='none',slabOff);
   check('Soft peek fades the page-facing edge with a gradient and no shadow',slabOn.shadow==='none'&&slabOn.image.startsWith('linear-gradient')&&parseFloat(slabOn.left)<0,slabOn);
+  // Core shrinks a collapsing sidebar before it sets the inline display the peek rules key on;
+  // the sidebar must already be hidden by then, or the parked drawer replays a slide-out.
+  const shrinking=document.createElement('div');shrinking.className='mod-sidedock is-sidedock-collapsed mod-left-split';shrinking.style.transition='none';document.body.append(shrinking);probes.push(shrinking);
+  const shrinkOpacity=getComputedStyle(shrinking).opacity;
+  check('A collapsing sidebar is already hidden before the peek drawer takes over',shrinkOpacity==='0',{shrinkOpacity});
   stage='lists';
   const gap=()=>Math.round(host.querySelector('li').getBoundingClientRect().height);
   document.body.style.setProperty('--still-list-spacing','0');const tight=gap();

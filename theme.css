@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.0 · MIT License · https://github.com/letschips
+  Version 0.23.1 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -2459,6 +2459,15 @@ body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed[st
   pointer-events: none;
   transition: transform var(--still-moderate) var(--still-glide),
     opacity var(--still-moderate) var(--still-glide);
+}
+
+/* Collapsing: core shrinks the sidebar first and only then sets the inline
+   display the rules above key on. Starting from the open sidebar's opacity,
+   the parked panel would replay a slide-out after the sidebar has already
+   gone. Fade it while it shrinks so the panel takes over already hidden. */
+body:not(.is-mobile):not(.still-peek-off) .mod-sidedock.is-sidedock-collapsed:not([style*="display"]) {
+  opacity: 0;
+  transition: opacity var(--still-fast) var(--still-ease-out);
 }
 
 /* A ribbon that stays in the layout keeps its column: the trigger sits on

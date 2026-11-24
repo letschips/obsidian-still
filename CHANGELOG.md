@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.1 · 2026-11-24
+
+### Fixed
+- **Sidebar collapse flash.** Collapsing a sidebar with peek on no longer replays the peek panel sliding out after the sidebar has gone; the sidebar now fades while it shrinks.
+
+### 中文
+- 修复：开启悬浮展开时，收起侧边栏后不再闪出整块抽屉再滑走；侧边栏改为在收窄的同时淡出。
+
 ## 0.23.0 · 2026-11-23
 
 ### Changed
