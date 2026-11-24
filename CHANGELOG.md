@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.23.8 · 2026-11-24
+
+### Fixed
+- **Vault name beside the auto-hide ribbon.** With the ribbon set to auto-hide and the quiet vault switcher off, the vault name at the foot of an open left sidebar now steps aside with the sidebar content instead of sitting under the ribbon.
+- **Quiet tab bar buttons on macOS.** While a collapsed sidebar peeks, its toggle in the page header now shows, so the panel can be pinned without hunting for the button.
+
+### 中文
+- 修复：功能区设为自动隐藏、且没开「安静的库切换器」时，左侧栏底部的库名会跟侧栏内容一起让位，不再被展开的功能区盖住。
+- 修复：macOS 上开了「安静的顶栏按钮」时，收起的侧栏预览展开期间，顶栏里用来固定它的按钮会显示出来。
+
 ## 0.23.7 · 2026-11-24
 
 ### Fixed

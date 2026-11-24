@@ -157,18 +157,30 @@ for (const side of ['left', 'right']) {
   if (side === 'left') peekChecks.push(['macOS left peek tabs clear the toggle', got.clear, got.clear]);
   await page.mouse.move(640, 600);
 }
+// Quiet tab bar buttons: a peeking panel shows the toggle that pins it.
+await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="theme-light mod-macos is-hidden-frameless is-focused still-quiet-tab-actions">${peekHtml}</body></html>`);
+for (const side of ['left', 'right']) {
+  await page.mouse.move(640, 600);
+  await page.waitForTimeout(50);
+  const rest = await page.evaluate(id => getComputedStyle(document.getElementById(id)).opacity, side === 'left' ? 'lt' : 'rt');
+  await page.mouse.move(side === 'left' ? 2 : 1278, 400);
+  await page.waitForTimeout(50);
+  const peek = await page.evaluate(id => getComputedStyle(document.getElementById(id)).opacity, side === 'left' ? 'lt' : 'rt');
+  peekChecks.push([`Quiet ${side} toggle shows while its sidebar peeks`, rest === '0' && peek === '1', JSON.stringify({rest, peek})]);
+}
 // Auto-hide ribbon beside an open left sidebar: the tab content slides by
 // transform, so the sidebar keeps its padding and width, the page does not
 // move and the header row stays put.
 await page.mouse.move(640, 600);
-await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="theme-light mod-macos is-hidden-frameless is-focused show-ribbon still-peek-ribbon"><div class="app-container" style="height: 100vh"><div class="workspace"><div class="workspace-ribbon side-dock-ribbon mod-primary"><div class="side-dock-actions"><div class="clickable-icon side-dock-ribbon-action">A</div></div></div><div class="workspace-split mod-horizontal mod-sidedock mod-left-split" id=ls style="width: 300px;"><div class="workspace-leaf-resize-handle"></div><div class="workspace-tabs mod-top mod-top-left-space"><div class="workspace-tab-header-container"><div class="workspace-tab-header-container-inner" id=lh><div class="workspace-tab-header">a</div></div></div><div class="workspace-tab-container" id=lc><div class="workspace-leaf"></div></div></div></div><div class="workspace-split mod-vertical mod-root" id=rs><div class="workspace-tabs mod-top mod-top-right-space"><div class="workspace-tab-header-container"></div><div class="workspace-tab-container"></div></div></div></div></div></body></html>`);
-const ribbonGeo = () => page.evaluate(() => ({pad: getComputedStyle(document.getElementById('ls')).paddingLeft, root: Math.round(document.getElementById('rs').getBoundingClientRect().left), header: Math.round(document.getElementById('lh').getBoundingClientRect().left), content: Math.round(document.getElementById('lc').getBoundingClientRect().left)}));
+await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="theme-light mod-macos is-hidden-frameless is-focused show-ribbon still-peek-ribbon"><div class="app-container" style="height: 100vh"><div class="workspace"><div class="workspace-ribbon side-dock-ribbon mod-primary"><div class="side-dock-actions"><div class="clickable-icon side-dock-ribbon-action">A</div></div></div><div class="workspace-split mod-horizontal mod-sidedock mod-left-split" id=ls style="width: 300px;"><div class="workspace-leaf-resize-handle"></div><div class="workspace-sidedock-vault-profile"><div class="workspace-drawer-vault-switcher" id=vn>Vault</div></div><div class="workspace-tabs mod-top mod-top-left-space"><div class="workspace-tab-header-container"><div class="workspace-tab-header-container-inner" id=lh><div class="workspace-tab-header">a</div></div></div><div class="workspace-tab-container" id=lc><div class="workspace-leaf"></div></div></div></div><div class="workspace-split mod-vertical mod-root" id=rs><div class="workspace-tabs mod-top mod-top-right-space"><div class="workspace-tab-header-container"></div><div class="workspace-tab-container"></div></div></div></div></div></body></html>`);
+const ribbonGeo = () => page.evaluate(() => ({pad: getComputedStyle(document.getElementById('ls')).paddingLeft, root: Math.round(document.getElementById('rs').getBoundingClientRect().left), header: Math.round(document.getElementById('lh').getBoundingClientRect().left), content: Math.round(document.getElementById('lc').getBoundingClientRect().left), vault: Math.round(document.getElementById('vn').getBoundingClientRect().left)}));
 const atRest = await ribbonGeo();
 await page.mouse.move(2, 400);
 await page.waitForTimeout(50);
 const revealed = await ribbonGeo();
 peekChecks.push(['Auto-hide ribbon slides the open sidebar content', revealed.content - atRest.content >= 30, JSON.stringify({atRest, revealed})]);
 peekChecks.push(['Auto-hide ribbon keeps the sidebar padding, page and header still', revealed.pad === '0px' && revealed.root === atRest.root && revealed.header === atRest.header, JSON.stringify({atRest, revealed})]);
+peekChecks.push(['Auto-hide ribbon slides the vault name with the content', revealed.vault - atRest.vault === revealed.content - atRest.content, JSON.stringify({atRest, revealed})]);
 // A single note tab centers on the page in every macOS sidebar state:
 // window-control gap, left toggle and auto-hide ribbon on one side, new tab,
 // tab list and the floating right toggle's slot on the other.

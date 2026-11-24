@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.7 · MIT License · https://github.com/letschips
+  Version 0.23.8 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -2153,6 +2153,13 @@ body:not(.is-mobile) .mod-root :is(.workspace-tab-header-new-tab, .workspace-tab
   body.still-quiet-tab-actions:not(.is-phone) .workspace-ribbon:is(:hover, :focus-within) > .sidebar-toggle-button {
     opacity: 1;
   }
+
+  /* macOS: a peeking sidebar is pinned from its toggle in the page header,
+     so that toggle shows while the panel is open. */
+  body.still-quiet-tab-actions.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .mod-sidedock.mod-left-split.is-sidedock-collapsed[style*="display"]:is(:hover, :focus-within) + .mod-root .sidebar-toggle-button.mod-left,
+  body.still-quiet-tab-actions.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .workspace-split.mod-root:has(+ .mod-sidedock.mod-right-split.is-sidedock-collapsed[style*="display"]:is(:hover, :focus-within)) .sidebar-toggle-button.mod-right {
+    opacity: 1;
+  }
 }
 
 /* Sidebar tab bars: quiet icon tiles with room between them. */
@@ -2759,11 +2766,15 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .mod-sid
    slides right by the ribbon's width (less an 8px overlap) and slides back
    when the pointer leaves, so icons never sit on the file tree. A transform,
    not padding: nothing reflows while it moves, and the header row stays. */
-body.still-peek-ribbon.show-ribbon:not(.is-mobile) .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs > .workspace-tab-container {
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs > .workspace-tab-container,
+body.still-peek-ribbon.show-ribbon:not(.still-hide-vault):not(.is-mobile) .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-sidedock-vault-profile {
   transition: transform var(--still-moderate) var(--still-glide);
 }
 
-body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs > .workspace-tab-container {
+/* The vault name in the sidebar's foot steps aside with it; the quiet vault
+   switcher keeps nothing there at rest. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs > .workspace-tab-container,
+body.still-peek-ribbon.show-ribbon:not(.still-hide-vault):not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-sidedock-vault-profile {
   transform: translateX(calc(var(--ribbon-width) - 8px));
   transition-delay: var(--still-peek-delay);
 }
@@ -4899,6 +4910,7 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
 
   .mod-sidedock.is-sidedock-collapsed,
   body.still-peek-ribbon .mod-sidedock.mod-left-split > .workspace-tabs > .workspace-tab-container,
+  body.still-peek-ribbon .mod-sidedock.mod-left-split > .workspace-sidedock-vault-profile,
   body.still-peek-ribbon .workspace-tabs.mod-top-left-space .workspace-tab-header-container,
   .workspace-ribbon,
   .status-bar,
