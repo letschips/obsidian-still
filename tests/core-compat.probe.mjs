@@ -122,7 +122,41 @@ for (const [name, cls, html, prop, want, target, viewport] of cases) {
   if (!ok) fail++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : `: want ${want}, got ${got}`}`);
 }
+// Peeking sidebars on macOS frameless windows: the collapsed sidebar's
+// toggle stays in the page header under the panel. Resting on it keeps the
+// panel open, the toggle stays on top and clickable, and the left panel's
+// tabs start past it. Reduced motion drops the transitions so states settle.
+const peekSide = side => `<div class="workspace-split mod-horizontal mod-sidedock mod-${side}-split is-sidedock-collapsed" id=${side}p style="width: 0px; display: none;"><div class="workspace-leaf-resize-handle"></div><div class="workspace-tabs mod-top mod-top-${side}-space"><div class="workspace-tab-header-container"><div class="workspace-tab-header-container-inner" id=${side}tabs><div class="workspace-tab-header">a</div><div class="workspace-tab-header">b</div></div></div><div class="workspace-tab-container"></div></div></div>`;
+const peekHtml = `<div class="app-container" style="height: 100vh"><div class="workspace">${peekSide('left')}<div class="workspace-split mod-vertical mod-root"><div class="workspace-tabs mod-top mod-top-left-space mod-top-right-space"><div class="workspace-tab-header-container"><div class="sidebar-toggle-button mod-left mod-primary" id=lt><div class="clickable-icon" id=li>L</div></div><div class="workspace-tab-header-container-inner"></div><div class="sidebar-toggle-button mod-right mod-secondary" id=rt><div class="clickable-icon">R</div></div></div><div class="workspace-tab-container"></div></div></div>${peekSide('right')}</div></div>`;
+const peekChecks = [];
+await page.setViewportSize({width: 1280, height: 720});
+await page.emulateMedia({media: 'screen', reducedMotion: 'reduce'});
+await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="theme-light mod-macos is-hidden-frameless is-focused">${peekHtml}</body></html>`);
+for (const side of ['left', 'right']) {
+  const box = await page.locator(side === 'left' ? '#li' : '#rt .clickable-icon').boundingBox();
+  const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
+  // Open from the edge strip first: the toggle must win over the open panel.
+  await page.mouse.move(side === 'left' ? 2 : 1278, 400);
+  await page.waitForTimeout(50);
+  const onTop = await page.evaluate(([id, x, y]) => !!document.elementFromPoint(x, y)?.closest(id), [side === 'left' ? '#lt' : '#rt', x, y]);
+  await page.mouse.move(x, y);
+  await page.waitForTimeout(50);
+  const got = await page.evaluate(side => ({
+    onTop: null,
+    open: getComputedStyle(document.getElementById(side + 'p')).opacity,
+    clear: side === 'right' || document.getElementById('lefttabs').getBoundingClientRect().left >= document.getElementById('li').getBoundingClientRect().right,
+  }), side);
+  got.onTop = onTop;
+  peekChecks.push([`macOS ${side} peek stays open on its toggle`, got.open === '1', got.open]);
+  peekChecks.push([`macOS ${side} toggle sits above the peek panel`, got.onTop, got.onTop]);
+  if (side === 'left') peekChecks.push(['macOS left peek tabs clear the toggle', got.clear, got.clear]);
+  await page.mouse.move(640, 600);
+}
+for (const [name, ok, got] of peekChecks) {
+  if (!ok) fail++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : `: got ${got}`}`);
+}
 await browser.close();
-const total = cases.length + 2;
+const total = cases.length + 2 + peekChecks.length;
 console.log(`${total - fail}/${total} passed`);
 process.exit(fail ? 1 : 0);

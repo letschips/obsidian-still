@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.3 · 2026-11-24
+
+### Fixed
+- **Pin a peeking sidebar (macOS).** While a collapsed sidebar peeks, its toggle in the header stays above the panel and can be clicked to pin it; the panel stays open while the pointer is on the toggle. Resting on the toggle also opens the panel.
+
+### 中文
+- 修复：macOS 上侧栏悬浮展开时，顶栏的侧栏按钮显示在面板上方，可以直接点击固定；指针停在按钮上时面板不会收回。停在按钮上也会展开侧栏。
+
 ## 0.23.2 · 2026-11-24
 
 ### Fixed
