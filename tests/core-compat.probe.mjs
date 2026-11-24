@@ -169,6 +169,20 @@ await page.waitForTimeout(50);
 const revealed = await ribbonGeo();
 peekChecks.push(['Auto-hide ribbon slides the open sidebar content', revealed.content - atRest.content >= 30, JSON.stringify({atRest, revealed})]);
 peekChecks.push(['Auto-hide ribbon keeps the sidebar padding, page and header still', revealed.pad === '0px' && revealed.root === atRest.root && revealed.header === atRest.header, JSON.stringify({atRest, revealed})]);
+// A single note tab centers on the page in every macOS sidebar state:
+// window-control gap, left toggle and auto-hide ribbon on one side, new tab,
+// tab list and the floating right toggle's slot on the other.
+const tabIcon = '<div class="clickable-icon"><svg class="svg-icon"></svg></div>';
+const tabHeader = (cls, leftToggle, rightToggle) => `<div class="workspace-tabs mod-top mod-active ${cls}"><div class="workspace-tab-header-container">${leftToggle ? `<div class="sidebar-toggle-button mod-primary mod-left">${tabIcon}</div>` : ''}<div class="workspace-tab-header-container-inner"><div class="workspace-tab-header tappable mod-active is-active" id=tab><div class="workspace-tab-header-inner"><div class="workspace-tab-header-inner-title">Note</div></div></div></div><div class="workspace-tab-header-new-tab"><span class="clickable-icon"><svg class="svg-icon"></svg></span></div><div class="workspace-tab-header-spacer"></div><div class="workspace-tab-header-tab-list"><span class="clickable-icon"><svg class="svg-icon"></svg></span></div>${rightToggle ? `<div class="sidebar-toggle-button mod-right mod-secondary">${tabIcon}</div>` : ''}</div><div class="workspace-tab-container"></div></div>`;
+const tabSide = (which, collapsed) => `<div class="workspace-split mod-horizontal mod-sidedock mod-${which}-split${collapsed ? ' is-sidedock-collapsed' : ''}" style="${collapsed ? 'width: 0px; display: none;' : 'width: 260px;'}">${tabHeader(collapsed ? '' : `mod-top-${which}-space`, false, false).replace(' id=tab', '')}</div>`;
+const offsets = {};
+for (const ribbon of ['static', 'peek']) for (const lc of [false, true]) for (const rc of [false, true]) {
+  const cls = `theme-light mod-macos is-frameless is-hidden-frameless is-focused show-ribbon${ribbon === 'peek' ? ' still-peek-ribbon' : ''}`;
+  const ws = `<div class="workspace-ribbon side-dock-ribbon mod-primary${lc ? ' is-collapsed' : ''}"></div>${tabSide('left', lc)}<div class="workspace-split mod-vertical mod-root" id=rs>${tabHeader([lc ? 'mod-top-left-space' : '', rc ? 'mod-top-right-space' : ''].join(' '), lc, rc)}</div>${tabSide('right', rc)}`;
+  await page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="${cls}"><div class="app-container" style="height: 100vh"><div class="workspace">${ws}</div></div></body></html>`);
+  offsets[`${ribbon} L:${lc ? 'closed' : 'open'} R:${rc ? 'closed' : 'open'}`] = await page.evaluate(() => { const t = document.getElementById('tab').getBoundingClientRect(), r = document.getElementById('rs').getBoundingClientRect(); return Math.round((t.left + t.right) / 2 - (r.left + r.right) / 2); });
+}
+peekChecks.push(['macOS single tab centers on the page in every sidebar state', Object.values(offsets).every(v => Math.abs(v) <= 1), JSON.stringify(offsets)]);
 for (const [name, ok, got] of peekChecks) {
   if (!ok) fail++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : `: got ${got}`}`);

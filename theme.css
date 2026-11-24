@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.6 · MIT License · https://github.com/letschips
+  Version 0.23.7 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -2061,6 +2061,48 @@ body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-st
 
 body:not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked):not(.mod-top-left-space).mod-top-right-space .workspace-tab-header-container-inner::before {
   flex-basis: 96px;
+}
+
+/* macOS frameless windows: balance exactly, in every sidebar state. The
+   tabs' start side holds the window controls' gap (and the auto-hide
+   ribbon's width) plus the left sidebar toggle when that sidebar is
+   closed; the end side holds new tab and tab list, plus the slot core
+   keeps for the floating right toggle. A spacer on the shorter side makes
+   up the difference and, like the one above, gives way first. */
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) {
+  --still-tab-action: calc(var(--icon-m) + 16px);
+  --still-tabs-start: 0px;
+  --still-tabs-end: calc(var(--still-tab-action) * 2);
+}
+
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs.mod-top-left-space:not(.mod-stacked) {
+  --still-tabs-start: calc(var(--frame-left-space) + var(--still-tab-action) + var(--size-4-2));
+}
+
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile):not(.is-popout-window) .mod-root .workspace-tabs.mod-top-left-space:not(.mod-stacked) {
+  --still-tabs-start: calc(var(--frame-left-space) + var(--ribbon-width) + var(--still-tab-action) + var(--size-4-2));
+}
+
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs.mod-top-right-space:not(.mod-stacked) {
+  --still-tabs-end: calc(var(--still-tab-action) * 2 + 30px + var(--frame-right-space));
+}
+
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner {
+  padding-inline-start: 6px;
+}
+
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner::before,
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner::after {
+  content: "";
+  min-width: 0;
+  flex: 0 9999 max(0px, calc(var(--still-tabs-end) - var(--still-tabs-start)));
+  /* Cancel the gap each spacer adds beside the tabs. */
+  margin-inline: 0 -4px;
+}
+
+body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.still-tabs-left):not(.is-mobile) .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-container-inner::after {
+  flex-basis: max(0px, calc(var(--still-tabs-start) - var(--still-tabs-end)));
+  margin-inline: -4px 0;
 }
 
 /* Stacked tabs: core separates the spines with a 1px line drawn in the tab

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.7 · 2026-11-24
+
+### Fixed
+- **Centered tabs on macOS.** Note tabs now sit at the center of the page whichever sidebars are open or closed. With the left sidebar closed they used to sit up to 28 px right of center.
+
+### 中文
+- 修复：macOS 上不管两侧栏开还是关，顶栏的笔记标签都居中在页面中间。之前左侧栏收起时最多会往右偏 28 px。
+
 ## 0.23.6 · 2026-11-24
 
 ### Fixed
