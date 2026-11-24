@@ -77,6 +77,8 @@ const cases = [
   ['macOS menus share the control corner curve', 'theme-light mod-macos', W('<div class="menu" id=t></div><button id=u>b</button>'), 'corner-shape', 'same'],
   ['macOS search field keeps the control corner curve', 'theme-light mod-macos', W('<div class="search-input-container"><input type="search" id=t></div><button id=u>b</button>'), 'corner-shape', 'same'],
   ['Windows tabs share the control corner curve', 'theme-light mod-windows', W('<div class="workspace-tab-header-container"><div class="workspace-tab-header" id=t></div></div><input type="text" id=u>'), 'corner-shape', 'same'],
+  ['Phone note header uses the 44px touch height', 'theme-light is-mobile is-phone', W('<div class="workspace-leaf-content"><div class="view-header"><div class="view-actions" id=t></div></div></div>'), 'height', '44px'],
+  ['Tablet note header keeps 52px', 'theme-light is-mobile is-tablet', W('<div class="workspace-leaf-content"><div class="view-header" id=t></div></div>'), 'height', '52px'],
 ];
 
 // Static perf & typography guards:

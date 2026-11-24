@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.6 · 2026-11-24
+
+### Fixed
+- **Phone note header height.** The note header on phones is 44 px, Obsidian's touch height, instead of desktop's 45 px.
+
+### 中文
+- 修复：手机上笔记顶栏的高度改为 Obsidian 的触控高度 44 px，不再沿用桌面的 45 px。
+
 ## 0.23.5 · 2026-11-24
 
 ### Changed

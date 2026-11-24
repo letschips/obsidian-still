@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.5 · MIT License · https://github.com/letschips
+  Version 0.23.6 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -4761,6 +4761,12 @@ body.is-phone .markdown-rendered pre {
 body.is-mobile :is(.mobile-navbar-action, .mobile-toolbar-option) {
   min-width: var(--still-touch-target);
   min-height: var(--still-touch-target);
+}
+
+/* The note header takes the header height on mobile. Phones use the 44px
+   touch height, as core does, rather than desktop's 45px. */
+body.is-phone {
+  --header-height: var(--still-touch-target);
 }
 
 /* Tablet tabs scroll at their natural width instead of shrinking into
