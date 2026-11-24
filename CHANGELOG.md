@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.9 · 2026-11-24
+
+### Fixed
+- **Sidebar peek no longer opens from its header toggle.** Resting the pointer on a collapsed sidebar's toggle (beside the window buttons on macOS) used to open the panel after a pause; passing the window buttons should not spill a sidebar over the page. The panel still opens from the window edge and from the auto-hide ribbon. Clicking the toggle still pins a panel that is already out only while the pointer stays on the panel.
+
+### 中文
+- 修复：鼠标停在顶栏的侧栏按钮上不再弹出预览面板。这个按钮就在窗口按钮旁边，鼠标经过时不该让侧栏盖到页面上。边缘和自动隐藏功能区照常展开；侧栏已展开时，指针停在面板上点按钮仍可固定。
+
 ## 0.23.8 · 2026-11-24
 
 ### Fixed

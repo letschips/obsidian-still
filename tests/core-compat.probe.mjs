@@ -142,19 +142,27 @@ for (const side of ['left', 'right']) {
   const [x, y] = [box.x + box.width / 2, box.y + box.height / 2];
   // Open from the edge strip first: the toggle must win over the open panel.
   await page.mouse.move(side === 'left' ? 2 : 1278, 400);
-  await page.waitForTimeout(50);
+  await page.waitForTimeout(350);
   const onTop = await page.evaluate(([id, x, y]) => !!document.elementFromPoint(x, y)?.closest(id), [side === 'left' ? '#lt' : '#rt', x, y]);
+  const fromEdge = await page.evaluate(side => getComputedStyle(document.getElementById(side + 'p')).opacity, side);
   await page.mouse.move(x, y);
+  await page.waitForTimeout(350);
+  const onToggle = await page.evaluate(side => getComputedStyle(document.getElementById(side + 'p')).opacity, side);
+  peekChecks.push([`macOS ${side} peek opens from the edge`, fromEdge === '1', fromEdge]);
+  peekChecks.push([`macOS ${side} toggle sits above the open peek panel`, onTop, onTop]);
+  peekChecks.push([`macOS ${side} toggle hover closes the panel instead of holding it`, onToggle === '0', onToggle]);
+  await page.mouse.move(640, 600);
+}
+// The header toggle alone does not open a collapsed sidebar; it sits beside
+// the window buttons, so passing them must not spill a panel over the page.
+for (const side of ['left', 'right']) {
+  const box = await page.locator(side === 'left' ? '#li' : '#rt .clickable-icon').boundingBox();
+  await page.mouse.move(640, 600);
   await page.waitForTimeout(50);
-  const got = await page.evaluate(side => ({
-    onTop: null,
-    open: getComputedStyle(document.getElementById(side + 'p')).opacity,
-    clear: side === 'right' || document.getElementById('lefttabs').getBoundingClientRect().left >= document.getElementById('li').getBoundingClientRect().right,
-  }), side);
-  got.onTop = onTop;
-  peekChecks.push([`macOS ${side} peek stays open on its toggle`, got.open === '1', got.open]);
-  peekChecks.push([`macOS ${side} toggle sits above the peek panel`, got.onTop, got.onTop]);
-  if (side === 'left') peekChecks.push(['macOS left peek tabs clear the toggle', got.clear, got.clear]);
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.waitForTimeout(500);
+  const open = await page.evaluate(id => getComputedStyle(document.getElementById(id)).opacity, side + 'p');
+  peekChecks.push([`macOS ${side} toggle hover alone keeps its sidebar closed`, open === '0', open]);
   await page.mouse.move(640, 600);
 }
 // Quiet tab bar buttons: a peeking panel shows the toggle that pins it.
@@ -164,7 +172,7 @@ for (const side of ['left', 'right']) {
   await page.waitForTimeout(50);
   const rest = await page.evaluate(id => getComputedStyle(document.getElementById(id)).opacity, side === 'left' ? 'lt' : 'rt');
   await page.mouse.move(side === 'left' ? 2 : 1278, 400);
-  await page.waitForTimeout(50);
+  await page.waitForTimeout(350);
   const peek = await page.evaluate(id => getComputedStyle(document.getElementById(id)).opacity, side === 'left' ? 'lt' : 'rt');
   peekChecks.push([`Quiet ${side} toggle shows while its sidebar peeks`, rest === '0' && peek === '1', JSON.stringify({rest, peek})]);
 }

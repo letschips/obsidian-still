@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.8 · MIT License · https://github.com/letschips
+  Version 0.23.9 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -2642,24 +2642,17 @@ body.is-hidden-frameless:not(.mod-macos):not(.is-fullscreen):not(.is-mobile):not
 }
 
 /* macOS frameless: a collapsed sidebar's toggle stays in the page header,
-   right where the peek panel's header slides over it. Lift it above the
-   panel and keep the panel open while the pointer is on it, so a peeking
-   sidebar can be pinned in place. Resting on the toggle also opens the
-   panel, after a longer pause than the edge, since the toggle sits beside
-   the window buttons. The :has() checks follow the hover of one button.
-   A translucency snippet must not make the page a stacking context (for
-   example with contain: paint), or the toggle stays under the panel. */
+   above the peek panel. A translucency snippet must not make the page a
+   stacking context (for example with contain: paint), or the toggle stays
+   under the panel. */
 body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .workspace-split.mod-root .sidebar-toggle-button:is(.mod-left, .mod-right) {
   z-index: 12;
 }
 
-body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .mod-sidedock.mod-left-split.is-sidedock-collapsed[style*="display"]:has(+ .mod-root .sidebar-toggle-button.mod-left:hover),
-body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .workspace-split.mod-root:has(.sidebar-toggle-button.mod-right:hover) + .mod-sidedock.mod-right-split.is-sidedock-collapsed[style*="display"] {
-  transform: translateX(var(--still-peek-offset));
-  opacity: 1;
-  pointer-events: auto;
-  transition-delay: calc(var(--still-peek-delay) * 2);
-}
+/* The toggle on its own never opens a collapsed sidebar: it sits beside the
+   window buttons, and passing them must not spill a panel over the page.
+   A panel comes out from its edge or the auto-hide ribbon, and stays out
+   while the pointer is on it or while the ribbon holds it. */
 
 /* The open left panel keeps that toggle's slot free, as an open sidebar
    does: Still's 32px icon plus core's end padding. Core already keeps the
@@ -2727,7 +2720,7 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspa
   transition-delay: var(--still-peek-delay);
 }
 
-/* It stays out with the panel while the pointer rests on the toggle. */
+/* It keeps clear of the toggle beside the window buttons. */
 body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:has(+ .mod-sidedock.is-sidedock-collapsed[style*="display"] + .mod-root .sidebar-toggle-button.mod-left:hover) {
   opacity: 1;
   transform: none;
