@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.23.10 · 2026-11-24
+
+### Fixed
+- **Sidebar toggles no longer spring when a sidebar opens or closes.** The tab bar's left padding eased over 240ms while Obsidian slid the sidebar in 140ms, so the tabs and the left toggle overshot and settled back. The padding now changes with the sidebar.
+- **No cut-off second toggle when the right sidebar opens on macOS.** Obsidian shrinks the page header's copy of the toggle on the same spot as the sidebar's own; that copy now hides at once.
+- **The left toggle stays put while the left sidebar collapses beside the auto-hide ribbon.** It hides while the sidebar shrinks and fades in where it belongs, instead of starting a ribbon's width off and wobbling into place.
+- **Resting on the left toggle no longer slides out the auto-hide ribbon.** A rule left over from 0.23.9 still revealed the ribbon on its own.
+
+### 中文
+- 修复：侧栏展开或收起时，标签和左侧栏按钮不再先冲出去再弹回来。
+- 修复：macOS 上展开右侧栏时，窗口边上不再多出半个侧栏按钮。
+- 修复：开了自动隐藏功能区时，收起左侧栏的过程中左按钮不再左右晃，收完后在原位淡入。
+- 修复：鼠标停在左侧栏按钮上，自动隐藏的功能区不再单独滑出来（0.23.9 漏删的规则）。
+
 ## 0.23.9 · 2026-11-24
 
 ### Fixed

@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.9 · MIT License · https://github.com/letschips
+  Version 0.23.10 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -2649,6 +2649,15 @@ body.mod-macos.is-hidden-frameless:not(.is-fullscreen):not(.is-mobile):not(.stil
   z-index: 12;
 }
 
+/* Core floats both right toggles on the same spot on macOS. When the right
+   sidebar opens, core shrinks the page header's copy to nothing over 140ms;
+   its icon stays centered in the shrinking box and shows as a second, cut
+   off icon beside the sidebar's own. The sidebar's toggle already sits
+   there, so the page header's copy goes at once. */
+body.mod-macos.is-hidden-frameless:not(.is-popout-window):not(.is-mobile) .workspace.is-right-sidedock-open > .mod-root .sidebar-toggle-button.mod-right {
+  visibility: hidden;
+}
+
 /* The toggle on its own never opens a collapsed sidebar: it sits beside the
    window buttons, and passing them must not spill a panel over the page.
    A panel comes out from its edge or the auto-hide ribbon, and stays out
@@ -2720,13 +2729,6 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .workspa
   transition-delay: var(--still-peek-delay);
 }
 
-/* It keeps clear of the toggle beside the window buttons. */
-body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile):not(.still-peek-off) .workspace-ribbon.mod-primary:has(+ .mod-sidedock.is-sidedock-collapsed[style*="display"] + .mod-root .sidebar-toggle-button.mod-left:hover) {
-  opacity: 1;
-  transform: none;
-  transition-delay: calc(var(--still-peek-delay) * 2);
-}
-
 /* Windows and Linux treat a window drag region as title bar, so the page
    loses hover the moment the pointer enters one and the ribbon closes under
    it. Electron applies regions in DOM order, so the headers after the ribbon
@@ -2784,7 +2786,19 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
    Popout windows have no ribbon and keep core's gap. */
 body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile):not(.is-popout-window) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
   padding-left: calc(var(--size-4-2) + var(--frame-left-space) + var(--ribbon-width));
-  transition: padding-left var(--still-moderate) var(--still-glide);
+}
+
+/* Collapsing the left sidebar, core slides the page header's toggle in from
+   where it sat without that extra width, so it starts a ribbon's width off
+   and wobbles into place. It stays hidden while the sidebar shrinks and
+   fades in where it belongs. */
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile):not(.is-popout-window) .mod-root .sidebar-toggle-button.mod-left {
+  transition: opacity var(--still-fast) var(--still-ease-out);
+}
+
+body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile):not(.is-popout-window) .mod-sidedock.mod-left-split.is-sidedock-collapsed:not([style*="display"]) + .mod-root .sidebar-toggle-button.mod-left {
+  opacity: 0;
+  transition: none;
 }
 
 /* Ribbon tiles follow Baseline: 32px hit areas 4px apart, centred in the
@@ -4904,7 +4918,6 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
   .mod-sidedock.is-sidedock-collapsed,
   body.still-peek-ribbon .mod-sidedock.mod-left-split > .workspace-tabs > .workspace-tab-container,
   body.still-peek-ribbon .mod-sidedock.mod-left-split > .workspace-sidedock-vault-profile,
-  body.still-peek-ribbon .workspace-tabs.mod-top-left-space .workspace-tab-header-container,
   .workspace-ribbon,
   .status-bar,
   .status-bar > *,

@@ -203,6 +203,31 @@ for (const ribbon of ['static', 'peek']) for (const lc of [false, true]) for (co
   offsets[`${ribbon} L:${lc ? 'closed' : 'open'} R:${rc ? 'closed' : 'open'}`] = await page.evaluate(() => { const t = document.getElementById('tab').getBoundingClientRect(), r = document.getElementById('rs').getBoundingClientRect(); return Math.round((t.left + t.right) / 2 - (r.left + r.right) / 2); });
 }
 peekChecks.push(['macOS single tab centers on the page in every sidebar state', Object.values(offsets).every(v => Math.abs(v) <= 1), JSON.stringify(offsets)]);
+// Sidebar toggles while core animates a sidebar (user report on 0.23.9): the
+// header padding must not ease behind core's 140ms slide (the tabs and the
+// left toggle sprang back), the page header's right toggle must not show as
+// a cut-off second icon while core shrinks it, the left one hides while the
+// sidebar collapses, and resting on the left toggle never reveals the
+// auto-hide ribbon.
+await page.mouse.move(640, 600);
+await page.emulateMedia({media: 'screen', reducedMotion: 'no-preference'});
+const motionPage = (wsCls, leftCls, leftStyle) => page.setContent(`<!doctype html><html><head><style>${app}</style><style>${theme}</style></head><body class="theme-light mod-macos is-frameless is-hidden-frameless is-focused show-ribbon still-peek-ribbon"><div class="app-container" style="height: 100vh"><div class="workspace${wsCls}"><div class="workspace-ribbon side-dock-ribbon mod-primary is-collapsed" id=rb><div class="side-dock-actions"><div class="clickable-icon side-dock-ribbon-action">A</div></div></div><div class="workspace-split mod-horizontal mod-sidedock mod-left-split ${leftCls}" style="${leftStyle}"></div><div class="workspace-split mod-vertical mod-root">${tabHeader('mod-top-left-space mod-top-right-space', true, true)}</div></div></div></body></html>`);
+const toggleStyle = side => page.evaluate(side => { const b = document.querySelector(`.mod-root .sidebar-toggle-button.mod-${side}`), c = getComputedStyle(b); return {opacity: c.opacity, visibility: c.visibility, headerTransition: (h => h.transitionProperty.split(', ').filter((prop, i) => parseFloat(h.transitionDuration.split(', ')[i % h.transitionDuration.split(', ').length]) > 0).join(', '))(getComputedStyle(b.parentElement))}; }, side);
+await motionPage('', 'is-sidedock-collapsed', 'width: 0px; display: none;');
+const parked = await toggleStyle('left');
+const leftBox = await page.locator('.mod-root .sidebar-toggle-button.mod-left .clickable-icon').boundingBox();
+await page.mouse.move(leftBox.x + leftBox.width / 2, leftBox.y + leftBox.height / 2);
+await page.waitForTimeout(800);
+const ribbonOnToggle = await page.evaluate(() => getComputedStyle(document.getElementById('rb')).opacity);
+await page.mouse.move(640, 600);
+peekChecks.push(['Header padding does not animate when a sidebar opens or closes', !/padding|^all$/.test(parked.headerTransition), parked.headerTransition]);
+peekChecks.push(['Left toggle hover alone keeps the auto-hide ribbon parked', ribbonOnToggle === '0', ribbonOnToggle]);
+await motionPage('', 'is-sidedock-collapsed', 'width: 120px; overflow: hidden;');
+const collapsing = await toggleStyle('left');
+await motionPage(' is-right-sidedock-open', 'is-sidedock-collapsed', 'width: 0px; display: none;');
+const rightOpening = await toggleStyle('right');
+peekChecks.push(['Left header toggle hides while its sidebar collapses, shows once parked', collapsing.opacity === '0' && parked.opacity === '1', JSON.stringify({collapsing: collapsing.opacity, parked: parked.opacity})]);
+peekChecks.push(['Right header toggle hides once its sidebar opens', rightOpening.visibility === 'hidden' && parked.visibility === 'visible', JSON.stringify({opening: rightOpening.visibility, parked: parked.visibility})]);
 for (const [name, ok, got] of peekChecks) {
   if (!ok) fail++;
   console.log(`${ok ? 'ok  ' : 'FAIL'} ${name}${ok ? '' : `: got ${got}`}`);
