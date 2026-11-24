@@ -87,25 +87,22 @@ const code=String.raw`(async()=>{
   const peek=()=>view.getComputedStyle(dock).pointerEvents,activeOnly=peek();dock.querySelector('input').focus();const focused=peek();dock.querySelector('input').blur();const blurred=peek();dock.remove();
   check('Peek panel parks while its leaf is merely active',activeOnly==='none'&&blurred==='none',{activeOnly,blurred});
   check('Peek panel stays open while focus is inside',focused==='auto',{focused});
-  // With the auto-hide ribbon out, an open left sidebar shifts right and its
-  // header gives the shift back, so the header must move on the sidebar's
-  // timing. A translucency snippet can switch the sidebar's transition off
-  // with !important; a header that still animated would jump and slide back.
+  // With the auto-hide ribbon out, an open left sidebar's tab content slides
+  // right on a transform. The sidebar keeps its padding, so nothing reflows
+  // while it moves and the header row stays put.
   stage='sidebar shift';const shiftClasses=['still-peek-ribbon','show-ribbon','mod-macos','is-hidden-frameless'],hadShift=shiftClasses.filter(c=>doc.body.classList.contains(c));
   doc.body.classList.add(...shiftClasses);
   const side=doc.createElement('div');side.className='workspace-split mod-sidedock mod-left-split';
-  side.innerHTML='<div class="workspace-tabs mod-top-left-space"><div class="workspace-tab-header-container"></div></div><style class="still-snippet-probe" media="not all">body.is-translucent .workspace-split,body.is-translucent .workspace-tabs{transition:none!important}</style>';host.append(side);
-  const head=side.querySelector('.workspace-tab-header-container'),snippet=side.querySelector('.still-snippet-probe');
+  side.innerHTML='<div class="workspace-tabs mod-top-left-space"><div class="workspace-tab-header-container"></div><div class="workspace-tab-container"></div></div>';host.append(side);
+  const content=side.querySelector('.workspace-tab-container');
   const timing=e=>{const s=view.getComputedStyle(e);return s.transitionProperty+' '+s.transitionDuration};
-  const shiftOpaque={side:timing(side),head:timing(head)};
-  doc.body.classList.add('is-translucent');snippet.media='all';const shiftGlass={side:timing(side),head:timing(head)};snippet.media='not all';doc.body.classList.remove('is-translucent');
-  check('Sidebar header shifts on the sidebar timing',shiftOpaque.side.includes('padding-left')&&shiftOpaque.head===shiftOpaque.side,shiftOpaque);
-  check('Sidebar header jumps with a sidebar whose transition is switched off',shiftGlass.head===shiftGlass.side,shiftGlass);
+  const shift={side:timing(side),content:timing(content)};
+  check('Open sidebar content slides on a transform, not padding',shift.content.startsWith('transform')&&!shift.side.includes('padding'),shift);
   await win.webContents.debugger.sendCommand('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});await pause(60);
-  const shiftReduced={side:view.getComputedStyle(side).transitionDuration,head:view.getComputedStyle(head).transitionDuration};
+  const shiftReduced=view.getComputedStyle(content).transitionDuration;
   await win.webContents.debugger.sendCommand('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
   side.remove();doc.body.classList.remove(...shiftClasses);doc.body.classList.add(...hadShift);
-  check('Reduced motion stops the sidebar shift for the ribbon',[shiftReduced.side,shiftReduced.head].every(v=>v.split(',').every(x=>parseFloat(x)===0)),shiftReduced);
+  check('Reduced motion stops the sidebar shift for the ribbon',shiftReduced.split(',').every(x=>parseFloat(x)===0),{shiftReduced});
   // Hover lifts a dark button toward the text, as it darkens a light one.
   stage='button hover';const hadPalette=['theme-light','theme-dark'].filter(c=>doc.body.classList.contains(c));
   const luma=v=>{const d=doc.createElement('div');d.style.background='var('+v+')';host.append(d);const [r,g,b]=view.getComputedStyle(d).backgroundColor.match(/[\d.]+/g).map(Number);d.remove();return Math.round(0.2126*r+0.7152*g+0.0722*b)};

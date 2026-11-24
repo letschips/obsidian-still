@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.4 · 2026-11-24
+
+### Changed
+- **Auto-hide ribbon beside an open sidebar.** The sidebar's content now slides aside with a transform instead of padding, so the file tree no longer reflows on every frame while the ribbon opens and closes.
+
+### 中文
+- 改进：自动隐藏的功能区展开时，旁边打开的侧栏内容改为平移让位，不再每一帧重排文件树，动画更顺。
+
 ## 0.23.3 · 2026-11-24
 
 ### Fixed

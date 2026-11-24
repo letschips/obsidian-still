@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.3 · MIT License · https://github.com/letschips
+  Version 0.23.4 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -2710,15 +2710,16 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile):not(.still-peek-off) .mod-sid
   padding-left: var(--ribbon-width);
 }
 
-/* An open left sidebar makes room while the ribbon is out: its content
+/* An open left sidebar makes room while the ribbon is out: its tab content
    slides right by the ribbon's width (less an 8px overlap) and slides back
-   when the pointer leaves, so icons never sit on the file tree. */
-body.still-peek-ribbon.show-ribbon:not(.is-mobile) .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
-  transition: padding-left var(--still-moderate) var(--still-glide);
+   when the pointer leaves, so icons never sit on the file tree. A transform,
+   not padding: nothing reflows while it moves, and the header row stays. */
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs > .workspace-tab-container {
+  transition: transform var(--still-moderate) var(--still-glide);
 }
 
-body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
-  padding-left: calc(var(--ribbon-width) - 8px);
+body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs > .workspace-tab-container {
+  transform: translateX(calc(var(--ribbon-width) - 8px));
   transition-delay: var(--still-peek-delay);
 }
 
@@ -2731,26 +2732,10 @@ body.still-peek-ribbon.show-ribbon:not(.is-mobile) .workspace-ribbon.mod-primary
 
 /* macOS: core sizes the traffic-light gap assuming the ribbon fills the
    corner. A parked ribbon leaves the corner empty, so add its width back.
-   Popout windows have no ribbon and keep core's gap.
-   While an open sidebar is shifted for the ribbon, the header gives back the
-   same amount, so the window controls and toolbar stay where they are. */
+   Popout windows have no ribbon and keep core's gap. */
 body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile):not(.is-popout-window) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
   padding-left: calc(var(--size-4-2) + var(--frame-left-space) + var(--ribbon-width));
   transition: padding-left var(--still-moderate) var(--still-glide);
-}
-
-/* Inside the open sidebar the header takes the sidebar's own transition, so
-   the two always move together: a translucency snippet that switches the
-   sidebar's transition off with !important would otherwise leave the header
-   sliding back after the sidebar had already jumped. */
-body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs.mod-top-left-space,
-body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .mod-left-split:not(.is-sidedock-collapsed) > .workspace-tabs.mod-top-left-space > .workspace-tab-header-container {
-  transition: inherit;
-}
-
-body.mod-macos.is-hidden-frameless.still-peek-ribbon.show-ribbon:not(.is-fullscreen):not(.is-mobile) .workspace-ribbon.mod-primary:is(:hover, :focus-within) + .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) .workspace-tabs.mod-top-left-space .workspace-tab-header-container {
-  padding-left: calc(var(--size-4-2) + var(--frame-left-space) + 8px);
-  transition-delay: var(--still-peek-delay);
 }
 
 /* Ribbon tiles follow Baseline: 32px hit areas 4px apart, centred in the
@@ -4862,7 +4847,7 @@ body.is-tablet .workspace-drawer:not(.is-pinned) .workspace-drawer-inner {
   }
 
   .mod-sidedock.is-sidedock-collapsed,
-  body.still-peek-ribbon .mod-sidedock.mod-left-split,
+  body.still-peek-ribbon .mod-sidedock.mod-left-split > .workspace-tabs > .workspace-tab-container,
   body.still-peek-ribbon .workspace-tabs.mod-top-left-space .workspace-tab-header-container,
   .workspace-ribbon,
   .status-bar,
