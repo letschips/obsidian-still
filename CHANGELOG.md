@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.11 · 2026-11-27
+
+### Fixed
+- **Unresolved links keep a muted underline.** The dotted line under a link to a note that does not exist yet took Obsidian's accent color under the muted text; it now follows the link's own color.
+
+### 中文
+- 修复：未创建笔记的链接，点状下划线不再是强调色，改为跟随灰色链接文字。
+
 ## 0.23.10 · 2026-11-24
 
 ### Fixed

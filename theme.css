@@ -1,6 +1,6 @@
 /*
   Still — a quiet, monochrome theme for Obsidian
-  Version 0.23.10 · MIT License · https://github.com/letschips
+  Version 0.23.11 · MIT License · https://github.com/letschips
 
   Inspired by whirl (github.com/whirlchat/whirl, MIT) for its tonal ladder,
   hairlines and motion, and by Baseline (github.com/svnaxis/obsidian-baseline,
@@ -892,6 +892,8 @@ body {
   --link-unresolved-color: var(--text-muted);
   --link-unresolved-opacity: 1;
   --link-unresolved-decoration-style: dotted;
+  /* Core tints the dots with the accent; keep them in the link's muted ink. */
+  --link-unresolved-decoration-color: color-mix(in srgb, var(--link-unresolved-color) 45%, transparent);
 
   --blockquote-border-thickness: 2px;
   --blockquote-font-style: normal;
